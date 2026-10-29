@@ -101,9 +101,22 @@ export function costSplitShown(experiment: Loose): boolean {
   return summaries.some((s) => s?.search_cost_per_call_usd > 0);
 }
 
-export function replayBaseline(experiment: Loose): Loose {
+/**
+ * Where the replayed control comes from. The hosted page only knows a paid
+ * "Control, replayed" column (the default, which conformance/ pins). A replay
+ * run measures the same thing as the noise floor's first replay, A1, so
+ * `floorAsReplay: true` reads A1 as the replayed control when the run has no
+ * such column, as `equivalence` already does.
+ */
+export interface BaselineOptions {
+  floorAsReplay?: boolean;
+}
+
+export function replayBaseline(experiment: Loose, { floorAsReplay = false }: BaselineOptions = {}): Loose {
   const arm = (experiment?.arms || []).find((a: Loose) => a.label === REPLAYED_CONTROL_LABEL);
-  return arm?.summary ? arm : null;
+  if (arm?.summary) return arm;
+  const a1 = floorAsReplay ? noiseFloor(experiment)?.a1 : null;
+  return a1 ? { label: "Noise floor A1", summary: a1, floor: true } : null;
 }
 
 /** A shift against a baseline in words: points for rates, a ratio otherwise. Null when there is none to give. */
@@ -172,11 +185,11 @@ export interface StatRow {
   note?: { text: string; typical: boolean | null } | null;
 }
 
-export function builtInRows(experiment: Loose): StatRow[] {
+export function builtInRows(experiment: Loose, baseline: BaselineOptions = {}): StatRow[] {
   const control = controlSummary(experiment);
   const arms = experiment?.arms || [];
   const floor = noiseFloor(experiment);
-  const replay = replayBaseline(experiment);
+  const replay = replayBaseline(experiment, baseline);
   const split = costSplitShown(experiment);
   return STAT_ROWS.filter((row) => split || !COST_SPLIT_KEYS.has(row.key)).map((row) => {
     const base = control?.[row.key] ?? null;
@@ -213,9 +226,12 @@ export function builtInRows(experiment: Loose): StatRow[] {
  * its ratio or difference against the control where both exist. Given a
  * monthly volume, a monthly cost row follows cost per call.
  */
-export function statRows(experiment: Loose, { volume = null }: { volume?: MonthlyVolume | null } = {}): StatRow[] {
-  const rows = builtInRows(experiment);
-  const monthly = monthlyRow(experiment, volume);
+export function statRows(
+  experiment: Loose,
+  { volume = null, floorAsReplay = false }: { volume?: MonthlyVolume | null } & BaselineOptions = {},
+): StatRow[] {
+  const rows = builtInRows(experiment, { floorAsReplay });
+  const monthly = monthlyRow(experiment, volume, { floorAsReplay });
   if (monthly) rows.splice(rows.findIndex((row) => row.key === "cost_per_call_usd") + 1, 0, monthly);
   return rows;
 }
@@ -276,14 +292,14 @@ export function monthlyNote(
 }
 
 /** Each arm's measured cost per call times the calls a month. Null with no volume: never estimated. */
-export function monthlyRow(experiment: Loose, volume: MonthlyVolume | null | undefined): StatRow | null {
+export function monthlyRow(experiment: Loose, volume: MonthlyVolume | null | undefined, baseline: BaselineOptions = {}): StatRow | null {
   const calls = volume?.calls;
   if (calls == null || !Number.isFinite(calls) || calls <= 0) return null;
   const control = controlSummary(experiment);
   const base = control?.cost_per_call_usd ?? null;
   const monthly = (perCall: number | null) => (perCall == null ? null : perCall * calls);
   const note = monthlyNote(experiment, volume, base);
-  const replay = replayBaseline(experiment);
+  const replay = replayBaseline(experiment, baseline);
   return {
     key: "monthly_cost_usd",
     label: "Monthly cost",

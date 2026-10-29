@@ -90,15 +90,28 @@ export function gridTreatmentLabels(experiment: Loose): string[] {
     .map((arm: Loose) => arm.label);
 }
 
+function floorA1(c: Loose): Loose {
+  const result = c.noise_floor?.a1;
+  return result && !result.error ? result : null;
+}
+
 /**
  * What a cell can show: cost per call (a mean), latency (a median, with the
  * control's only from a replayed control column, never production's
- * recording), and a reading per tracked field.
+ * recording), and a reading per tracked field. With `floorAsReplay`, a run
+ * without that column reads the noise floor's first replay (A1) as the
+ * replayed control's latency.
  */
-export function gridMetrics(experiment: Loose, { tracked = [] }: { tracked?: string[] } = {}): GridMetric[] {
+export function gridMetrics(
+  experiment: Loose,
+  { tracked = [], floorAsReplay = false }: { tracked?: string[]; floorAsReplay?: boolean } = {},
+): GridMetric[] {
   const cases = (experiment?.cases || []).filter((c: Loose) => c.status == null || c.status === "replayed");
   const labels = gridTreatmentLabels(experiment);
-  const replayed = (experiment?.arms || []).some((arm: Loose) => arm.label === REPLAYED_CONTROL_LABEL || arm.replayed_control);
+  const column = (experiment?.arms || []).some((arm: Loose) => arm.label === REPLAYED_CONTROL_LABEL || arm.replayed_control);
+  const fromFloor = !column && floorAsReplay && Boolean(experiment?.noise_floor) && cases.some((c: Loose) => floorA1(c));
+  const replayed = column || fromFloor;
+  const replayLatency = (c: Loose) => (fromFloor ? floorA1(c) : armResult(c, REPLAYED_CONTROL_LABEL))?.latency_ms;
   const metrics: GridMetric[] = [
     {
       key: "cost_per_call_usd", label: "Cost per call", statistic: "mean", format: formatUsd, better: "lower", controlSource: "production",
@@ -108,7 +121,7 @@ export function gridMetrics(experiment: Loose, { tracked = [] }: { tracked?: str
     {
       key: "latency_ms_p50", label: "Latency", statistic: "median", format: formatMs, better: "lower", controlSource: replayed ? "replay" : null,
       values: (label) => cases.map((c: Loose) => armResult(c, label)?.latency_ms),
-      control: () => (replayed ? cases.map((c: Loose) => armResult(c, REPLAYED_CONTROL_LABEL)?.latency_ms) : []),
+      control: () => (replayed ? cases.map(replayLatency) : []),
     },
   ];
   for (const path of tracked) {
