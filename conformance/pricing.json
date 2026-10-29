@@ -1,0 +1,2964 @@
+{
+ "about": "Pricing conformance: expected costs computed by metergraph-core's Python catalog from the same prices.yaml. Generated; never edit expected values by hand.",
+ "catalog": {
+  "version": "2026-10-06",
+  "commit": "e0d9203fd42d85a341ab339d9c2178bd526f5b67"
+ },
+ "cases": [
+  {
+   "name": "gateway id, openai",
+   "query": {
+    "model": "openai/gpt-6-luna",
+    "inputTokens": 1200,
+    "outputTokens": 300,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-luna",
+    "priceId": "openai/gpt-6-luna:vercel-ai-gateway:global:2026-09-23",
+    "costUsd": "0.00027000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "gateway id, anthropic",
+   "query": {
+    "model": "anthropic/claude-sonnet-5.5",
+    "inputTokens": 5000,
+    "outputTokens": 800,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-sonnet-5.5",
+    "priceId": "anthropic/claude-sonnet-5.5:vercel-ai-gateway:global:2026-09-28",
+    "costUsd": "0.01800000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "gateway id, mixed case",
+   "query": {
+    "model": "OpenAI/GPT-6-Sol",
+    "inputTokens": 1000,
+    "outputTokens": 1000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-sol",
+    "priceId": "openai/gpt-6-sol:vercel-ai-gateway:global:2026-09-23",
+    "costUsd": "0.01200000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "gateway id priced on the creator's own channel",
+   "query": {
+    "model": "openai/gpt-5.4",
+    "inputTokens": 2000,
+    "outputTokens": 500,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.4",
+    "priceId": "openai/gpt-5.4:openai-api:global:2026-03-05",
+    "costUsd": "0.01250000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "gateway id under the creator as written",
+   "query": {
+    "model": "xai/grok-4.1-fast-reasoning",
+    "inputTokens": 3000,
+    "outputTokens": 400,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "xai/grok-4.1-fast-reasoning",
+    "priceId": "xai/grok-4.1-fast-reasoning:vercel-ai-gateway:global:2025-11-19",
+    "costUsd": "0.00080000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "gateway id under the folded creator",
+   "query": {
+    "model": "xai/grok-4.3",
+    "inputTokens": 3000,
+    "outputTokens": 400,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "xai/grok-4.3",
+    "priceId": "xai/grok-4.3:xai-api:global:2026-05-15",
+    "costUsd": "0.00475000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "gateway id, google",
+   "query": {
+    "model": "google/gemini-3.5-flash",
+    "inputTokens": 8000,
+    "outputTokens": 1200,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "google/gemini-3.5-flash",
+    "priceId": "google/gemini-3.5-flash:vercel-ai-gateway:global:2026-05-19",
+    "costUsd": "0.02280000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "gateway id, unknown creator",
+   "query": {
+    "model": "example/not-a-model",
+    "inputTokens": 100,
+    "outputTokens": 100,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "gateway id, unknown model of a known creator",
+   "query": {
+    "model": "openai/not-a-model",
+    "inputTokens": 100,
+    "outputTokens": 100,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "bare alias, openai",
+   "query": {
+    "model": "gpt-6-luna",
+    "inputTokens": 1200,
+    "outputTokens": 300,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-luna",
+    "priceId": "openai/gpt-6-luna:openai-api:global:2026-09-22",
+    "costUsd": "0.00027000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "bare alias, anthropic",
+   "query": {
+    "model": "claude-sonnet-5-5",
+    "inputTokens": 5000,
+    "outputTokens": 800,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-sonnet-5.5",
+    "priceId": "anthropic/claude-sonnet-5.5:anthropic-api:global:2026-09-28",
+    "costUsd": "0.01800000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "bare alias, unknown",
+   "query": {
+    "model": "not-a-model",
+    "inputTokens": 100,
+    "outputTokens": 100,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "cache, gateway row counts reads in input",
+   "query": {
+    "model": "openai/gpt-6-luna",
+    "inputTokens": 10000,
+    "outputTokens": 200,
+    "cachedInputTokens": 8000,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-luna",
+    "priceId": "openai/gpt-6-luna:vercel-ai-gateway:global:2026-09-23",
+    "costUsd": "0.00038000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "cache, openai-api row counts reads in input",
+   "query": {
+    "model": "gpt-6-luna",
+    "inputTokens": 10000,
+    "outputTokens": 200,
+    "cachedInputTokens": 8000,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-luna",
+    "priceId": "openai/gpt-6-luna:openai-api:global:2026-09-22",
+    "costUsd": "0.00038000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "cache, anthropic-api row does not",
+   "query": {
+    "model": "claude-sonnet-5-5",
+    "inputTokens": 10000,
+    "outputTokens": 200,
+    "cachedInputTokens": 8000,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-sonnet-5.5",
+    "priceId": "anthropic/claude-sonnet-5.5:anthropic-api:global:2026-09-28",
+    "costUsd": "0.02360000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "cache, caller says inclusive on an exclusive row",
+   "query": {
+    "model": "claude-sonnet-5-5",
+    "inputTokens": 10000,
+    "outputTokens": 200,
+    "cachedInputTokens": 8000,
+    "inputIncludesCacheRead": true,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-sonnet-5.5",
+    "priceId": "anthropic/claude-sonnet-5.5:anthropic-api:global:2026-09-28",
+    "costUsd": "0.00760000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "cache, caller says exclusive on an inclusive row",
+   "query": {
+    "model": "openai/gpt-6-luna",
+    "inputTokens": 2000,
+    "outputTokens": 200,
+    "cachedInputTokens": 8000,
+    "inputIncludesCacheRead": false,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-luna",
+    "priceId": "openai/gpt-6-luna:vercel-ai-gateway:global:2026-09-23",
+    "costUsd": "0.00038000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "cache, caller agrees with the row",
+   "query": {
+    "model": "openai/gpt-6-luna",
+    "inputTokens": 10000,
+    "outputTokens": 200,
+    "cachedInputTokens": 8000,
+    "inputIncludesCacheRead": true,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-luna",
+    "priceId": "openai/gpt-6-luna:vercel-ai-gateway:global:2026-09-23",
+    "costUsd": "0.00038000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "cache, reads exceed input",
+   "query": {
+    "model": "openai/gpt-6-luna",
+    "inputTokens": 1000,
+    "outputTokens": 200,
+    "cachedInputTokens": 5000,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-luna",
+    "priceId": "openai/gpt-6-luna:vercel-ai-gateway:global:2026-09-23",
+    "costUsd": "0.00015000",
+    "status": "partial",
+    "reasons": [
+     "cache_read_exceeds_input"
+    ]
+   }
+  },
+  {
+   "name": "cache, inclusive restated larger than input",
+   "query": {
+    "model": "claude-sonnet-5-5",
+    "inputTokens": 1000,
+    "outputTokens": 200,
+    "cachedInputTokens": 5000,
+    "inputIncludesCacheRead": true,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-sonnet-5.5",
+    "priceId": "anthropic/claude-sonnet-5.5:anthropic-api:global:2026-09-28",
+    "costUsd": "0.00300000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "cache, anthropic gateway row",
+   "query": {
+    "model": "anthropic/claude-sonnet-5.5",
+    "inputTokens": 10000,
+    "outputTokens": 200,
+    "cachedInputTokens": 8000,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-sonnet-5.5",
+    "priceId": "anthropic/claude-sonnet-5.5:vercel-ai-gateway:global:2026-09-28",
+    "costUsd": "0.00760000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "long context, at the threshold",
+   "query": {
+    "model": "openai/gpt-6-sol",
+    "inputTokens": 272000,
+    "outputTokens": 1000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-sol",
+    "priceId": "openai/gpt-6-sol:vercel-ai-gateway:global:2026-09-23",
+    "costUsd": "0.55400000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "long context, above the threshold",
+   "query": {
+    "model": "openai/gpt-6-sol",
+    "inputTokens": 272001,
+    "outputTokens": 1000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-sol",
+    "priceId": "openai/gpt-6-sol:vercel-ai-gateway:global:2026-09-23",
+    "costUsd": "1.10300400",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "long context, above with cache",
+   "query": {
+    "model": "gpt-6-sol",
+    "inputTokens": 400000,
+    "outputTokens": 2000,
+    "cachedInputTokens": 100000,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-sol",
+    "priceId": "openai/gpt-6-sol:openai-api:global:2026-09-22",
+    "costUsd": "1.27000000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "dated, before the first price",
+   "query": {
+    "model": "openai/gpt-6-luna",
+    "inputTokens": 1000,
+    "outputTokens": 1000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-01-01"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-luna",
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "no_effective_price"
+    ]
+   }
+  },
+  {
+   "name": "dated, on the first day",
+   "query": {
+    "model": "gpt-6-luna",
+    "inputTokens": 1000,
+    "outputTokens": 1000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-09-22"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-luna",
+    "priceId": "openai/gpt-6-luna:openai-api:global:2026-09-22",
+    "costUsd": "0.00060000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "dated, a date without a zone",
+   "query": {
+    "model": "gpt-6-luna",
+    "inputTokens": 1000,
+    "outputTokens": 1000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-01T08:30:00"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-luna",
+    "priceId": "openai/gpt-6-luna:openai-api:global:2026-09-22",
+    "costUsd": "0.00060000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "off-peak, weekday peak hour",
+   "query": {
+    "model": "deepseek-v4-pro",
+    "inputTokens": 100000,
+    "outputTokens": 5000,
+    "cachedInputTokens": 20000,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T02:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "deepseek/v4-pro",
+    "priceId": "deepseek/v4-pro:deepseek-api:global:2026-09-10",
+    "costUsd": "0.12628000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "off-peak, weekday peak hour end",
+   "query": {
+    "model": "deepseek-v4-pro",
+    "inputTokens": 100000,
+    "outputTokens": 5000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T04:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "deepseek/v4-pro",
+    "priceId": "deepseek/v4-pro:deepseek-api:global:2026-09-10",
+    "costUsd": "0.07590000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "off-peak, weekday off-peak hour",
+   "query": {
+    "model": "deepseek-v4-pro",
+    "inputTokens": 100000,
+    "outputTokens": 5000,
+    "cachedInputTokens": 20000,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "deepseek/v4-pro",
+    "priceId": "deepseek/v4-pro:deepseek-api:global:2026-09-10",
+    "costUsd": "0.06314000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "off-peak, weekend",
+   "query": {
+    "model": "deepseek-v4-pro",
+    "inputTokens": 100000,
+    "outputTokens": 5000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-24T02:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "deepseek/v4-pro",
+    "priceId": "deepseek/v4-pro:deepseek-api:global:2026-09-10",
+    "costUsd": "0.07590000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "off-peak, gateway row",
+   "query": {
+    "model": "deepseek/deepseek-v4-pro",
+    "inputTokens": 100000,
+    "outputTokens": 5000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "deepseek/v4-pro",
+    "priceId": "deepseek/v4-pro:vercel-ai-gateway:global:2026-10-02",
+    "costUsd": "0.07590000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "dated, a time-of-day price boundary",
+   "query": {
+    "model": "deepseek-v4-pro",
+    "inputTokens": 100000,
+    "outputTokens": 5000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-09-10T03:59:59Z"
+   },
+   "expected": {
+    "canonicalModel": "deepseek/v4-pro",
+    "priceId": "deepseek/v4-pro:deepseek-api:global:2026-04-24",
+    "costUsd": "0.04785000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "dated, a time-of-day price boundary, after",
+   "query": {
+    "model": "deepseek-v4-pro",
+    "inputTokens": 100000,
+    "outputTokens": 5000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-09-10T04:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "deepseek/v4-pro",
+    "priceId": "deepseek/v4-pro:deepseek-api:global:2026-09-10",
+    "costUsd": "0.07590000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "dated, an offset time",
+   "query": {
+    "model": "deepseek-v4-pro",
+    "inputTokens": 100000,
+    "outputTokens": 5000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-09-10T05:30:00+02:00"
+   },
+   "expected": {
+    "canonicalModel": "deepseek/v4-pro",
+    "priceId": "deepseek/v4-pro:deepseek-api:global:2026-04-24",
+    "costUsd": "0.04785000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "zero tokens",
+   "query": {
+    "model": "openai/gpt-6-luna",
+    "inputTokens": 0,
+    "outputTokens": 0,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-luna",
+    "priceId": "openai/gpt-6-luna:vercel-ai-gateway:global:2026-09-23",
+    "costUsd": "0E-8",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "large counts",
+   "query": {
+    "model": "anthropic/claude-sonnet-5.5",
+    "inputTokens": 1500000,
+    "outputTokens": 64000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-sonnet-5.5",
+    "priceId": "anthropic/claude-sonnet-5.5:vercel-ai-gateway:global:2026-09-28",
+    "costUsd": "3.64000000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "fractional rounding",
+   "query": {
+    "model": "openai/gpt-6-luna",
+    "inputTokens": 7,
+    "outputTokens": 3,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-luna",
+    "priceId": "openai/gpt-6-luna:vercel-ai-gateway:global:2026-09-23",
+    "costUsd": "0.00000220",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "dated window of openai/gpt-5.6-sol, before it closes",
+   "query": {
+    "model": "gpt-5.6",
+    "inputTokens": 50000,
+    "outputTokens": 2000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-08-20T23:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.6-sol",
+    "priceId": "openai/gpt-5.6-sol:openai-api:global:2026-07-09",
+    "costUsd": "0.31000000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "dated window of openai/gpt-5.6-sol, as it closes",
+   "query": {
+    "model": "gpt-5.6",
+    "inputTokens": 50000,
+    "outputTokens": 2000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-08-21"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.6-sol",
+    "priceId": "openai/gpt-5.6-sol:openai-api:global:2026-08-21",
+    "costUsd": "0.24000000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "dated window of openai/gpt-5.6-terra, before it closes",
+   "query": {
+    "model": "gpt-5.6-terra",
+    "inputTokens": 50000,
+    "outputTokens": 2000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-07-29T23:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.6-terra",
+    "priceId": "openai/gpt-5.6-terra:openai-api:global:2026-07-09",
+    "costUsd": "0.15500000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "dated window of openai/gpt-5.6-terra, as it closes",
+   "query": {
+    "model": "gpt-5.6-terra",
+    "inputTokens": 50000,
+    "outputTokens": 2000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-07-30"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.6-terra",
+    "priceId": "openai/gpt-5.6-terra:openai-api:global:2026-07-30",
+    "costUsd": "0.12400000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "dated window of openai/gpt-5.6-luna, before it closes",
+   "query": {
+    "model": "gpt-5.6-luna",
+    "inputTokens": 50000,
+    "outputTokens": 2000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-07-29T23:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.6-luna",
+    "priceId": "openai/gpt-5.6-luna:openai-api:global:2026-07-09",
+    "costUsd": "0.06200000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "dated window of openai/gpt-5.6-luna, as it closes",
+   "query": {
+    "model": "gpt-5.6-luna",
+    "inputTokens": 50000,
+    "outputTokens": 2000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-07-30"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.6-luna",
+    "priceId": "openai/gpt-5.6-luna:openai-api:global:2026-07-30",
+    "costUsd": "0.01240000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "dated window of openai/gpt-5.4, before it closes",
+   "query": {
+    "model": "gpt-5.4",
+    "inputTokens": 50000,
+    "outputTokens": 2000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-01T23:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.4",
+    "priceId": "openai/gpt-5.4:openai-api:global:2026-03-05",
+    "costUsd": "0.15500000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "dated window of openai/gpt-5.4, as it closes",
+   "query": {
+    "model": "gpt-5.4",
+    "inputTokens": 50000,
+    "outputTokens": 2000,
+    "cachedInputTokens": null,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-02"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.4",
+    "priceId": "openai/gpt-5.4:openai-api:global:2026-03-05",
+    "costUsd": "0.15500000",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-6-sol",
+   "query": {
+    "model": "openai/gpt-6-sol",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-sol",
+    "priceId": "openai/gpt-6-sol:vercel-ai-gateway:global:2026-09-23",
+    "costUsd": "0.02724900",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-6-luna",
+   "query": {
+    "model": "openai/gpt-6-luna",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-luna",
+    "priceId": "openai/gpt-6-luna:vercel-ai-gateway:global:2026-09-23",
+    "costUsd": "0.00136245",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-6-astra",
+   "query": {
+    "model": "openai/gpt-6-astra",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6-astra",
+    "priceId": "openai/gpt-6-astra:vercel-ai-gateway:global:2026-09-23",
+    "costUsd": "0.13624500",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-6.1-sol",
+   "query": {
+    "model": "openai/gpt-6.1-sol",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-6.1-sol",
+    "priceId": "openai/gpt-6.1-sol:vercel-ai-gateway:global:2026-10-02",
+    "costUsd": "0.02701450",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-5.6-sol",
+   "query": {
+    "model": "openai/gpt-5.6-sol",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.6-sol",
+    "priceId": "openai/gpt-5.6-sol:vercel-ai-gateway:global:2026-10-02",
+    "costUsd": "0.05449800",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-5.6-terra",
+   "query": {
+    "model": "openai/gpt-5.6-terra",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.6-terra",
+    "priceId": "openai/gpt-5.6-terra:vercel-ai-gateway:global:2026-07-09",
+    "costUsd": "0.02860500",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-5.6-luna",
+   "query": {
+    "model": "openai/gpt-5.6-luna",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.6-luna",
+    "priceId": "openai/gpt-5.6-luna:vercel-ai-gateway:global:2026-07-30",
+    "costUsd": "0.00286050",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-5.4-mini",
+   "query": {
+    "model": "openai/gpt-5.4-mini",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.4-mini",
+    "priceId": "openai/gpt-5.4-mini:vercel-ai-gateway:global:2026-03-17",
+    "costUsd": "0.01072688",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-5.4",
+   "query": {
+    "model": "openai/gpt-5.4",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.4",
+    "priceId": "openai/gpt-5.4:openai-api:global:2026-03-05",
+    "costUsd": "0.03575625",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-5.4-nano",
+   "query": {
+    "model": "openai/gpt-5.4-nano",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.4-nano",
+    "priceId": "openai/gpt-5.4-nano:vercel-ai-gateway:global:2026-03-17",
+    "costUsd": "0.00289440",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-4o-mini",
+   "query": {
+    "model": "openai/gpt-4o-mini",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-4o-mini",
+    "priceId": "openai/gpt-4o-mini:openai-api:global:2024-07-18",
+    "costUsd": "0.00208268",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-4o",
+   "query": {
+    "model": "openai/gpt-4o",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-4o",
+    "priceId": "openai/gpt-4o:openai-api:global:2024-08-06",
+    "costUsd": "0.03471125",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-4.1",
+   "query": {
+    "model": "openai/gpt-4.1",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-4.1",
+    "priceId": "openai/gpt-4.1:openai-api:global:2025-04-14",
+    "costUsd": "0.02659650",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-4.1-mini",
+   "query": {
+    "model": "openai/gpt-4.1-mini",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-4.1-mini",
+    "priceId": "openai/gpt-4.1-mini:openai-api:global:2025-04-14",
+    "costUsd": "0.00531930",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-4.1-nano",
+   "query": {
+    "model": "openai/gpt-4.1-nano",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-4.1-nano",
+    "priceId": "openai/gpt-4.1-nano:openai-api:global:2025-04-14",
+    "costUsd": "0.00132983",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-5.2",
+   "query": {
+    "model": "openai/gpt-5.2",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.2",
+    "priceId": "openai/gpt-5.2:openai-api:global:2025-12-11",
+    "costUsd": "0.02740238",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-fable-5.1",
+   "query": {
+    "model": "anthropic/claude-fable-5.1",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-fable-5.1",
+    "priceId": "anthropic/claude-fable-5.1:vercel-ai-gateway:global:2026-08-31",
+    "costUsd": "0.13448625",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-fable-5",
+   "query": {
+    "model": "anthropic/claude-fable-5",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-fable-5",
+    "priceId": "anthropic/claude-fable-5:anthropic-api:global:2026-06-09",
+    "costUsd": "0.15969500",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-opus-5.5",
+   "query": {
+    "model": "anthropic/claude-opus-5.5",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-opus-5.5",
+    "priceId": "anthropic/claude-opus-5.5:vercel-ai-gateway:global:2026-09-22",
+    "costUsd": "0.05402900",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-opus-5",
+   "query": {
+    "model": "anthropic/claude-opus-5",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-opus-5",
+    "priceId": "anthropic/claude-opus-5:vercel-ai-gateway:global:2026-07-24",
+    "costUsd": "0.06812250",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-opus-4.8",
+   "query": {
+    "model": "anthropic/claude-opus-4.8",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-opus-4.8",
+    "priceId": "anthropic/claude-opus-4.8:vercel-ai-gateway:global:2026-05-28",
+    "costUsd": "0.06812250",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-opus-4.7",
+   "query": {
+    "model": "anthropic/claude-opus-4.7",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-opus-4.7",
+    "priceId": "anthropic/claude-opus-4.7:vercel-ai-gateway:global:2026-05-28",
+    "costUsd": "0.06812250",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-opus-4.6",
+   "query": {
+    "model": "anthropic/claude-opus-4.6",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-opus-4.6",
+    "priceId": "anthropic/claude-opus-4.6:anthropic-api:global:2026-02-05",
+    "costUsd": "0.07984750",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-sonnet-5.5",
+   "query": {
+    "model": "anthropic/claude-sonnet-5.5",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-sonnet-5.5",
+    "priceId": "anthropic/claude-sonnet-5.5:vercel-ai-gateway:global:2026-09-28",
+    "costUsd": "0.02724900",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-sonnet-5",
+   "query": {
+    "model": "anthropic/claude-sonnet-5",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-sonnet-5",
+    "priceId": "anthropic/claude-sonnet-5:vercel-ai-gateway:global:2026-06-30",
+    "costUsd": "0.02724900",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-haiku-4.5",
+   "query": {
+    "model": "anthropic/claude-haiku-4.5",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-haiku-4.5",
+    "priceId": "anthropic/claude-haiku-4.5:vercel-ai-gateway:global:2025-10-15",
+    "costUsd": "0.01362450",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-sonnet-4.6",
+   "query": {
+    "model": "anthropic/claude-sonnet-4.6",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-sonnet-4.6",
+    "priceId": "anthropic/claude-sonnet-4.6:vercel-ai-gateway:global:2026-02-17",
+    "costUsd": "0.04087350",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-sonnet-4.5",
+   "query": {
+    "model": "anthropic/claude-sonnet-4.5",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-sonnet-4.5",
+    "priceId": "anthropic/claude-sonnet-4.5:anthropic-api:global:2025-09-29",
+    "costUsd": "0.04790850",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep google/gemini-3-pro",
+   "query": {
+    "model": "google/gemini-3-pro",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "sweep google/gemini-3.1-pro-preview",
+   "query": {
+    "model": "google/gemini-3.1-pro-preview",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "google/gemini-3.1-pro-preview",
+    "priceId": "google/gemini-3.1-pro-preview:vercel-ai-gateway:global:2026-02-19",
+    "costUsd": "0.02860500",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep google/gemini-3.5-flash",
+   "query": {
+    "model": "google/gemini-3.5-flash",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "google/gemini-3.5-flash",
+    "priceId": "google/gemini-3.5-flash:vercel-ai-gateway:global:2026-05-19",
+    "costUsd": "0.02145375",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep google/gemini-3.5-flash-lite",
+   "query": {
+    "model": "google/gemini-3.5-flash-lite",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "google/gemini-3.5-flash-lite",
+    "priceId": "google/gemini-3.5-flash-lite:google-api:global:2026-07-21",
+    "costUsd": "0.00476535",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep google/gemini-2.5-pro",
+   "query": {
+    "model": "google/gemini-2.5-pro",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "google/gemini-2.5-pro",
+    "priceId": "google/gemini-2.5-pro:vercel-ai-gateway:global:2026-10-02",
+    "costUsd": "0.01957313",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep google/gemini-2.5-flash",
+   "query": {
+    "model": "google/gemini-2.5-flash",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "google/gemini-2.5-flash",
+    "priceId": "google/gemini-2.5-flash:vercel-ai-gateway:global:2025-06-17",
+    "costUsd": "0.00476535",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep google/gemini-2.5-flash-image",
+   "query": {
+    "model": "google/gemini-2.5-flash-image",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "sweep google/gemini-2.5-flash-lite",
+   "query": {
+    "model": "google/gemini-2.5-flash-lite",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "google/gemini-2.5-flash-lite",
+    "priceId": "google/gemini-2.5-flash-lite:vercel-ai-gateway:global:2025-07-22",
+    "costUsd": "0.00129465",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep google/gemma-4-26b-a4b-it",
+   "query": {
+    "model": "google/gemma-4-26b-a4b-it",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "google/gemma-4-26b-a4b-it",
+    "priceId": "google/gemma-4-26b-a4b-it:vercel-ai-gateway:global:2026-04-02",
+    "costUsd": "0.00194198",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep google/gemma-3-27b-it",
+   "query": {
+    "model": "google/gemma-3-27b-it",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "sweep nvidia/nemotron-3-super-120b-a12b",
+   "query": {
+    "model": "nvidia/nemotron-3-super-120b-a12b",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "nvidia/nemotron-3-super-120b-a12b",
+    "priceId": "nvidia/nemotron-3-super-120b-a12b:vercel-ai-gateway:global:2026-03-11",
+    "costUsd": "0.00194070",
+    "status": "partial",
+    "reasons": [
+     "cache_read_rate_unavailable"
+    ]
+   }
+  },
+  {
+   "name": "sweep meta/muse-spark-1.1",
+   "query": {
+    "model": "meta/muse-spark-1.1",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "meta/muse-spark-1.1",
+    "priceId": "meta/muse-spark-1.1:vercel-ai-gateway:global:2026-07-09",
+    "costUsd": "0.01573325",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep mistral/mistral-large-3",
+   "query": {
+    "model": "mistral/mistral-large-3",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "mistral/mistral-large-3",
+    "priceId": "mistral/mistral-large-3:vercel-ai-gateway:global:2025-12-02",
+    "costUsd": "0.00613425",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep mistral/ministral-14b",
+   "query": {
+    "model": "mistral/ministral-14b",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "mistral/ministral-14b",
+    "priceId": "mistral/ministral-14b:vercel-ai-gateway:global:2025-12-02",
+    "costUsd": "0.00218250",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep deepseek/v3.2",
+   "query": {
+    "model": "deepseek/v3.2",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "sweep deepseek/v3.1",
+   "query": {
+    "model": "deepseek/v3.1",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "sweep deepseek/v4-flash",
+   "query": {
+    "model": "deepseek/v4-flash",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "sweep deepseek/v4-pro",
+   "query": {
+    "model": "deepseek/v4-pro",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "sweep xai/grok-4.3",
+   "query": {
+    "model": "xai/grok-4.3",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "xai/grok-4.3",
+    "priceId": "xai/grok-4.3:xai-api:global:2026-05-15",
+    "costUsd": "0.01466400",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep perplexity/sonar",
+   "query": {
+    "model": "perplexity/sonar",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "perplexity/sonar",
+    "priceId": "perplexity/sonar:perplexity-api:global:2025-04-18",
+    "costUsd": "0.01302300",
+    "status": "partial",
+    "reasons": [
+     "cache_read_rate_unavailable",
+     "uncaptured_fees"
+    ]
+   }
+  },
+  {
+   "name": "sweep openai/gpt-5-mini",
+   "query": {
+    "model": "openai/gpt-5-mini",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5-mini",
+    "priceId": "openai/gpt-5-mini:vercel-ai-gateway:global:2025-08-07",
+    "costUsd": "0.00391463",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-3-haiku",
+   "query": {
+    "model": "anthropic/claude-3-haiku",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-3-haiku",
+    "priceId": "anthropic/claude-3-haiku:vercel-ai-gateway:global:2026-10-02",
+    "costUsd": "0.00341785",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep google/gemini-3.6-flash",
+   "query": {
+    "model": "google/gemini-3.6-flash",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "google/gemini-3.6-flash",
+    "priceId": "google/gemini-3.6-flash:vercel-ai-gateway:global:2026-09-02",
+    "costUsd": "0.01021838",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep google/gemini-3.7-flash",
+   "query": {
+    "model": "google/gemini-3.7-flash",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "google/gemini-3.7-flash",
+    "priceId": "google/gemini-3.7-flash:vercel-ai-gateway:global:2026-08-25",
+    "costUsd": "0.01021838",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep google/gemini-3.8-flash",
+   "query": {
+    "model": "google/gemini-3.8-flash",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "google/gemini-3.8-flash",
+    "priceId": "google/gemini-3.8-flash:vercel-ai-gateway:global:2026-09-02",
+    "costUsd": "0.01021838",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep google/gemma-4-31b-it",
+   "query": {
+    "model": "google/gemma-4-31b-it",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "google/gemma-4-31b-it",
+    "priceId": "google/gemma-4-31b-it:vercel-ai-gateway:global:2026-04-02",
+    "costUsd": "0.00199950",
+    "status": "partial",
+    "reasons": [
+     "cache_read_rate_unavailable"
+    ]
+   }
+  },
+  {
+   "name": "sweep meta/muse-glimmer-30b",
+   "query": {
+    "model": "meta/muse-glimmer-30b",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "meta/muse-glimmer-30b",
+    "priceId": "meta/muse-glimmer-30b:vercel-ai-gateway:global:2026-08-25",
+    "costUsd": "0.00461080",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep deepseek/deepseek-v4.1-flash",
+   "query": {
+    "model": "deepseek/deepseek-v4.1-flash",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "deepseek/deepseek-v4.1-flash",
+    "priceId": "deepseek/deepseek-v4.1-flash:vercel-ai-gateway:global:2026-10-02",
+    "costUsd": "0.00383002",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep meta/muse-spark-1.3",
+   "query": {
+    "model": "meta/muse-spark-1.3",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "meta/muse-spark-1.3",
+    "priceId": "meta/muse-spark-1.3:vercel-ai-gateway:global:2026-09-11",
+    "costUsd": "0.01573325",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep thinkingmachines/inkling",
+   "query": {
+    "model": "thinkingmachines/inkling",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "thinkingmachines/inkling",
+    "priceId": "thinkingmachines/inkling:vercel-ai-gateway:global:2026-08-25",
+    "costUsd": "0.01314455",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep zai/glm-5.2",
+   "query": {
+    "model": "zai/glm-5.2",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "zai/glm-5.2",
+    "priceId": "zai/glm-5.2:vercel-ai-gateway:global:2026-08-25",
+    "costUsd": "0.01010410",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep moonshotai/kimi-k3",
+   "query": {
+    "model": "moonshotai/kimi-k3",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "moonshotai/kimi-k3",
+    "priceId": "moonshotai/kimi-k3:vercel-ai-gateway:global:2026-09-02",
+    "costUsd": "0.04087350",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep moonshotai/kimi-k3-fast",
+   "query": {
+    "model": "moonshotai/kimi-k3-fast",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "moonshotai/kimi-k3-fast",
+    "priceId": "moonshotai/kimi-k3-fast:vercel-ai-gateway:global:2026-10-02",
+    "costUsd": "0.06131025",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep moonshotai/kimi-k2.5",
+   "query": {
+    "model": "moonshotai/kimi-k2.5",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "moonshotai/kimi-k2.5",
+    "priceId": "moonshotai/kimi-k2.5:vercel-ai-gateway:global:2026-08-27",
+    "costUsd": "0.00803400",
+    "status": "partial",
+    "reasons": [
+     "cache_read_rate_unavailable"
+    ]
+   }
+  },
+  {
+   "name": "sweep minimax/minimax-m3",
+   "query": {
+    "model": "minimax/minimax-m3",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "minimax/minimax-m3",
+    "priceId": "minimax/minimax-m3:vercel-ai-gateway:global:2026-05-31",
+    "costUsd": "0.00395430",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep fireworks/glm-5p2",
+   "query": {
+    "model": "fireworks/glm-5p2",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "sweep fireworks/qwen3p7-plus",
+   "query": {
+    "model": "fireworks/qwen3p7-plus",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "sweep fireworks/ember-1",
+   "query": {
+    "model": "fireworks/ember-1",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "sweep openai/gpt-oss-120b",
+   "query": {
+    "model": "openai/gpt-oss-120b",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "sweep nvidia/nemotron-3-ultra-nvfp4",
+   "query": {
+    "model": "nvidia/nemotron-3-ultra-nvfp4",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "sweep nvidia/nemotron-lightning-3.5-30b-a3b",
+   "query": {
+    "model": "nvidia/nemotron-lightning-3.5-30b-a3b",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "sweep xai/grok-4.1-fast-reasoning",
+   "query": {
+    "model": "xai/grok-4.1-fast-reasoning",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "xai/grok-4.1-fast-reasoning",
+    "priceId": "xai/grok-4.1-fast-reasoning:vercel-ai-gateway:global:2025-11-19",
+    "costUsd": "0.00245625",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep xai/grok-4.1-fast-non-reasoning",
+   "query": {
+    "model": "xai/grok-4.1-fast-non-reasoning",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "xai/grok-4.1-fast-non-reasoning",
+    "priceId": "xai/grok-4.1-fast-non-reasoning:vercel-ai-gateway:global:2025-11-19",
+    "costUsd": "0.00245625",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep xai/grok-4.6",
+   "query": {
+    "model": "xai/grok-4.6",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "xai/grok-4.6",
+    "priceId": "xai/grok-4.6:vercel-ai-gateway:global:2026-10-02",
+    "costUsd": "0.02524050",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep xai/grok-4.7",
+   "query": {
+    "model": "xai/grok-4.7",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "xai/grok-4.7",
+    "priceId": "xai/grok-4.7:xai-api:global:2026-09-21",
+    "costUsd": "0.02524050",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep google/gemini-3-flash-preview",
+   "query": {
+    "model": "google/gemini-3-flash-preview",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "google/gemini-3-flash-preview",
+    "priceId": "google/gemini-3-flash-preview:google-api:global:2025-12-17",
+    "costUsd": "0.00715125",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep google/gemini-3.1-flash-lite",
+   "query": {
+    "model": "google/gemini-3.1-flash-lite",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "google/gemini-3.1-flash-lite",
+    "priceId": "google/gemini-3.1-flash-lite:vercel-ai-gateway:global:2026-05-07",
+    "costUsd": "0.00358735",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep zai/glm-5.3",
+   "query": {
+    "model": "zai/glm-5.3",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "zai/glm-5.3",
+    "priceId": "zai/glm-5.3:vercel-ai-gateway:global:2026-09-11",
+    "costUsd": "0.01731150",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep zai/glm-5.3-flash",
+   "query": {
+    "model": "zai/glm-5.3-flash",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "zai/glm-5.3-flash",
+    "priceId": "zai/glm-5.3-flash:vercel-ai-gateway:global:2026-09-11",
+    "costUsd": "0.00190935",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep zai/glm-5.3-fast",
+   "query": {
+    "model": "zai/glm-5.3-fast",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "zai/glm-5.3-fast",
+    "priceId": "zai/glm-5.3-fast:vercel-ai-gateway:global:2026-09-02",
+    "costUsd": "0.02596725",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep moonshotai/kimi-k2.6",
+   "query": {
+    "model": "moonshotai/kimi-k2.6",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "moonshotai/kimi-k2.6",
+    "priceId": "moonshotai/kimi-k2.6:vercel-ai-gateway:global:2026-10-02",
+    "costUsd": "0.01258720",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep google/gemini-omni-flash-preview",
+   "query": {
+    "model": "google/gemini-omni-flash-preview",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "sweep alibaba/qwen3.7-max",
+   "query": {
+    "model": "alibaba/qwen3.7-max",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "alibaba/qwen3.7-max",
+    "priceId": "alibaba/qwen3.7-max:alibaba-api:global:2026-07-01",
+    "costUsd": "0.03653375",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep alibaba/qwen3.7-plus",
+   "query": {
+    "model": "alibaba/qwen3.7-plus",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "alibaba/qwen3.7-plus",
+    "priceId": "alibaba/qwen3.7-plus:vercel-ai-gateway:global:2026-10-02",
+    "costUsd": "0.00527240",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep alibaba/qwen3.8-max",
+   "query": {
+    "model": "alibaba/qwen3.8-max",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "alibaba/qwen3.8-max",
+    "priceId": "alibaba/qwen3.8-max:alibaba-api:global:2026-08-01",
+    "costUsd": "0.02915665",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep alibaba/qwen3.8-max-prime",
+   "query": {
+    "model": "alibaba/qwen3.8-max-prime",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "alibaba/qwen3.8-max-prime",
+    "priceId": "alibaba/qwen3.8-max-prime:vercel-ai-gateway:global:2026-10-02",
+    "costUsd": "0.04930850",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep alibaba/qwen3.8-flash",
+   "query": {
+    "model": "alibaba/qwen3.8-flash",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "alibaba/qwen3.8-flash",
+    "priceId": "alibaba/qwen3.8-flash:vercel-ai-gateway:global:2026-08-26",
+    "costUsd": "0.00185618",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep inception/mercury-2.5",
+   "query": {
+    "model": "inception/mercury-2.5",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "inception/mercury-2.5",
+    "priceId": "inception/mercury-2.5:vercel-ai-gateway:global:2026-09-08",
+    "costUsd": "0.00051108",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep amazon/nova-2-lite",
+   "query": {
+    "model": "amazon/nova-2-lite",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "amazon/nova-2-lite",
+    "priceId": "amazon/nova-2-lite:aws-bedrock:global:2025-12-02",
+    "costUsd": "0.00557438",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep amazon/nova-lite",
+   "query": {
+    "model": "amazon/nova-lite",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "amazon/nova-lite",
+    "priceId": "amazon/nova-lite:aws-bedrock:global:2025-12-02",
+    "costUsd": "0.00093860",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep amazon/nova-micro",
+   "query": {
+    "model": "amazon/nova-micro",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "amazon/nova-micro",
+    "priceId": "amazon/nova-micro:aws-bedrock:global:2025-12-02",
+    "costUsd": "0.00054751",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep amazon/nova-pro",
+   "query": {
+    "model": "amazon/nova-pro",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "amazon/nova-pro",
+    "priceId": "amazon/nova-pro:aws-bedrock:global:2025-12-02",
+    "costUsd": "0.01251460",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-haiku-3.5",
+   "query": {
+    "model": "anthropic/claude-haiku-3.5",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "no_effective_alias"
+    ]
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-mythos-5",
+   "query": {
+    "model": "anthropic/claude-mythos-5",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-mythos-5",
+    "priceId": "anthropic/claude-mythos-5:anthropic-api:global:2026-06-09",
+    "costUsd": "0.15969500",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-opus-4",
+   "query": {
+    "model": "anthropic/claude-opus-4",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-opus-4",
+    "priceId": "anthropic/claude-opus-4:anthropic-api:global:2025-05-14",
+    "costUsd": "0.23954250",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-opus-4.1",
+   "query": {
+    "model": "anthropic/claude-opus-4.1",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-opus-4.1",
+    "priceId": "anthropic/claude-opus-4.1:anthropic-api:global:2025-08-05",
+    "costUsd": "0.23954250",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-opus-4.5",
+   "query": {
+    "model": "anthropic/claude-opus-4.5",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-opus-4.5",
+    "priceId": "anthropic/claude-opus-4.5:vercel-ai-gateway:global:2025-11-01",
+    "costUsd": "0.06812250",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-opus-5-fast",
+   "query": {
+    "model": "anthropic/claude-opus-5-fast",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-opus-5-fast",
+    "priceId": "anthropic/claude-opus-5-fast:anthropic-api:global:2026-07-24",
+    "costUsd": "0.15735000",
+    "status": "partial",
+    "reasons": [
+     "cache_read_rate_unavailable"
+    ]
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-opus-5.5-fast",
+   "query": {
+    "model": "anthropic/claude-opus-5.5-fast",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-opus-5.5-fast",
+    "priceId": "anthropic/claude-opus-5.5-fast:vercel-ai-gateway:global:2026-10-02",
+    "costUsd": "0.10805800",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep anthropic/claude-sonnet-4",
+   "query": {
+    "model": "anthropic/claude-sonnet-4",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "anthropic/claude-sonnet-4",
+    "priceId": "anthropic/claude-sonnet-4:vercel-ai-gateway:global:2026-10-02",
+    "costUsd": "0.04087350",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep google/gemini-3-flash",
+   "query": {
+    "model": "google/gemini-3-flash",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "google/gemini-3-flash",
+    "priceId": "google/gemini-3-flash:vercel-ai-gateway:global:2025-12-17",
+    "costUsd": "0.00832375",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep meta/muse-spark-1.2",
+   "query": {
+    "model": "meta/muse-spark-1.2",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "meta/muse-spark-1.2",
+    "priceId": "meta/muse-spark-1.2:meta-api:global:2026-08-01",
+    "costUsd": "0.01866450",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep minimax/m2.5",
+   "query": {
+    "model": "minimax/m2.5",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": null,
+    "priceId": null,
+    "costUsd": null,
+    "status": "unpriced",
+    "reasons": [
+     "unknown_model"
+    ]
+   }
+  },
+  {
+   "name": "sweep minimax/minimax-m2.7",
+   "query": {
+    "model": "minimax/minimax-m2.7",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "minimax/minimax-m2.7",
+    "priceId": "minimax/minimax-m2.7:vercel-ai-gateway:global:2026-03-18",
+    "costUsd": "0.00395430",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep mistral/mistral-medium-3.5",
+   "query": {
+    "model": "mistral/mistral-medium-3.5",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "mistral/mistral-medium-3.5",
+    "priceId": "mistral/mistral-medium-3.5:mistral-api:global:2026-04-28",
+    "costUsd": "0.02395425",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep mistral/mistral-small-4",
+   "query": {
+    "model": "mistral/mistral-small-4",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "mistral/mistral-small-4",
+    "priceId": "mistral/mistral-small-4:mistral-api:global:2026-03-16",
+    "costUsd": "0.00229373",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-5",
+   "query": {
+    "model": "openai/gpt-5",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5",
+    "priceId": "openai/gpt-5:openai-api:global:2025-08-07",
+    "costUsd": "0.01957313",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-5.3-codex",
+   "query": {
+    "model": "openai/gpt-5.3-codex",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.3-codex",
+    "priceId": "openai/gpt-5.3-codex:openai-api:global:2026-02-01",
+    "costUsd": "0.02740238",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-5.4-pro",
+   "query": {
+    "model": "openai/gpt-5.4-pro",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.4-pro",
+    "priceId": "openai/gpt-5.4-pro:openai-api:global:2026-03-05",
+    "costUsd": "0.42204000",
+    "status": "partial",
+    "reasons": [
+     "cache_read_rate_unavailable"
+    ]
+   }
+  },
+  {
+   "name": "sweep openai/gpt-5.5",
+   "query": {
+    "model": "openai/gpt-5.5",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.5",
+    "priceId": "openai/gpt-5.5:openai-api:global:2026-04-24",
+    "costUsd": "0.07151250",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/gpt-5.5-pro",
+   "query": {
+    "model": "openai/gpt-5.5-pro",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.5-pro",
+    "priceId": "openai/gpt-5.5-pro:openai-api:global:2026-04-24",
+    "costUsd": "0.42204000",
+    "status": "partial",
+    "reasons": [
+     "cache_read_rate_unavailable"
+    ]
+   }
+  },
+  {
+   "name": "sweep openai/gpt-5.6-cyber",
+   "query": {
+    "model": "openai/gpt-5.6-cyber",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/gpt-5.6-cyber",
+    "priceId": "openai/gpt-5.6-cyber:openai-api:global:2026-07-09",
+    "costUsd": "0.17878125",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep openai/o4-mini",
+   "query": {
+    "model": "openai/o4-mini",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "openai/o4-mini",
+    "priceId": "openai/o4-mini:vercel-ai-gateway:global:2025-04-16",
+    "costUsd": "0.01462808",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep xai/grok-4.20-non-reasoning",
+   "query": {
+    "model": "xai/grok-4.20-non-reasoning",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "xai/grok-4.20-non-reasoning",
+    "priceId": "xai/grok-4.20-non-reasoning:xai-api:global:2026-03-10",
+    "costUsd": "0.01466400",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep xai/grok-4.20-reasoning",
+   "query": {
+    "model": "xai/grok-4.20-reasoning",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "xai/grok-4.20-reasoning",
+    "priceId": "xai/grok-4.20-reasoning:xai-api:global:2026-03-10",
+    "costUsd": "0.01466400",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep xai/grok-4.5",
+   "query": {
+    "model": "xai/grok-4.5",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "xai/grok-4.5",
+    "priceId": "xai/grok-4.5:xai-api:global:2026-07-08",
+    "costUsd": "0.02477150",
+    "status": "priced",
+    "reasons": []
+   }
+  },
+  {
+   "name": "sweep zai/glm-5.1",
+   "query": {
+    "model": "zai/glm-5.1",
+    "inputTokens": 12345,
+    "outputTokens": 678,
+    "cachedInputTokens": 2345,
+    "inputIncludesCacheRead": null,
+    "at": "2026-10-20T12:00:00Z"
+   },
+   "expected": {
+    "canonicalModel": "zai/glm-5.1",
+    "priceId": "zai/glm-5.1:zai-api:global:2026-04-07",
+    "costUsd": "0.02087590",
+    "status": "priced",
+    "reasons": []
+   }
+  }
+ ]
+}
