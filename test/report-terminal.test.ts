@@ -96,6 +96,16 @@ test("the cost note states production's recorded cost only when there is one", (
   assert.doesNotMatch(text, /cost — each/);
 });
 
+test("production's recorded latency is stated only when the source timed its calls", () => {
+  const flat = (run: RunFile) => renderReport(run, { width: 120, color: false }).replace(/\s+/g, " ");
+  assert.match(flat(demo), /Its recorded median \(\d+ ms\) is not compared/);
+  const untimed: RunFile = structuredClone(demo);
+  for (const c of untimed.cases) c.production.latencyMs = 0;
+  const text = flat(untimed);
+  assert.match(text, /production here is its model replayed from this machine\./);
+  assert.doesNotMatch(text, /Its recorded median/);
+});
+
 test("the report has every panel, top to bottom", () => {
   const out = renderReport(demo, { width: 120, ascii: false, explore: "replay-out/run.json" });
   const order = [

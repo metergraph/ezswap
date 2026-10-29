@@ -875,7 +875,10 @@ export function reportModel(run: RunFile, options: ModelOptions = {}): ReportMod
     cost: costBars,
     latency,
     fields: fieldPanels,
-    recordedLatency: hasFloor && latencyStat ? latencyStat.production.replace(/ recorded$/, "") : null,
+    // A recorded median of 0 ms means the source logged no durations.
+    recordedLatency: hasFloor && latencyStat && (view.control.summary.latency_ms_p50 ?? 0) > 0
+      ? latencyStat.production.replace(/ recorded$/, "")
+      : null,
     view,
   };
 }

@@ -430,9 +430,11 @@ export function latencyPanel(ctx: Ctx, model: ReportModel): string[] {
   const legend = [`${g(ctx, "●", "o")} median`, `${g(ctx, "━━", "==")} 10th to 90th percentile`];
   if (has(l, "spread")) legend.push("▁▃▇ calls by latency");
   lines.push(p.muted(legend.join("   ")));
-  if (model.recordedLatency) {
-    const recorded = model.recordedLatency.replace(/ /g, NBSP);
-    lines.push(...muteWrap(ctx, `production here is its model replayed from this machine. Its recorded median (${recorded}) is not compared: it ran at another time, over another network.`, inner));
+  if (model.hasFloor) {
+    const recorded = model.recordedLatency
+      ? ` Its recorded median (${model.recordedLatency.replace(/ /g, NBSP)}) is not compared: it ran at another time, over another network.`
+      : "";
+    lines.push(...muteWrap(ctx, `production here is its model replayed from this machine.${recorded}`, inner));
   }
   return panel(ctx, "Latency", lines, model.hasFloor ? "median, against production replayed" : "median");
 }

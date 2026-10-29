@@ -101,7 +101,9 @@ function productionOutput(call: CapturedCall): CaseOutput {
     refusal: response.refusal,
     usage: response.usage,
     costUsd: response.costUsd,
-    latencyMs: response.latencyMs,
+    // No model answers in 0 ms: a zero means the source logged no duration
+    // (Langfuse writes endTime = startTime when a call was not timed).
+    latencyMs: response.latencyMs !== null && response.latencyMs > 0 ? response.latencyMs : null,
   };
 }
 

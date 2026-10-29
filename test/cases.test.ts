@@ -66,6 +66,13 @@ test("OpenAI chat: system and developer turns fold, settings carry", () => {
   assert.equal(kase.production.finishReason, "stop");
 });
 
+test("a recorded latency of 0 ms reads as not recorded", () => {
+  const zero = prepareCase(captured({ messages: [user("x")] }, { response: response({ latencyMs: 0 }) }));
+  assert.equal(zero.production.latencyMs, null);
+  const timed = prepareCase(captured({ messages: [user("x")] }));
+  assert.equal(timed.production.latencyMs, 420);
+});
+
 test("consecutive same-role turns merge, empty turns drop", () => {
   const kase = prepareCase(captured({ messages: [user("one"), { role: "assistant", content: "" }, user("two")] }));
   assert.deepEqual(kase.messages, [{ role: "user", content: "one\n\ntwo" }]);
