@@ -86,7 +86,7 @@ export function badge(ctx: Ctx, label: LabelCell | null): string {
   let text = label.text;
   if (!ctx.ascii) text = text.replace(/, higher$/, " ↑").replace(/, lower$/, " ↓");
   const { p } = ctx;
-  if (label.tone === "beyond") return p.color ? p.reverse(p.bold(` ${text} `)) : `[${text}]`;
+  if (label.tone === "beyond") return p.color ? p.highlight(` ${text} `) : `[${text}]`;
   return p.muted(`(${text})`);
 }
 

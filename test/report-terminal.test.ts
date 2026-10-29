@@ -114,11 +114,31 @@ test("the report has every panel, top to bottom", () => {
   assert.doesNotMatch(out, /\S—|—\S/, "no em dash in copy; a bare one marks a missing value");
 });
 
-test("colour marks arms, not verdicts: no green or red", () => {
-  const colored = renderReport(demo, { width: 120, color: true, labels: true });
-  // 16-colour green and red, and the 256-colour greens and reds.
-  assert.doesNotMatch(colored, /\x1b\[(?:[0-9;]*;)?(?:31|32|91|92)m/);
-  assert.doesNotMatch(colored, /38;5;(?:2|9|10|28|34|40|46|82|118|160|196|124)m/);
+test("colour marks arms, not verdicts: design system colours, never its alert colours", async () => {
+  const { ALERT_COLORS, DESIGN, nearest256 } = await import("../src/report/term/ansi.ts");
+  const before = process.env["COLORTERM"];
+  try {
+    for (const truecolor of [false, true]) {
+      if (truecolor) process.env["COLORTERM"] = "truecolor";
+      else delete process.env["COLORTERM"];
+      const colored = renderReport(demo, { width: 120, color: true, labels: true });
+      // 16-colour green and red, and the 256-colour greens and reds.
+      assert.doesNotMatch(colored, /\x1b\[(?:[0-9;]*;)?(?:31|32|91|92)m/);
+      assert.doesNotMatch(colored, /38;5;(?:2|9|10|28|34|40|46|82|118|160|196|124)m/);
+      for (const hex of Object.values(ALERT_COLORS)) {
+        const n = Number.parseInt(hex.slice(1), 16);
+        const code = truecolor ? `2;${(n >> 16) & 255};${(n >> 8) & 255};${n & 255}m` : `5;${nearest256(hex)}m`;
+        assert.ok(!colored.includes(`38;${code}`) && !colored.includes(`48;${code}`), `alert colour ${hex} is never used`);
+      }
+      // Treatments carry the brand green.
+      const green = Number.parseInt(DESIGN.green300.slice(1), 16);
+      const brand = truecolor ? `38;2;${(green >> 16) & 255};${(green >> 8) & 255};${green & 255}m` : `38;5;${nearest256(DESIGN.green300)}m`;
+      assert.ok(colored.includes(brand), "treatments are drawn in the brand green");
+    }
+  } finally {
+    if (before === undefined) delete process.env["COLORTERM"];
+    else process.env["COLORTERM"] = before;
+  }
 });
 
 test("hostile captured text is neutralized before it reaches the terminal", () => {

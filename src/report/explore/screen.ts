@@ -52,7 +52,7 @@ function tabBar(state: ExplorerState, ctx: Ctx): string {
   const short = TABS.map((t, i) => `${i + 1} ${t.split(" ")[0]}`);
   const bare = TABS.map((_, i) => `${i + 1}`);
   for (const names of [full, short, bare]) {
-    const tabs = names.map((t, i) => (i === state.tab ? p.reverse(p.bold(` ${t} `)) : p.muted(` ${t} `)));
+    const tabs = names.map((t, i) => (i === state.tab ? p.tab(` ${t} `) : p.muted(` ${t} `)));
     const line = ` ${logo}  ${tabs.join(" ")}`;
     if (width(line) <= state.columns) return line;
   }
