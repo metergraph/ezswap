@@ -4,3 +4,4 @@ out/
 *.tgz
 .env
 .DS_Store
+replay-out/
