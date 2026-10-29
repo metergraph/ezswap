@@ -1,0 +1,2722 @@
+{
+ "schema": "metergraph.replay-run/v1",
+ "createdAt": "2026-10-29T14:30:00Z",
+ "tool": {
+  "name": "metergraph-replay",
+  "version": "0.1.0"
+ },
+ "input": {
+  "file": "support-traces.jsonl",
+  "adapter": "replay-jsonl",
+  "traffic": {
+   "calls": 18400,
+   "from": "2026-10-01T00:00:00Z",
+   "to": "2026-10-30T23:59:59Z"
+  }
+ },
+ "catalog": {
+  "version": "2026-10-27"
+ },
+ "settings": {
+  "sample": 24,
+  "trackedFields": [
+   "$.category",
+   "$.priority",
+   "$.tags"
+  ],
+  "noiseFloor": true,
+  "budgetUsd": 2
+ },
+ "treatments": [
+  {
+   "id": "t1",
+   "label": "Mini",
+   "model": "openai/gpt-5-mini",
+   "endpoint": "openrouter",
+   "settings": {
+    "temperature": null,
+    "maxTokens": null,
+    "reasoningEffort": null
+   }
+  },
+  {
+   "id": "t2",
+   "label": "Flash",
+   "model": "google/gemini-3.8-flash",
+   "endpoint": "openrouter",
+   "settings": {
+    "temperature": 0,
+    "maxTokens": 1024,
+    "reasoningEffort": "low"
+   }
+  }
+ ],
+ "cases": [
+  {
+   "id": "case-00",
+   "traceId": "trace-0",
+   "ts": "2026-10-01T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user0@example.com: I was charged twice this month"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"refund\",\"invoice\"],\"summary\":\"Customer reports: I was charged twice this month\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 904,
+     "outputTokens": 61,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.00174,
+    "latencyMs": 1488
+   },
+   "inputPreview": "Ticket from user0@example.com: I was charged twice this month",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-01",
+   "traceId": "trace-1",
+   "ts": "2026-10-02T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user1@example.com: The export button does nothing"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer reports: The export button does nothing\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1251,
+     "outputTokens": 65,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002214,
+    "latencyMs": 1071
+   },
+   "inputPreview": "Ticket from user1@example.com: The export button does nothing",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-02",
+   "traceId": "trace-2",
+   "ts": "2026-10-03T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user2@example.com: Cannot log in after the update"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer reports: Cannot log in after the update\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1207,
+     "outputTokens": 71,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002219,
+    "latencyMs": 1213
+   },
+   "inputPreview": "Ticket from user2@example.com: Cannot log in after the update",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-03",
+   "traceId": "trace-3",
+   "ts": "2026-10-04T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user3@example.com: <img src=x onerror=\"alert('preview')\"> & \"quotes\" </script>"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"export\",\"api\"],\"summary\":\"Customer reports: <img src=x onerror=\\\"alert('preview')\\\"> &\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1162,
+     "outputTokens": 87,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002322,
+    "latencyMs": 1058
+   },
+   "inputPreview": "Ticket from user3@example.com: <img src=x onerror=\"alert('preview')\"> & \"quotes\" </script>",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-04",
+   "traceId": "trace-4",
+   "ts": "2026-10-05T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user4@example.com: Invoice shows the wrong company address"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"mobile\",\"slow\"],\"summary\":\"Customer reports: Invoice shows the wrong company address\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1123,
+     "outputTokens": 84,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002244,
+    "latencyMs": 1214
+   },
+   "inputPreview": "Ticket from user4@example.com: Invoice shows the wrong company address",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-05",
+   "traceId": "trace-5",
+   "ts": "2026-10-06T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user5@example.com: The API returns 500 on large uploads"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"api\",\"refund\"],\"summary\":\"</script><script>alert(\\\"prod\\\")</script> it's \\\"fine\\\"\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1159,
+     "outputTokens": 84,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002289,
+    "latencyMs": 1312
+   },
+   "inputPreview": "Ticket from user5@example.com: The API returns 500 on large uploads",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-06",
+   "traceId": "trace-6",
+   "ts": "2026-10-07T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user6@example.com: Mobile app is slow to open"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"slow\",\"login\"],\"summary\":\"Customer reports: Mobile app is slow to open\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 991,
+     "outputTokens": 77,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002009,
+    "latencyMs": 1397
+   },
+   "inputPreview": "Ticket from user6@example.com: Mobile app is slow to open",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-07",
+   "traceId": "trace-7",
+   "ts": "2026-10-08T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user7@example.com: How do I change my plan?"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"refund\",\"invoice\"],\"summary\":\"Customer reports: How do I change my plan?\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1062,
+     "outputTokens": 74,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002068,
+    "latencyMs": 1366
+   },
+   "inputPreview": "Ticket from user7@example.com: How do I change my plan?",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-08",
+   "traceId": "trace-8",
+   "ts": "2026-10-09T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user8@example.com: I was charged twice this month"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer reports: I was charged twice this month\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1230,
+     "outputTokens": 83,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002368,
+    "latencyMs": 1214
+   },
+   "inputPreview": "Ticket from user8@example.com: I was charged twice this month",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-09",
+   "traceId": "trace-9",
+   "ts": "2026-10-10T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user9@example.com: The export button does nothing"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer reports: The export button does nothing\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1098,
+     "outputTokens": 73,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002103,
+    "latencyMs": 1348
+   },
+   "inputPreview": "Ticket from user9@example.com: The export button does nothing",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-10",
+   "traceId": "trace-10",
+   "ts": "2026-10-11T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user10@example.com: Cannot log in after the update"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"export\",\"api\"],\"summary\":\"Customer reports: Cannot log in after the update\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1285,
+     "outputTokens": 69,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002296,
+    "latencyMs": 1129
+   },
+   "inputPreview": "Ticket from user10@example.com: Cannot log in after the update",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-11",
+   "traceId": "trace-11",
+   "ts": "2026-10-12T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user11@example.com: Please add dark mode to the dashboard"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"mobile\",\"slow\"],\"summary\":\"Customer reports: Please add dark mode to the dashboard\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1232,
+     "outputTokens": 74,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.00228,
+    "latencyMs": 1069
+   },
+   "inputPreview": "Ticket from user11@example.com: Please add dark mode to the dashboard",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-12",
+   "traceId": "trace-12",
+   "ts": "2026-10-13T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user12@example.com: Invoice shows the wrong company address"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"api\",\"refund\"],\"summary\":\"Customer reports: Invoice shows the wrong company address\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1263,
+     "outputTokens": 68,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002259,
+    "latencyMs": 1246
+   },
+   "inputPreview": "Ticket from user12@example.com: Invoice shows the wrong company address",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-13",
+   "traceId": "trace-13",
+   "ts": "2026-10-14T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user13@example.com: The API returns 500 on large uploads"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"slow\",\"login\"],\"summary\":\"Customer reports: The API returns 500 on large uploads\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 922,
+     "outputTokens": 73,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.001883,
+    "latencyMs": 1489
+   },
+   "inputPreview": "Ticket from user13@example.com: The API returns 500 on large uploads",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-14",
+   "traceId": "trace-14",
+   "ts": "2026-10-15T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user14@example.com: Mobile app is slow to open"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"refund\",\"invoice\"],\"summary\":\"Customer reports: Mobile app is slow to open\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1257,
+     "outputTokens": 68,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002251,
+    "latencyMs": 1419
+   },
+   "inputPreview": "Ticket from user14@example.com: Mobile app is slow to open",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-15",
+   "traceId": "trace-15",
+   "ts": "2026-10-16T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user15@example.com: How do I change my plan?"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer reports: How do I change my plan?\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 913,
+     "outputTokens": 88,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002021,
+    "latencyMs": 1460
+   },
+   "inputPreview": "Ticket from user15@example.com: How do I change my plan?",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-16",
+   "traceId": "trace-16",
+   "ts": "2026-10-17T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user16@example.com: I was charged twice this month"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer reports: I was charged twice this month\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1039,
+     "outputTokens": 83,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002129,
+    "latencyMs": 1411
+   },
+   "inputPreview": "Ticket from user16@example.com: I was charged twice this month",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-17",
+   "traceId": "trace-17",
+   "ts": "2026-10-18T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user17@example.com: The export button does nothing"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"export\",\"api\"],\"summary\":\"Customer reports: The export button does nothing\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 996,
+     "outputTokens": 82,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002065,
+    "latencyMs": 1259
+   },
+   "inputPreview": "Ticket from user17@example.com: The export button does nothing",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-18",
+   "traceId": "trace-18",
+   "ts": "2026-10-19T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user18@example.com: Cannot log in after the update"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"mobile\",\"slow\"],\"summary\":\"Customer reports: Cannot log in after the update\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 989,
+     "outputTokens": 74,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.001976,
+    "latencyMs": 1112
+   },
+   "inputPreview": "Ticket from user18@example.com: Cannot log in after the update",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-19",
+   "traceId": "trace-19",
+   "ts": "2026-10-20T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user19@example.com: Please add dark mode to the dashboard"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"api\",\"refund\"],\"summary\":\"Customer reports: Please add dark mode to the dashboard\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1017,
+     "outputTokens": 76,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002031,
+    "latencyMs": 1347
+   },
+   "inputPreview": "Ticket from user19@example.com: Please add dark mode to the dashboard",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "case-20",
+   "traceId": "trace-20",
+   "ts": "2026-10-21T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user20@example.com: Invoice shows the wrong company address"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"slow\",\"login\"],\"summary\":\"Customer reports: Invoice shows the wrong company address\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1145,
+     "outputTokens": 78,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002211,
+    "latencyMs": 1299
+   },
+   "inputPreview": "Ticket from user20@example.com: Invoice shows the wrong company address",
+   "fidelity": "partial",
+   "missing": [],
+   "notReplayable": "tool_history"
+  },
+  {
+   "id": "case-21",
+   "traceId": "trace-21",
+   "ts": "2026-10-22T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user21@example.com: The API returns 500 on large uploads"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"refund\",\"invoice\"],\"summary\":\"Customer reports: The API returns 500 on large uploads\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1170,
+     "outputTokens": 82,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002283,
+    "latencyMs": 1361
+   },
+   "inputPreview": "Ticket from user21@example.com: The API returns 500 on large uploads",
+   "fidelity": "partial",
+   "missing": [
+    "response_format"
+   ],
+   "notReplayable": "content_truncated"
+  },
+  {
+   "id": "case-22",
+   "traceId": "trace-22",
+   "ts": "2026-10-23T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user22@example.com: Mobile app is slow to open"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer reports: Mobile app is slow to open\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1250,
+     "outputTokens": 85,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002413,
+    "latencyMs": 1337
+   },
+   "inputPreview": "Ticket from user22@example.com: Mobile app is slow to open",
+   "fidelity": "partial",
+   "missing": [],
+   "notReplayable": "tool_history"
+  },
+  {
+   "id": "case-23",
+   "traceId": "trace-23",
+   "ts": "2026-10-24T09:00:00Z",
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-5.4",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user23@example.com: How do I change my plan?"
+    }
+   ],
+   "responseFormat": {
+    "type": "json_object"
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 512,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer reports: How do I change my plan?\"}",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 1150,
+     "outputTokens": 64,
+     "cachedInputTokens": 0,
+     "reasoningTokens": null
+    },
+    "costUsd": 0.002078,
+    "latencyMs": 1127
+   },
+   "inputPreview": "Ticket from user23@example.com: How do I change my plan?",
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  }
+ ],
+ "replays": [
+  {
+   "caseId": "case-00",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"refund\",\"invoice\"],\"summary\":\"Customer reports: I was charged twice this month\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 904,
+    "outputTokens": 61,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.001734,
+   "costSource": "catalog",
+   "latencyMs": 1089,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-00",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"refund\",\"invoice\"],\"summary\":\"Customer reports: I was charged twice this month\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 904,
+    "outputTokens": 61,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.001754,
+   "costSource": "catalog",
+   "latencyMs": 1027,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-00",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":1,\"tags\":[\"refund\"],\"summary\":\"Customer says I was charged twice this month \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 904,
+    "outputTokens": 52,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000326,
+   "costSource": "catalog",
+   "latencyMs": 355,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-00",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"invoice\",\"other\"],\"summary\":\"Ticket: I was charged twice this month\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 904,
+    "outputTokens": 79,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000858,
+   "costSource": "catalog",
+   "latencyMs": 749,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-01",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer reports: The export button does nothing\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1251,
+    "outputTokens": 63,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002217,
+   "costSource": "catalog",
+   "latencyMs": 1178,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-01",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"login\"],\"summary\":\"Customer reports: The export button does nothing\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1251,
+    "outputTokens": 65,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002222,
+   "costSource": "catalog",
+   "latencyMs": 1154,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-01",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer says The export button does nothing \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1251,
+    "outputTokens": 61,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000413,
+   "costSource": "catalog",
+   "latencyMs": 324,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-01",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"login\",\"export\"],\"summary\":\"Ticket: The export button does nothing\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1251,
+    "outputTokens": 55,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.001118,
+   "costSource": "catalog",
+   "latencyMs": 717,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-02",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer reports: Cannot log in after the update\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1207,
+    "outputTokens": 74,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002233,
+   "costSource": "catalog",
+   "latencyMs": 1156,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-02",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer reports: Cannot log in after the update\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1207,
+    "outputTokens": 69,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002193,
+   "costSource": "catalog",
+   "latencyMs": 989,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-02",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"invoice\"],\"summary\":\"Customer says Cannot log in after the update \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1207,
+    "outputTokens": 57,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000402,
+   "costSource": "catalog",
+   "latencyMs": 360,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-02",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Ticket: Cannot log in after the update\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1207,
+    "outputTokens": 68,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.001085,
+   "costSource": "catalog",
+   "latencyMs": 865,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-03",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"export\",\"api\"],\"summary\":\"Customer reports: <img src=x onerror=\\\"alert('preview')\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1162,
+    "outputTokens": 88,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002357,
+   "costSource": "catalog",
+   "latencyMs": 1238,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-03",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"export\",\"api\"],\"summary\":\"Customer reports: <img src=x onerror=\\\"alert('preview')\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1162,
+    "outputTokens": 87,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002363,
+   "costSource": "catalog",
+   "latencyMs": 1240,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-03",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"export\"],\"summary\":\"Customer says <img src=x onerror=\\\"alert('pre \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1162,
+    "outputTokens": 55,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000391,
+   "costSource": "catalog",
+   "latencyMs": 359,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-03",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"export\",\"api\"],\"summary\":\"Ticket: <img src=x onerror=\\\"alert('pre\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1162,
+    "outputTokens": 73,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.001051,
+   "costSource": "catalog",
+   "latencyMs": 895,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-04",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"mobile\",\"slow\"],\"summary\":\"Customer reports: Invoice shows the wrong company addr\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1123,
+    "outputTokens": 85,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002248,
+   "costSource": "catalog",
+   "latencyMs": 1043,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-04",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"mobile\",\"slow\"],\"summary\":\"Customer reports: Invoice shows the wrong company addr\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1123,
+    "outputTokens": 80,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002204,
+   "costSource": "catalog",
+   "latencyMs": 1233,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-04",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"mobile\"],\"summary\":\"Customer says Invoice shows the wrong compan \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1123,
+    "outputTokens": 57,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000381,
+   "costSource": "catalog",
+   "latencyMs": 391,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-04",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"mobile\",\"slow\"],\"summary\":\"Ticket: Invoice shows the wrong compan\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1123,
+    "outputTokens": 61,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.001022,
+   "costSource": "catalog",
+   "latencyMs": 897,
+   "flags": [
+    "temperature_dropped"
+   ],
+   "error": null
+  },
+  {
+   "caseId": "case-05",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"api\",\"refund\"],\"summary\":\"Customer reports: The API returns 500 on large uploads\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1159,
+    "outputTokens": 81,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.00233,
+   "costSource": "catalog",
+   "latencyMs": 1102,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-05",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"api\",\"refund\"],\"summary\":\"Customer reports: The API returns 500 on large uploads\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1159,
+    "outputTokens": 81,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.00228,
+   "costSource": "catalog",
+   "latencyMs": 1013,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-05",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"api\",\"refund\"],\"summary\":\"Customer says The API returns 500 on large u \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1159,
+    "outputTokens": 58,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.00039,
+   "costSource": "catalog",
+   "latencyMs": 438,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-05",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"api\",\"refund\"],\"summary\":\"Ticket: The API returns 500 on large u\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1159,
+    "outputTokens": 78,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.001049,
+   "costSource": "catalog",
+   "latencyMs": 797,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-06",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"slow\",\"login\"],\"summary\":\"Customer reports: Mobile app is slow to open\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 991,
+    "outputTokens": 74,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002013,
+   "costSource": "catalog",
+   "latencyMs": 1093,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-06",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"slow\",\"login\"],\"summary\":\"Customer reports: Mobile app is slow to open\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 991,
+    "outputTokens": 74,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.00199,
+   "costSource": "catalog",
+   "latencyMs": 1081,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-06",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":4,\"tags\":[\"slow\"],\"summary\":\"Customer says Mobile app is slow to open \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 991,
+    "outputTokens": 48,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000348,
+   "costSource": "catalog",
+   "latencyMs": 322,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-06",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":3,\"tags\":[\"slow\",\"login\"],\"summary\":\"Ticket: Mobile app is slow to open\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 991,
+    "outputTokens": 56,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000923,
+   "costSource": "catalog",
+   "latencyMs": 734,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-07",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"refund\",\"invoice\"],\"summary\":\"Customer reports: How do I change my plan?\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1062,
+    "outputTokens": 72,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002089,
+   "costSource": "catalog",
+   "latencyMs": 1163,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-07",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"refund\",\"invoice\"],\"summary\":\"Customer reports: How do I change my plan?\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1062,
+    "outputTokens": 74,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.00209,
+   "costSource": "catalog",
+   "latencyMs": 1073,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-07",
+   "arm": "t1",
+   "status": "ok",
+   "output": "I can't help with that request.",
+   "finishReason": "content_filter",
+   "refusal": true,
+   "usage": {
+    "inputTokens": 1062,
+    "outputTokens": 50,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000365,
+   "costSource": "catalog",
+   "latencyMs": 383,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-07",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"invoice\",\"other\"],\"summary\":\"Ticket: How do I change my plan?\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1062,
+    "outputTokens": 61,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000977,
+   "costSource": "catalog",
+   "latencyMs": 865,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-08",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer reports: I was charged twice this month\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1230,
+    "outputTokens": 86,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002347,
+   "costSource": "catalog",
+   "latencyMs": 1058,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-08",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer reports: I was charged twice this month\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1230,
+    "outputTokens": 85,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.00236,
+   "costSource": "catalog",
+   "latencyMs": 1242,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-08",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer says I was charged twice this month \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1230,
+    "outputTokens": 55,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000407,
+   "costSource": "catalog",
+   "latencyMs": 355,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-08",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"login\",\"export\"],\"summary\":\"Ticket: I was charged twice this month\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1230,
+    "outputTokens": 79,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.001102,
+   "costSource": "catalog",
+   "latencyMs": 868,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-09",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer reports: The export button does nothing\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1098,
+    "outputTokens": 73,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002114,
+   "costSource": "catalog",
+   "latencyMs": 998,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-09",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer reports: The export button does nothing\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1098,
+    "outputTokens": 72,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002111,
+   "costSource": "catalog",
+   "latencyMs": 1206,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-09",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"invoice\"],\"summary\":\"Customer says The export button does nothing \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1098,
+    "outputTokens": 58,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000374,
+   "costSource": "catalog",
+   "latencyMs": 407,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-09",
+   "arm": "t2",
+   "status": "failed",
+   "output": null,
+   "finishReason": null,
+   "refusal": false,
+   "usage": null,
+   "costUsd": null,
+   "costSource": null,
+   "latencyMs": 30000,
+   "flags": [
+    "retried"
+   ],
+   "error": {
+    "code": "timeout",
+    "message": "The endpoint did not answer in 30 s"
+   }
+  },
+  {
+   "caseId": "case-10",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"export\"],\"summary\":\"Customer reports: Cannot log in after the update\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1285,
+    "outputTokens": 72,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002316,
+   "costSource": "catalog",
+   "latencyMs": 1198,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-10",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"export\",\"api\"],\"summary\":\"Customer reports: Cannot log in after the update\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1285,
+    "outputTokens": 66,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002329,
+   "costSource": "catalog",
+   "latencyMs": 1034,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-10",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"export\",\"api\"],\"summary\":\"Customer says Cannot log in after the update \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1285,
+    "outputTokens": 60,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000421,
+   "costSource": "catalog",
+   "latencyMs": 394,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-10",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"export\",\"api\"],\"summary\":\"Ticket: Cannot log in after the update\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1285,
+    "outputTokens": 69,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.001144,
+   "costSource": "catalog",
+   "latencyMs": 754,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-11",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"mobile\",\"slow\"],\"summary\":\"Customer reports: Please add dark mode to the dashboar\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1232,
+    "outputTokens": 73,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002284,
+   "costSource": "catalog",
+   "latencyMs": 1115,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-11",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"mobile\",\"slow\"],\"summary\":\"Customer reports: Please add dark mode to the dashboar\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1232,
+    "outputTokens": 77,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002254,
+   "costSource": "catalog",
+   "latencyMs": 980,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-11",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"mobile\",\"slow\"],\"summary\":\"Customer says Please add dark mode to the da \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1232,
+    "outputTokens": 63,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000408,
+   "costSource": "catalog",
+   "latencyMs": 422,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-11",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"mobile\"",
+   "finishReason": "length",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1232,
+    "outputTokens": 1024,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.001104,
+   "costSource": "catalog",
+   "latencyMs": 806,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-12",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"api\",\"refund\"],\"summary\":\"Customer reports: Invoice shows the wrong company addr\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1263,
+    "outputTokens": 69,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002279,
+   "costSource": "catalog",
+   "latencyMs": 1050,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-12",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"api\",\"refund\"],\"summary\":\"Customer reports: Invoice shows the wrong company addr\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1263,
+    "outputTokens": 71,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002282,
+   "costSource": "catalog",
+   "latencyMs": 950,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-12",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":2,\"tags\":[\"api\"],\"summary\":\"Customer says Invoice shows the wrong compan \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1263,
+    "outputTokens": 63,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000416,
+   "costSource": "catalog",
+   "latencyMs": 352,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-12",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"refund\",\"other\"],\"summary\":\"Ticket: Invoice shows the wrong compan\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1263,
+    "outputTokens": 74,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.001127,
+   "costSource": "catalog",
+   "latencyMs": 843,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-13",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"slow\"],\"summary\":\"Customer reports: The API returns 500 on large uploads\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 922,
+    "outputTokens": 75,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.001896,
+   "costSource": "catalog",
+   "latencyMs": 1031,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-13",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"slow\",\"login\"],\"summary\":\"Customer reports: The API returns 500 on large uploads\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 922,
+    "outputTokens": 69,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.001881,
+   "costSource": "catalog",
+   "latencyMs": 1081,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-13",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":3,\"tags\":[\"slow\",\"login\"],\"summary\":\"Customer says The API returns 500 on large u \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 922,
+    "outputTokens": 51,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.00033,
+   "costSource": "catalog",
+   "latencyMs": 403,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-13",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"login\",\"other\"],\"summary\":\"Ticket: The API returns 500 on large u\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 922,
+    "outputTokens": 59,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000872,
+   "costSource": "catalog",
+   "latencyMs": 843,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-14",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"refund\",\"invoice\"],\"summary\":\"Customer reports: Mobile app is slow to open\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1257,
+    "outputTokens": 66,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002224,
+   "costSource": "catalog",
+   "latencyMs": 982,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-14",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"refund\",\"invoice\"],\"summary\":\"Customer reports: Mobile app is slow to open\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1257,
+    "outputTokens": 69,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002235,
+   "costSource": "catalog",
+   "latencyMs": 1105,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-14",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"refund\",\"invoice\"],\"summary\":\"Customer says Mobile app is slow to open \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1257,
+    "outputTokens": 48,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000414,
+   "costSource": "catalog",
+   "latencyMs": 408,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-14",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":3,\"tags\":[\"invoice\",\"other\"],\"summary\":\"Ticket: Mobile app is slow to open\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1257,
+    "outputTokens": 77,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.001123,
+   "costSource": "catalog",
+   "latencyMs": 706,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-15",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer reports: How do I change my plan?\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 913,
+    "outputTokens": 88,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002039,
+   "costSource": "catalog",
+   "latencyMs": 1001,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-15",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer reports: How do I change my plan?\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 913,
+    "outputTokens": 84,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.00203,
+   "costSource": "catalog",
+   "latencyMs": 1166,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-15",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":5,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer says How do I change my plan? \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 913,
+    "outputTokens": 52,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000328,
+   "costSource": "catalog",
+   "latencyMs": 326,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-15",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"export\",\"other\"],\"summary\":\"Ticket: How do I change my plan?\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 913,
+    "outputTokens": 58,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000865,
+   "costSource": "catalog",
+   "latencyMs": 756,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-16",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer reports: I was charged twice this month\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1039,
+    "outputTokens": 85,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002146,
+   "costSource": "catalog",
+   "latencyMs": 1209,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-16",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer reports: I was charged twice this month\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1039,
+    "outputTokens": 84,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002144,
+   "costSource": "catalog",
+   "latencyMs": 1042,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-16",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer says I was charged twice this month \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1039,
+    "outputTokens": 49,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.00036,
+   "costSource": "catalog",
+   "latencyMs": 379,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-16",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Ticket: I was charged twice this month\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1039,
+    "outputTokens": 65,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000959,
+   "costSource": "catalog",
+   "latencyMs": 842,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-17",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"export\",\"api\"],\"summary\":\"Customer reports: The export button does nothing\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 996,
+    "outputTokens": 81,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002091,
+   "costSource": "catalog",
+   "latencyMs": 987,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-17",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"export\",\"api\"],\"summary\":\"Customer reports: The export button does nothing\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 996,
+    "outputTokens": 82,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002078,
+   "costSource": "catalog",
+   "latencyMs": 1138,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-17",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"export\",\"api\"],\"summary\":\"Customer says The export button does nothing \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 996,
+    "outputTokens": 55,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000349,
+   "costSource": "catalog",
+   "latencyMs": 403,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-17",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":2,\"tags\":[\"api\",\"other\"],\"summary\":\"Ticket: The export button does nothing\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 996,
+    "outputTokens": 74,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000927,
+   "costSource": "catalog",
+   "latencyMs": 789,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-18",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"mobile\",\"slow\"],\"summary\":\"Customer reports: Cannot log in after the update\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 989,
+    "outputTokens": 77,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.001979,
+   "costSource": "catalog",
+   "latencyMs": 1233,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-18",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"mobile\",\"slow\"],\"summary\":\"Customer reports: Cannot log in after the update\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 989,
+    "outputTokens": 73,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.001952,
+   "costSource": "catalog",
+   "latencyMs": 962,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-18",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"mobile\"],\"summary\":\"Customer says Cannot log in after the update \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 989,
+    "outputTokens": 45,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000347,
+   "costSource": "catalog",
+   "latencyMs": 377,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-18",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"slow\",\"other\"],\"summary\":\"Ticket: Cannot log in after the update\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 989,
+    "outputTokens": 68,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000922,
+   "costSource": "catalog",
+   "latencyMs": 888,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-19",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"api\",\"refund\"],\"summary\":\"Customer reports: Please add dark mode to the dashboar\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1017,
+    "outputTokens": 72,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002041,
+   "costSource": "catalog",
+   "latencyMs": 985,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-19",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"api\",\"refund\"],\"summary\":\"Customer reports: Please add dark mode to the dashboar\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1017,
+    "outputTokens": 75,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002044,
+   "costSource": "catalog",
+   "latencyMs": 1195,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-19",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"api\",\"refund\"],\"summary\":\"Customer says Please add dark mode to the da \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1017,
+    "outputTokens": 55,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000354,
+   "costSource": "catalog",
+   "latencyMs": 410,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-19",
+   "arm": "t2",
+   "status": "skipped",
+   "output": null,
+   "finishReason": null,
+   "refusal": false,
+   "usage": null,
+   "costUsd": null,
+   "costSource": null,
+   "latencyMs": null,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-23",
+   "arm": "floor_a1",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer reports: How do I change my plan?\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1150,
+    "outputTokens": 61,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002103,
+   "costSource": "catalog",
+   "latencyMs": 961,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-23",
+   "arm": "floor_a2",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer reports: How do I change my plan?\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1150,
+    "outputTokens": 64,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.002098,
+   "costSource": "catalog",
+   "latencyMs": 1031,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-23",
+   "arm": "t1",
+   "status": "ok",
+   "output": "{\"category\":\"bug\",\"priority\":4,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer says How do I change my plan? \\\"quoted\\\" & <b>bold</b>\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1150,
+    "outputTokens": 51,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.000387,
+   "costSource": "catalog",
+   "latencyMs": 332,
+   "flags": [],
+   "error": null
+  },
+  {
+   "caseId": "case-23",
+   "arm": "t2",
+   "status": "ok",
+   "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"mobile\",\"other\"],\"summary\":\"Ticket: How do I change my plan?\"}",
+   "finishReason": "stop",
+   "refusal": false,
+   "usage": {
+    "inputTokens": 1150,
+    "outputTokens": 58,
+    "cachedInputTokens": 0,
+    "reasoningTokens": null
+   },
+   "costUsd": 0.001043,
+   "costSource": "catalog",
+   "latencyMs": 750,
+   "flags": [],
+   "error": null
+  }
+ ],
+ "estimate": {
+  "replayable": 21,
+  "notReplayable": {
+   "tool_history": 2,
+   "content_truncated": 1
+  },
+  "expectedUsd": 0.21,
+  "upperBoundUsd": 0.6,
+  "perArm": {},
+  "unpriced": []
+ },
+ "spentUsd": 0.117156,
+ "stopped": null
+}
