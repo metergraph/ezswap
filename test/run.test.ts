@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { loadPricing } from "../src/pricing/catalog.ts";
 import { floorCall, floorModel, treatmentCall, upperBoundUsd } from "../src/pricing/estimate.ts";
 import {
@@ -275,14 +275,14 @@ test("a provider is needed for every endpoint the plan names", async () => {
   await assert.rejects(executeRun(p, { providers: {}, pricing }), /No provider/);
 });
 
-test("writeRun writes run.json and report.html", async () => {
+test("writeRun writes run.json and nothing else", async () => {
   const p = await plan(1, { noiseFloor: false });
   const run = await executeRun(p, { providers: { openrouter: fakeProvider() }, pricing, now: NOW });
   const dir = tempDir();
   const written = await writeRun(dir, run);
   const back = JSON.parse(readFileSync(written.runPath, "utf8"));
   assert.deepEqual(back, JSON.parse(JSON.stringify(run)));
-  assert.match(readFileSync(written.reportPath, "utf8"), /<!doctype html>/i);
+  assert.deepEqual(readdirSync(dir), ["run.json"]);
 });
 
 test("trafficOf spans the file's timed calls and ignores untimed ones", async () => {

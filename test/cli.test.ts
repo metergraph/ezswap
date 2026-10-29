@@ -152,7 +152,7 @@ test("a missing key exits 5, names the variable, and never prints a key", async 
   assert.equal(JSON.parse(json.stdout).error.code, "credential_missing");
 });
 
-test("run --yes replays, writes run.json and report.html without the key, and prints the hosted link", async () => {
+test("run --yes replays, writes run.json without the key, and prints the report with the hosted link", async () => {
   const file = writeTraces(tempDir(), 2);
   const out = tempDir();
   const result = await cli(["run", file, ...MODELS, "--yes", "--out", out, "--track", "$.category"], {}, () => okResponse(0.00002));
@@ -165,8 +165,11 @@ test("run --yes replays, writes run.json and report.html without the key, and pr
   assert.equal(run.replays.length, 6);
   assert.ok(run.replays.every((r: { costSource: string }) => r.costSource === "endpoint"));
   assert.deepEqual(run.settings.trackedFields, ["$.category"]);
-  assert.ok(existsSync(join(out, "report.html")));
-  assert.match(result.stdout, /Keep this comparison running on live traffic: \S*utm_medium=cli/);
+  assert.ok(!existsSync(join(out, "report.html")), "no HTML report");
+  assert.match(result.stdout, /Keep this comparison running on live traffic/);
+  assert.match(result.stdout, /^ https:\/\/www\.metergraph\.dev\/replay\?\S*utm_medium=cli/m);
+  assert.match(result.stdout, /Explore every call:\s+metergraph-replay report \S*run\.json\s*$/);
+  assert.match(result.stdout, /^[\x20-\x7e\n]*$/, "ASCII when stdout is not a terminal");
   // Production's settings travel with the replay.
   assert.equal(JSON.parse(result.bodies[0]!).temperature, 0.2);
 });
@@ -220,23 +223,66 @@ test("an interrupted run writes what exists and exits 6", async () => {
   assert.equal(run.replays.filter((r: { status: string }) => r.status === "ok").length, 1);
 });
 
-test("demo needs no key and no network, and report re-renders a run", async () => {
+test("demo needs no key and no network, and report draws a run in the terminal", async () => {
   const out = tempDir();
   const demo = await cli(["demo", "--out", out, "--json"], { env: {} });
   assert.equal(demo.code, EXIT.ok);
   assert.equal(demo.fetches, 0);
   const json = JSON.parse(demo.stdout);
-  assert.ok(existsSync(json.runFile) && existsSync(json.report));
+  assert.ok(existsSync(json.runFile));
+  assert.ok(!existsSync(join(out, "report.html")));
   const run = JSON.parse(readFileSync(json.runFile, "utf8"));
   assert.equal(run.schema, "metergraph.replay-run/v1");
   assert.ok(run.replays.length > 0);
 
-  const again = tempDir();
-  const report = await cli(["report", json.runFile, "--out", again]);
+  const text = await cli(["demo", "--out", out], { env: {} });
+  assert.match(text.stdout, /metergraph replay/);
+  assert.match(text.stdout, /Explore every call:\s+metergraph-replay report \S*run\.json/);
+  assert.doesNotMatch(text.stdout, /\x1b/, "no colour without a terminal");
+
+  const report = await cli(["report", json.runFile]);
   assert.equal(report.code, EXIT.ok);
-  assert.ok(existsSync(join(again, "report.html")));
-  const missing = await cli(["report", join(again, "nope.json")]);
+  assert.match(report.stdout, /\+- Cost -/, "not interactive: the static report, in ASCII");
+  const missing = await cli(["report", join(out, "nope.json")]);
   assert.equal(missing.code, EXIT.usage);
+  const withOut = await cli(["report", json.runFile, "--out", out]);
+  assert.equal(withOut.code, EXIT.usage);
+});
+
+test("report opens the explorer on an interactive terminal, and --no-interactive prints instead", async () => {
+  const out = tempDir();
+  const demo = JSON.parse((await cli(["demo", "--out", out, "--json"], { env: {} })).stdout);
+  const opened: { name: string; color: boolean; ascii: boolean }[] = [];
+  const tty = {
+    stdout: { write: () => true, isTTY: true, columns: 100 },
+    stdinIsTTY: true,
+    env: {},
+    explore: async (_run: unknown, options: { name: string; color: boolean; ascii: boolean }) => {
+      opened.push(options);
+      return "quit" as const;
+    },
+  };
+  assert.equal((await cli(["report", demo.runFile], tty)).code, EXIT.ok);
+  assert.equal(opened.length, 1);
+  assert.match(opened[0]!.name, /run\.json$/);
+  assert.equal(opened[0]!.color, true);
+  assert.equal(opened[0]!.ascii, false);
+  assert.equal((await cli(["report", demo.runFile, "--no-color", "--ascii"], tty)).code, EXIT.ok);
+  assert.deepEqual([opened[1]!.color, opened[1]!.ascii], [false, true]);
+  assert.equal((await cli(["report", demo.runFile], { ...tty, env: { NO_COLOR: "1" } })).code, EXIT.ok);
+  assert.equal(opened[2]!.color, false, "NO_COLOR turns colour off");
+
+  let printed = "";
+  const noTty = { ...tty, stdout: { write: (t: string) => ((printed += t), true), isTTY: true, columns: 100 } };
+  assert.equal((await cli(["report", demo.runFile, "--no-interactive"], noTty)).code, EXIT.ok);
+  assert.equal(opened.length, 3, "--no-interactive never opens the explorer");
+  assert.match(printed.replace(/\x1b\[[0-9;]*m/g, ""), /╭─ Cost/);
+  assert.match(printed, /\x1b\[/, "colour on a terminal");
+
+  assert.equal((await cli(["demo", "--out", out, "--explore"], tty)).code, EXIT.ok);
+  assert.equal(opened.length, 4, "demo --explore opens the explorer");
+  const ended = await cli(["report", demo.runFile], { ...tty, explore: async () => "SIGTERM" as const });
+  assert.equal(ended.code, 143);
 });
 
 test("a missing trace file is a usage error", async () => {

@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { decodeSetup, hostedLink, renderHtml, renderTable, reportModel, scriptJson } from "../src/report/index.ts";
+import { decodeSetup, hostedLink, renderReport, reportModel } from "../src/report/index.ts";
 import type { RunFile } from "../src/types.ts";
 
 // A synthetic run: 24 support-ticket calls at example.com, two treatments,
@@ -26,83 +26,12 @@ function hostileRun(): RunFile {
   return run;
 }
 
-function dataBlock(html: string): unknown {
-  const m = html.match(/<script type="application\/json" id="report-data">([\s\S]*?)<\/script>/);
-  assert.ok(m, "the data block is present");
-  return JSON.parse(m[1] as string);
-}
-
-test("hostile captured strings never reach the markup", () => {
-  const run = hostileRun();
-  const html = renderHtml(run, { labels: true });
-  // Exactly the two script elements the report writes, and no element a capture could have opened.
-  assert.equal(html.match(/<script/gi)?.length, 2);
-  assert.equal(html.match(/<\/script/gi)?.length, 2);
-  assert.doesNotMatch(html, /<img/i);
-  assert.doesNotMatch(html, /<b>/i);
-  assert.doesNotMatch(html, /<script>alert/);
-  assert.doesNotMatch(html, /<!--/);
-  assert.ok(!html.includes("\u2028"), "no raw line separator inside the script");
-  // The title is the one captured string outside the data block, and it is escaped.
-  assert.match(html, /<title>Replay report: gpt-5\.4<\/title>/);
-  // The strings survive intact as data.
-  const data = dataBlock(html) as { cases: { input: string; production: { output: string }; arms: { output: string; error: string | null }[] }[]; columns: { label: string }[]; meta: { value: string }[] };
-  assert.equal(data.cases[0]?.input, HOSTILE);
-  assert.equal(data.cases[0]?.production.output, HOSTILE);
-  assert.equal(data.cases[0]?.arms[0]?.output, HOSTILE);
-  assert.equal(data.columns[0]?.label, run.treatments[0]!.label);
-  assert.ok(data.meta.some((m) => m.value === HOSTILE));
-  assert.ok(data.cases.some((c) => c.arms.some((a) => a.error?.includes(HOSTILE))));
-});
-
-test("the page script renders captured text with textContent only", () => {
-  const html = renderHtml(fixture);
-  const script = html.slice(html.lastIndexOf("<script>"));
-  assert.doesNotMatch(script, /innerHTML|outerHTML|insertAdjacentHTML|document\.write|eval\(|new Function/);
-});
-
-test("scriptJson leaves nothing that can close or comment a script", () => {
-  const out = scriptJson({ a: "</script><!-- & > \u2028 \u2029" });
-  assert.doesNotMatch(out, /[<>&\u2028\u2029]/);
-  assert.deepEqual(JSON.parse(out), { a: "</script><!-- & > \u2028 \u2029" });
-});
-
-test("the report makes no network requests and links only where it should", () => {
-  const html = renderHtml(fixture, { labels: true });
-  assert.match(html, /Content-Security-Policy" content="default-src 'none'/);
-  const markup = html.replace(/<script type="application\/json" id="report-data">[\s\S]*?<\/script>/, "");
-  assert.doesNotMatch(markup, /<link\b|@import|url\(|\bsrc=|\bfetch\(|XMLHttpRequest|WebSocket|sendBeacon/i);
-  const urls = html.match(/https?:\/\/[^\s"'<>\\)]+/g) ?? [];
-  assert.ok(urls.length > 0);
-  const allowed = [
-    "https://github.com/metergraph/replay/",
-    "https://www.metergraph.dev/",
-    // The SVG namespace name: an identifier, never fetched.
-    "http://www.w3.org/2000/svg",
-  ];
-  for (const url of urls) assert.ok(allowed.some((prefix) => url.startsWith(prefix)), `unexpected URL ${url}`);
-  assert.ok(html.includes("https://github.com/metergraph/replay/blob/main/docs/noise-floor.md"));
-  assert.ok(html.includes("npx --yes metergraph-cli@latest setup"));
-  assert.equal((dataBlock(html) as { links: { hosted: string } }).links.hosted, hostedLink(fixture, "report"));
-});
-
-test("light and dark tokens are both defined", () => {
-  const html = renderHtml(fixture);
-  assert.match(html, /@media \(prefers-color-scheme: dark\)/);
-  assert.match(html, /<meta name="color-scheme" content="light dark">/);
-  for (const token of ["--bg", "--surface", "--text", "--muted", "--line", "--accent", "--floor"]) {
-    assert.equal(html.match(new RegExp(`${token}:`, "g"))?.length, 2, token);
-  }
-  assert.match(html, /<meta name="viewport" content="width=device-width, initial-scale=1">/);
-});
-
 test("the report reads latency against the floor's first replay, and states no verdict", () => {
   const model = reportModel(fixture, { labels: true });
   const latency = model.rows.find((r) => r.key === "latency_ms_p50");
   assert.ok(latency?.cells.every((c) => c.delta && c.floor));
   assert.match(model.headline, /\?$/);
-  const html = renderHtml(fixture, { labels: true });
-  const copy = JSON.stringify(dataBlock(html)) + html;
+  const copy = renderReport(fixture, { labels: true, width: 120 }) + JSON.stringify({ ...model, view: null });
   assert.doesNotMatch(copy, /\b(you should switch|we recommend|recommended model|switch now)\b/i);
   // "Safe" and "good enough" appear only to say that nothing here says so.
   for (const sentence of copy.split(/(?<=[.!?])\s+/)) {
@@ -114,7 +43,7 @@ test("the report reads latency against the floor's first replay, and states no v
     if (typeof v === "string") strings.push(v);
     else if (v && typeof v === "object") Object.values(v).forEach(walk);
   };
-  walk(dataBlock(html));
+  walk({ ...model, view: null });
   for (const s of strings) if (s.includes("—")) assert.equal(s.trim(), "—", s);
 });
 
@@ -135,9 +64,10 @@ test("a run without a noise floor or traffic still renders", () => {
   assert.equal(model.labels, false);
   assert.equal(model.rows[0]?.key, "monthly_cost_usd");
   assert.equal(model.rows[0]?.production, "—");
-  const html = renderHtml(run);
-  assert.ok(dataBlock(html));
-  assert.match(renderTable(run, { width: 80, ascii: true }), /production/);
+  const out = renderReport(run, { width: 80, ascii: true, labels: true });
+  assert.match(out, /production/);
+  assert.match(out, /no noise floor/);
+  assert.match(out, /Pass --monthly-calls N/);
 });
 
 test("the monthly projection uses the traffic rate, or an explicit volume", () => {
@@ -165,34 +95,6 @@ test("the case filter marks treatments that differ from production", () => {
   assert.ok(failed?.differs, "a failure counts as differing");
   assert.ok(model.cases.some((c) => c.status === "replayed" && !c.differs));
   assert.ok(model.cases.filter((c) => c.status === "not_replayable").every((c) => !c.differs && c.arms.length === 0));
-});
-
-const ANSI = /\x1b\[[0-9;]*m/g;
-
-test("the table never exceeds the width", () => {
-  for (let width = 40; width <= 160; width += 3) {
-    for (const ascii of [true, false]) {
-      const out = renderTable(fixture, { width, ascii, labels: true, color: true });
-      for (const line of out.split("\n")) assert.ok([...line.replace(ANSI, "")].length <= width, `${width}: ${line}`);
-    }
-  }
-});
-
-test("the table has production, each treatment and the floor last", () => {
-  const out = renderTable(fixture, { width: 140, ascii: true });
-  const rows = out.split("\n").map((l) => l.split(/\s{2,}/)[0]);
-  const names = rows.filter((n) => ["production", "Mini", "Flash", "production vs itself"].includes(n as string));
-  assert.deepEqual(names, ["production", "Mini", "Flash", "production vs itself"]);
-  assert.match(out, /category/);
-  assert.match(out, /cost\/call/);
-});
-
-test("ASCII mode prints only ASCII, and colour only when asked", () => {
-  const ascii = renderTable(fixture, { width: 120, ascii: true, labels: true });
-  assert.match(ascii, /^[\x20-\x7e\n]*$/);
-  assert.doesNotMatch(ascii, ANSI);
-  assert.match(renderTable(fixture, { width: 120, ascii: true, color: true }), ANSI);
-  assert.match(renderTable(fixture, { width: 120, ascii: false }), /Δ cost/);
 });
 
 test("the hosted link carries UTM parameters and only the setup, in the fragment", () => {

@@ -1,9 +1,9 @@
-// Report rendering: the single-file HTML report, the terminal table and the
-// link into hosted Metergraph. Every figure and sentence comes from core.
+// Report rendering in the terminal: the static report, the interactive
+// explorer and the link into hosted Metergraph. Every figure and sentence
+// comes from core, through model.ts.
 import type { RunFile } from "../types.ts";
-import { renderPage } from "./html.ts";
 import { type LinkMedium, hostedLink as link } from "./link.ts";
-import { renderTerminalTable } from "./table.ts";
+import { type TerminalOptions, renderReport as render } from "./terminal.ts";
 
 export interface ReportOptions {
   /** Tracked JSON field paths to show; defaults to run.settings.trackedFields. */
@@ -17,31 +17,20 @@ export interface ReportOptions {
   monthlyCalls?: number | null;
 }
 
-/** One self-contained HTML document: inline CSS and JS, no network. */
-export function renderHtml(run: RunFile, options: ReportOptions = {}): string {
-  return renderPage(run, options);
-}
-
-export interface TableOptions extends ReportOptions {
-  /** Terminal width in columns; default 100. */
-  width?: number;
-  /** Use ANSI colour. */
-  color?: boolean;
-  /** Plain ASCII only; defaults to true when stdout is not a terminal. */
-  ascii?: boolean;
-}
-
-/** A plain-text summary table for the terminal. */
-export function renderTable(run: RunFile, options: TableOptions = {}): string {
-  return renderTerminalTable(run, options);
+/** The static terminal report: width-aware panels, Unicode or ASCII, colour optional. */
+export function renderReport(run: RunFile, options: TerminalOptions = {}): string {
+  return render(run, options);
 }
 
 /** The "keep this running on live traffic" link, with UTM parameters. */
-export function hostedLink(run: RunFile, medium: "report" | "cli" | "action" | "readme"): string {
+export function hostedLink(run: RunFile, medium: LinkMedium): string {
   return link(run, medium);
 }
 
-export type { LinkMedium };
+export type { LinkMedium, TerminalOptions };
 export { HOSTED_URL, type HostedSetup, decodeSetup, encodeSetup, hostedSetup } from "./link.ts";
 export { NOISE_FLOOR_DOC, SETUP_COMMAND, type ReportModel, monthlyCalls, reportModel } from "./model.ts";
-export { escapeHtml, scriptJson } from "./html.ts";
+export { MAX_WIDTH, MIN_WIDTH } from "./terminal.ts";
+export { type ExplorerIo, type ExplorerResult, runExplorer } from "./explore/run.ts";
+export { type ExplorerState, initialState, explorerData, parseKeys, reduce, resize } from "./explore/state.ts";
+export { renderScreen } from "./explore/screen.ts";
