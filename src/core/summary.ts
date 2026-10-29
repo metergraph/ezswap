@@ -1,7 +1,7 @@
 // Built-in statistics for one arm or for the control: cost, latency, output
 // length, JSON parse rate, same top-level keys, empty or refused, cut off, and
-// the share of input read from cache. A port of Metergraph's Python reference;
-// conformance/summarize.json pins it to the reference's numbers.
+// the share of input read from cache. Python semantics; matches Metergraph's
+// hosted figures, which conformance/summarize.json pins.
 
 import { MISSING, extract, parseJsonPath } from "./paths.ts";
 import {

@@ -1,5 +1,5 @@
 {
-  "about": "One experiment view and what the reference implementation's equivalence() returns for it. Regenerate the expected values from the reference implementation, never by hand.",
+  "about": "One experiment view and what Metergraph's equivalence() returns for it. Maintainers regenerate the expected values; never edit them by hand.",
   "view": {
     "id": "11111111-1111-4111-8111-111111111111",
     "status": "done",

@@ -1,6 +1,6 @@
-// The fixtures in conformance/ pin core to the numbers hosted Metergraph
-// computes. Each was generated from the reference implementation; a failure
-// here means core moved a number, never that the fixture needs editing.
+// The fixtures in conformance/ pin core to Metergraph's hosted figures. A
+// failure here means core moved a number, never that the fixture needs
+// editing.
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -38,7 +38,7 @@ test("equivalence reproduces the hosted block with a noise floor and similarity"
   assert.deepEqual(equivalence(f.view), f.equivalence);
 });
 
-test("formatters match the hosted page", () => {
+test("formatters match the hosted figures", () => {
   const f = fixture("experiment_equivalence.json");
   const formats: Record<string, (v: never) => string | null> = {
     usd: formatUsd,
@@ -88,7 +88,7 @@ for (const s of summary.summarize) {
 
 const floor = fixture("noise_floor.json");
 
-test("field_kind as the reference decides it", () => {
+test("field_kind under Python semantics", () => {
   for (const c of floor.field_kind) assert.equal(fieldKindPy(c.values), c.expected, JSON.stringify(c.values).slice(0, 80));
 });
 

@@ -9,7 +9,7 @@ import type { RunFile } from "../types.ts";
 
 export const HOSTED_URL = "https://www.metergraph.dev/replay";
 
-export type LinkMedium = "cli" | "action" | "readme";
+export type LinkMedium = "cli";
 
 /** Version 1 of the fragment payload. */
 export interface HostedSetup {

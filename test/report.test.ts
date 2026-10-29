@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { decodeSetup, hostedLink, renderReport, reportModel } from "../src/report/index.ts";
 import type { RunFile } from "../src/types.ts";
+import { equivalence } from "../src/core/index.ts";
 
 // A synthetic run: 24 support-ticket calls at example.com, two treatments,
 // a noise floor, hostile strings in a prompt and in outputs.
@@ -45,6 +46,15 @@ test("the report reads latency against the floor's first replay, and states no v
   };
   walk({ ...model, view: null });
   for (const s of strings) if (s.includes("—")) assert.equal(s.trim(), "—", s);
+});
+
+test("the report names the replay endpoint, never a gateway", () => {
+  const model = reportModel(fixture, { labels: true });
+  const copy = [80, 120].map((width) => renderReport(fixture, { labels: true, width })).join("\n") + JSON.stringify({ ...model, view: null });
+  assert.doesNotMatch(copy, /gateway/i);
+  for (const e of equivalence(model.view, { via: "endpoint" }).treatments) {
+    assert.match(e.latency.sentence, /same endpoint/);
+  }
 });
 
 test("labels are opt-in", () => {

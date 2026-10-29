@@ -1,5 +1,5 @@
-// Formatters for the figures the report prints. The same rules as hosted
-// Metergraph's page, pinned by conformance/experiment_equivalence.json. A bare
+// Formatters for the figures the report prints. They match Metergraph's
+// hosted figures, pinned by conformance/experiment_equivalence.json. A bare
 // "—" marks a missing value.
 
 export const MISSING_VALUE = "—";

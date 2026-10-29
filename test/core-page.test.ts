@@ -1,8 +1,8 @@
-// conformance/page.json pins the page statistics (stat rows, spreads, floor
+// conformance/page.json pins the view statistics (stat rows, spreads, floor
 // readings, sentences, the summary table, grid ranges, the field tree) to
-// what the reference page returns for the same views. A few hosted-only
-// parts are not in this port, and the comparison leaves exactly those out:
-// the cached-input footnote, the monthly note's wording, and the judge and
+// Metergraph's hosted figures for the same views. A few parts exist only in
+// the hosted product, and the comparison leaves exactly those out: the
+// cached-input footnote, the monthly note's wording, and the judge and
 // similarity columns.
 
 import { test } from "node:test";
@@ -92,17 +92,17 @@ function page(experiment: any) {
 }
 
 for (const [name, { view, expected }] of Object.entries(fixture.views) as [string, any][]) {
-  test(`page statistics match the reference: ${name}`, () => {
+  test(`view statistics match the hosted figures: ${name}`, () => {
     const actual = json(page(view));
     const want = withoutHostedOnly(expected);
     for (const key of Object.keys(want)) assert.deepEqual(actual[key], want[key], key);
   });
 }
 
-test("buildView still builds the view the page fixture was generated from", () => {
+test("buildView still builds the view conformance/page.json was generated from", () => {
   assert.deepEqual(json(buildView(fixture.run)), fixture.views.replay_run.view);
 });
 
-test("bootstrap ranges are seeded and match the reference", () => {
+test("bootstrap ranges are seeded and match the hosted figures", () => {
   for (const c of fixture.bootstrap) assert.deepEqual(bootstrapInterval(c.values, c.statistic), c.expected, JSON.stringify(c.values));
 });

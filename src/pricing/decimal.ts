@@ -1,5 +1,5 @@
-// Exact decimal arithmetic for prices, so a cost here is the same number the
-// Python catalog computes with Decimal. A value is n / 10^s.
+// Exact decimal arithmetic for prices, as Python's Decimal computes it, so a
+// cost matches Metergraph's hosted figures (conformance/pricing.json). A value is n / 10^s.
 
 export interface Dec {
   n: bigint;

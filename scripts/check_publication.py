@@ -19,11 +19,7 @@ PATTERNS = {
     "local home path": re.compile(r"/(Users|home)/[A-Za-z0-9._-]+/"),
 }
 
-# Exact strings exempt from PATTERNS. The customer-local release is signed by a
-# workflow in the private repository, so verifying it needs that repository's
-# name in the anchored cosign certificate identity, which every public release
-# page also publishes. Only this whole identity is exempt; any other mention of
-# the repository is still reported. Built from parts, like PATTERNS.
+# Exact strings exempt from PATTERNS.
 ALLOWED: tuple[str, ...] = ()
 
 

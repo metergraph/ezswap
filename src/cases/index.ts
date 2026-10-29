@@ -154,8 +154,8 @@ export function prepareCase(call: CapturedCall, options: PrepareCaseOptions = {}
     // A forced choice among several tools, or of a tool not offered alone,
     // cannot be reproduced by a replay that offers none.
     if (choiceForcesTool(payload)) return finish("tool_definitions_not_offered");
-    // The model was free to answer in text; the replay offers no tools, as
-    // the hosted product does, and the case is graded partial.
+    // The model was free to answer in text; the replay offers no tools, and
+    // the case is marked in `missing`.
     if (!missing.includes(TOOLS_NOT_OFFERED)) missing.push(TOOLS_NOT_OFFERED);
   }
   if (webSearch && !options.allowNoSearch) return finish("web_search_not_replayed");

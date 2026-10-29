@@ -85,6 +85,17 @@ test("ASCII mode prints only printable ASCII; colour adds only SGR sequences and
   assert.doesNotMatch(renderReport(fixture, { width: 100, color: false }), /\x1b/);
 });
 
+test("the cost note states production's recorded cost only when there is one", () => {
+  const flat = (run: RunFile) => renderReport(run, { width: 120, color: false }).replace(/\s+/g, " ");
+  assert.match(flat(fixture), /Its recorded calls cost \$\S+ each\./);
+  const unpriced: RunFile = structuredClone(fixture);
+  for (const c of unpriced.cases) c.production.costUsd = null;
+  const text = flat(unpriced);
+  assert.match(text, /replayed the same way as the treatments\./);
+  assert.doesNotMatch(text, /Its recorded calls cost/);
+  assert.doesNotMatch(text, /cost — each/);
+});
+
 test("the report has every panel, top to bottom", () => {
   const out = renderReport(demo, { width: 120, ascii: false, explore: "replay-out/run.json" });
   const order = [

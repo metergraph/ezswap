@@ -1,6 +1,6 @@
 // Per treatment, what reads together when deciding a swap: each tracked
 // field's shift, cost and latency against the control over the same cases,
-// and how many cases that is. The same block hosted Metergraph returns;
+// and how many cases that is. Matches Metergraph's hosted figures;
 // conformance/experiment_equivalence*.json pin it. Shown, never judged.
 
 import { type FieldComparison, type Loose, SPREAD_MIN, fieldComparisons } from "./fields.ts";
@@ -79,7 +79,7 @@ function floorSummary(spread: Loose, kind: FieldKind): FloorSummary | null {
   };
 }
 
-// floorClause reads the page's floor shape; this is the summary in it.
+// floorClause reads a floor as { kind, pairs, matched, overlap, diffBox }; this is the summary in that shape.
 function asFloor(summary: FloorSummary | null): Loose {
   if (!summary) return null;
   return {
@@ -128,7 +128,14 @@ function replaySummary(experiment: Loose): Loose {
   return arm ? arm.summary : experiment?.noise_floor?.a1 || null;
 }
 
-function againstReplay(arm: Loose, key: "cost_per_call_usd" | "latency_ms_p50", replay: Loose): Against {
+/**
+ * What the control was replayed through, as the replay sentences name it.
+ * "gateway" is the hosted wording (conformance/experiment_equivalence_floor.json);
+ * a local run replays through the user's own "endpoint".
+ */
+export type ReplayVia = "gateway" | "endpoint";
+
+function againstReplay(arm: Loose, key: "cost_per_call_usd" | "latency_ms_p50", replay: Loose, via: ReplayVia): Against {
   const { format, what, says } = AGAINST_CONTROL[key]!;
   const value = arm?.summary?.[key] ?? null;
   const base = replay?.[key] ?? null;
@@ -136,7 +143,7 @@ function againstReplay(arm: Loose, key: "cost_per_call_usd" | "latency_ms_p50", 
   const sentence =
     value == null || base == null
       ? `${arm?.label} has no ${what} to compare with the replayed control yet.`
-      : `${arm.label} ${says(format(value))} against ${format(base)} for the control replayed through the same gateway${delta == null ? "" : ` (${delta === "same" ? "the same" : delta})`}.`;
+      : `${arm.label} ${says(format(value))} against ${format(base)} for the control replayed through the same ${via}${delta == null ? "" : ` (${delta === "same" ? "the same" : delta})`}.`;
   return { value, control: base, delta, sentence };
 }
 
@@ -164,7 +171,7 @@ export interface TreatmentEquivalence {
  * (or, without one, cost against production and latency alone), and each
  * tracked field's shift with the noise floor's gap beside it.
  */
-export function equivalence(experiment: Loose): { treatments: TreatmentEquivalence[] } {
+export function equivalence(experiment: Loose, { via = "gateway" }: { via?: ReplayVia } = {}): { treatments: TreatmentEquivalence[] } {
   const cases = experiment?.cases || [];
   const arms = experiment?.arms || [];
   const labels: string[] = arms.map((arm: Loose) => arm.label);
@@ -184,8 +191,8 @@ export function equivalence(experiment: Loose): { treatments: TreatmentEquivalen
       label: arm.label,
       cases: n,
       sample_note: sampleNote(n),
-      cost: replay ? againstReplay(arm, "cost_per_call_usd", replay) : againstControl(experiment, arm, "cost_per_call_usd"),
-      latency: replay ? againstReplay(arm, "latency_ms_p50", replay) : unreplayedLatency(arm),
+      cost: replay ? againstReplay(arm, "cost_per_call_usd", replay, via) : againstControl(experiment, arm, "cost_per_call_usd"),
+      latency: replay ? againstReplay(arm, "latency_ms_p50", replay, via) : unreplayedLatency(arm),
       fields: byPath.map((comparisons, j) => {
         const comparison = comparisons[i] as FieldComparison;
         const kind = comparison.kind;
@@ -242,7 +249,7 @@ function armN(arm: Loose): number | null {
  * per thing a swap is decided on, each the treatment's shift from the control
  * and, when given, the control's shift from itself (`floors`, from
  * noiseFloors). Cost and latency close the row. Every cell names the detail it
- * summarises (`target`). The hosted judge and similarity columns are not in v1.
+ * summarises (`target`). There are no judge or similarity columns.
  */
 export function equivalenceSummary(
   experiment: Loose,

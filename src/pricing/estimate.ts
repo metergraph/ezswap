@@ -1,6 +1,7 @@
 // What a run is expected to cost, and the most it can spend.
 //
-// The estimate is the hosted product's: each replayable case priced at
+// The estimate matches Metergraph's hosted figures (conformance/estimate.json):
+// each replayable case priced at
 // production's input count (or 2000) and an assumed output (the larger of
 // production's output, or 512, and half the cap the replay is sent with, never
 // above that cap), times a 1.25 margin, rounded up to $0.0001 per arm. The
@@ -103,9 +104,9 @@ export function floorModel(item: Case, pricing: Pricing, at?: string): string | 
 }
 
 // ---------------------------------------------------------------------------
-// JSON as the hosted product measures it (Python's json.dumps defaults:
-// ", " and ": " separators, non-ASCII escaped), so a bound here is the bound
-// there.
+// JSON measured as Python's json.dumps writes it by default (", " and ": "
+// separators, non-ASCII escaped), so a bound matches Metergraph's hosted
+// figures (conformance/estimate.json).
 
 function pyString(value: string): string {
   let out = '"';
@@ -286,7 +287,7 @@ export function estimateRun(
       floorExpected += cost * BigInt(NOISE_REPLAYS);
       floorUpper += bound;
     }
-    // The hosted floor share: both replays, with one margin and one rounding.
+    // The floor share: both replays, with one margin and one rounding.
     const share = withMargin(floorExpected);
     for (const arm of ["floor_a1", "floor_a2"] as const) {
       perArm[arm] = { expectedUsd: usd(share) / NOISE_REPLAYS, upperBoundUsd: usd(floorUpper) };

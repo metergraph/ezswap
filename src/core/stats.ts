@@ -1,7 +1,7 @@
 // The built-in stat rows, spreads, monthly projection, the noise floor's
-// readings and the one sentence a tracked field may carry. Extracted from
-// hosted Metergraph's page and kept to its JavaScript semantics. Nothing here
-// grades a treatment or says whether a swap is safe.
+// readings and the one sentence a tracked field may carry. JavaScript
+// semantics; matches Metergraph's hosted figures (conformance/page.json).
+// Nothing here grades a treatment or says whether a swap is safe.
 
 import {
   type BoxStats,
@@ -29,8 +29,8 @@ export const REPLAYED_CONTROL_LABEL = "Control, replayed";
 
 /**
  * The control's summary: the view's own, or, when it has none, what the
- * cases' production calls tell. Empty or refused follows the reference rule:
- * the refusal flag, a refusal finish reason, or blank text.
+ * cases' production calls tell. A reply counts as empty or refused on the
+ * refusal flag, a refusal finish reason, or blank text.
  */
 export function controlSummary(experiment: Loose): Loose {
   if (experiment?.control?.summary) return experiment.control.summary;
@@ -102,8 +102,8 @@ export function costSplitShown(experiment: Loose): boolean {
 }
 
 /**
- * Where the replayed control comes from. The hosted page only knows a paid
- * "Control, replayed" column (the default, which conformance/ pins). A replay
+ * Where the replayed control comes from. By default only a paid "Control,
+ * replayed" column counts (the behaviour conformance/page.json pins). A replay
  * run measures the same thing as the noise floor's first replay, A1, so
  * `floorAsReplay: true` reads A1 as the replayed control when the run has no
  * such column, as `equivalence` already does.
@@ -322,7 +322,7 @@ export function monthlyRow(experiment: Loose, volume: MonthlyVolume | null | und
 
 // --- Spread -------------------------------------------------------------------
 
-/** Output length as the reference counts it (code points); unknown for a stored prefix. */
+/** Output length in code points; unknown for a stored prefix. */
 function outputChars(result: Loose): number | undefined {
   if (result?.output_truncated) return undefined;
   return [...outputText(result?.output)].length;

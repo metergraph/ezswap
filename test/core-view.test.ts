@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { buildView, equivalence, noiseLabel, noiseLabels, summarize } from "../src/core/index.ts";
 import type { RunFile } from "../src/types.ts";
 
-// The synthetic run the page fixture was generated from: 16 cases (one not
+// The synthetic run conformance/page.json was generated from: 16 cases (one not
 // replayable), treatments "Mini" (t1) and "Flash" (t2, two failures and one
 // skipped), and a noise floor.
 const run: RunFile = JSON.parse(readFileSync(new URL("../conformance/page.json", import.meta.url), "utf8")).run;
@@ -76,6 +76,14 @@ test("equivalence reads cost and latency against the floor's first replay", () =
   assert.equal(mini.latency.control, view.noise_floor?.a1.latency_ms_p50);
   assert.match(mini.latency.sentence, /for the control replayed through the same gateway/);
   assert.equal(mini.fields.length, 4);
+});
+
+test("equivalence names the user's endpoint when asked, and the gateway by default", () => {
+  const view = buildView(run);
+  const [local] = equivalence(view, { via: "endpoint" }).treatments;
+  assert.match(local?.latency.sentence ?? "", /for the control replayed through the same endpoint/);
+  assert.match(local?.cost.sentence ?? "", /for the control replayed through the same endpoint/);
+  assert.doesNotMatch(`${local?.latency.sentence} ${local?.cost.sentence}`, /gateway/);
 });
 
 test("a tracked path no statistic can read is refused", () => {

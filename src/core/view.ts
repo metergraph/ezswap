@@ -1,6 +1,6 @@
-// The experiment view built from a run file: the same shape hosted
-// Metergraph's Experiments page reads, so every statistic and sentence in
-// core reads a local run exactly as it reads a hosted one. The control is
+// The experiment view built from a run file: the same shape Metergraph's
+// hosted product uses, so every statistic and sentence in core reads a local
+// run exactly as it reads a hosted one. The control is
 // each case's recorded production output; the arms are the run's
 // treatments; the noise floor is production's model replayed twice.
 
@@ -22,8 +22,7 @@ export const FLOOR_ARMS = ["floor_a1", "floor_a2"] as const;
 /**
  * A replay as the statistics read it, or undefined for one that never ran
  * (skipped when the run stopped), which counts as no result rather than an
- * error. Facts are taken from the full output with the tracked fields, as
- * hosted stores them.
+ * error. Facts are taken from the full output with the tracked fields.
  */
 export function replayOutcome(replay: Replay | undefined, trackedFields: readonly string[]): Outcome | undefined {
   if (!replay || replay.status === "skipped") return undefined;

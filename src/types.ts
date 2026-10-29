@@ -237,7 +237,7 @@ export interface Replay {
 export interface Estimate {
   replayable: number;
   notReplayable: Partial<Record<NotReplayableReason, number>>;
-  /** Expected spend, with the hosted ×1.25 margin. */
+  /** Expected spend, with a ×1.25 margin. */
   expectedUsd: number;
   /** Sum of per-call upper bounds: the most this run can spend. */
   upperBoundUsd: number;

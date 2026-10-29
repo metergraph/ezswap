@@ -1,8 +1,9 @@
 // Ranges and the treatments grid: a seeded percentile bootstrap for every
 // figure, models as rows by setting variants as columns, and the cost
-// against quality frontier. Extracted from hosted Metergraph's page and kept
-// to its JavaScript semantics. A range says how far a figure could move with
-// other calls from the same traffic; it is a range, never a verdict.
+// against quality frontier. JavaScript semantics; the ranges match
+// Metergraph's hosted figures (conformance/page.json). A range says how far
+// a figure could move with other calls from the same traffic; it is a range,
+// never a verdict.
 
 import { type Loose, fieldComparisons, fieldPairs, overlap, quantile } from "./fields.ts";
 import { formatCount, formatMs, formatPercent, formatSigned, formatUsd } from "./format.ts";

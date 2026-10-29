@@ -1,6 +1,6 @@
 // The fields a run could track, as the JSON tree the outputs share: objects
-// as branches, the values a field can track as leaves. Extracted from hosted
-// Metergraph's page.
+// as branches, the values a field can track as leaves. Matches Metergraph's
+// hosted figures (conformance/page.json).
 
 import { type Loose, fieldKind, parseOutput, pickerPaths } from "./fields.ts";
 import { type PageToken, parsePath, valueAt } from "./paths.ts";

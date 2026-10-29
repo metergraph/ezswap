@@ -225,7 +225,10 @@ export function costPanel(ctx: Ctx, model: ReportModel): string[] {
   });
   lines.push("");
   const notes: string[] = [];
-  if (prod && model.hasFloor) notes.push(`production here is ${prod.name} replayed the same way as the treatments. Its recorded calls cost ${prod.note?.replace(/ recorded$/, "") ?? "—"} each.`);
+  if (prod && model.hasFloor) {
+    const recorded = prod.note?.replace(/ recorded$/, "");
+    notes.push(`production here is ${prod.name} replayed the same way as the treatments.${recorded ? ` Its recorded calls cost ${recorded} each.` : ""}`);
+  }
   if (!has(l, "monthly") && model.monthlyCalls) notes.push("Monthly projections are not shown at this width.");
   const beyond = model.cost.filter((c) => c.badge?.tone === "beyond");
   if (!has(l, "badge") && beyond.length) notes.push(`Beyond noise: ${beyond.map((c) => `${c.name} (${c.badge?.text.replace(/^beyond noise,? ?/, "") || "different"})`).join(", ")}.`);

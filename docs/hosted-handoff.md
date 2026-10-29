@@ -1,22 +1,21 @@
-# Handing a run to hosted Metergraph
+# The Metergraph link
 
-Replay sends no telemetry. The only way a local run reaches hosted
-Metergraph is a link the user chooses to open: the "Keep this comparison
-running on live traffic" box at the end of the terminal report (printed by
-`run`, `demo` and `report`), the GitHub Action's comment footer and the
-README. Every one of them is built by
-`hostedLink(run, medium)` in `src/report/link.ts`.
+Replay sends no telemetry. The only way a local run reaches Metergraph is a
+link the user chooses to open: the "Keep this comparison running on live
+traffic" box at the end of the terminal report (printed by `run`, `demo` and
+`report`). It is built by `hostedLink(run, "cli")` in `src/report/link.ts`.
+Metergraph's hosted product can read the setup it carries.
 
 ## The link
 
 ```
-https://www.metergraph.dev/replay?utm_source=replay&utm_medium=<medium>&utm_campaign=<version>#setup=<payload>
+https://www.metergraph.dev/replay?utm_source=replay&utm_medium=cli&utm_campaign=<version>#setup=<payload>
 ```
 
 | Part | Value |
 |---|---|
 | `utm_source` | always `replay` |
-| `utm_medium` | where the link was shown: `cli`, `action` or `readme` |
+| `utm_medium` | always `cli` |
 | `utm_campaign` | the version of metergraph-replay that made the run, from `run.tool.version` |
 | `#setup=` | the run's setup, described below |
 
@@ -61,18 +60,9 @@ reach it. In particular it never carries:
 - API keys, endpoint URLs or endpoint names
 - treatment labels, file names, costs, timings or statistics
 
-A local run does not know which hosted workload it corresponds to, so the
-hosted page asks for the workload after reading the setup.
+## Decoding it
 
-## Reading it
-
-The hosted Experiments page reads the fragment on load, decodes it and
-pre-fills a new experiment with the treatments, tracked fields and sample
-size. The payload should survive sign-up and the first trace, so a new user
-lands on a ready experiment.
-
-In this repository, `decodeSetup(fragment)` in `src/report/link.ts` is the
-reference decoder:
+`decodeSetup(fragment)` in `src/report/link.ts` decodes the payload:
 
 ```ts
 import { decodeSetup } from "./src/report/link.ts";

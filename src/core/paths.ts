@@ -1,8 +1,9 @@
 // Tracked-field paths: a small JSONPath subset (`$.a.b[0]`, `a.b`,
 // `$["a key"]`) with no wildcards, filters or recursion, because a tracked
-// field names one value per output. Two readers: `parseJsonPath`/`extract`
-// as the reference's statistics read a field, and `parsePath`/`valueAt` as
-// the reference page does, which also takes `[]` for every item of a list.
+// field names one value per output. Two readers: `parseJsonPath`/`extract`,
+// which the summary and noise floor use (Python regex rules), and
+// `parsePath`/`valueAt`, which the field comparisons use (JavaScript rules)
+// and which also takes `[]` for every item of a list.
 
 import { isPlainObject } from "./py.ts";
 
@@ -51,7 +52,7 @@ export function extract(value: unknown, path: readonly PathToken[]): unknown {
   return current;
 }
 
-// --- The page's reader ------------------------------------------------------
+// --- The field comparisons' reader -------------------------------------------
 
 export type PageToken = { key: string } | { index: number } | { each: true };
 
@@ -78,7 +79,7 @@ export function jsonPaths(value: unknown, prefix = "$"): string[] {
   return prefix === "$" ? [] : [prefix];
 }
 
-/** The page's tokens for a path, or null when it cannot read it. */
+/** The field comparisons' tokens for a path, or null when it cannot read it. */
 export function parsePath(path: string | null | undefined): PageToken[] | null {
   let text = String(path || "").trim();
   if (text.startsWith("$")) text = text.slice(1);

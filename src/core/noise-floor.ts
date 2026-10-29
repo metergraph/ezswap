@@ -1,7 +1,7 @@
 // The noise floor: production's model replayed twice on the same cases (A1
 // and A2), and how far the two replays differ on every built-in statistic and
-// tracked field. A port of Metergraph's Python reference;
-// conformance/noise_floor.json pins it. Presentation, never a verdict.
+// tracked field. Python semantics; matches Metergraph's hosted figures,
+// which conformance/noise_floor.json pins. Presentation, never a verdict.
 
 import { codePointLength, pyEqual, pyJsonDumps, pyQuantile, pyRound, pySorted, pyStr, pyStrip, pySum, pyTruthy, isPlainObject } from "./py.ts";
 import { factsOf, fieldValue, isCutOff, isEmptyOrRefused, keysComplete, summarize } from "./summary.ts";
@@ -48,14 +48,14 @@ function isNumber(value: unknown): value is number {
   return typeof value === "number";
 }
 
-/** A value as the page's String() writes it, so a label compares alike on both. */
+/** A value as JavaScript's String() writes it, so a label compares alike in the noise floor and the field comparisons. */
 function jsString(value: unknown): string {
   if (value === true) return "true";
   if (value === false) return "false";
   return pyStr(value);
 }
 
-/** The field kind as the reference's statistics decide it (string length in code points). */
+/** The field kind under Python semantics (string length in code points). */
 export function fieldKindPy(values: readonly unknown[]): FieldKind {
   const present = values.filter((v) => v !== null && v !== undefined);
   if (!present.length) return "empty";
@@ -140,7 +140,7 @@ export function overlapSpread(pairs: readonly Pair<unknown[]>[]): OverlapSpread 
   };
 }
 
-/** The control as an outcome. Not in the reference: production's refusal flag is kept. */
+/** The control as an outcome. Production's refusal flag is kept, though the conformance fixtures do not carry it. */
 export function controlOutcome(control: ControlRecord | null | undefined): Outcome {
   const c = control ?? {};
   return {

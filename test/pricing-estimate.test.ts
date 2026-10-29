@@ -56,7 +56,7 @@ test("estimate conformance: the noise floor replays production's resolved model"
   );
 });
 
-test("estimate conformance: every call's upper bound matches the hosted reservation", () => {
+test("estimate conformance: every call's upper bound matches the hosted figures", () => {
   const byId = new Map(fixture.cases.map((item) => [item.id, item]));
   const floorModels = new Map(
     fixture.cases.filter((item) => item.notReplayable === null).map((item, index) => [item.id, fixture.expected.floor.models[index]!]),

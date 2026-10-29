@@ -310,7 +310,7 @@ test("tool_definitions_not_offered when a forced choice sits beside other tools"
   }
 });
 
-test("tools the model was free to skip: replayable, graded partial", () => {
+test("tools the model was free to skip: replayable, marked in missing", () => {
   const kase = prepareCase(captured({ messages: [user("x")], tools: [weather], tool_choice: "auto" }));
   assert.equal(kase.notReplayable, null);
   assert.equal(kase.forcedTool, null);

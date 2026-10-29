@@ -67,7 +67,7 @@ export {
   statSpreads,
 } from "./stats.ts";
 
-export { type TreatmentEquivalence, equivalence, equivalenceSummary, fewTracesNote, sampleNote } from "./equivalence.ts";
+export { type ReplayVia, type TreatmentEquivalence, equivalence, equivalenceSummary, fewTracesNote, sampleNote } from "./equivalence.ts";
 
 export {
   INTERVAL_LEVEL,

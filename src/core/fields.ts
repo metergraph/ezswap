@@ -1,14 +1,14 @@
 // Tracked-field comparisons over the experiment view: what kind of values a
 // field holds, and how one side reads against another on it (per-call
 // differences for numbers, match rate for labels and text, item overlap for
-// lists). Extracted from hosted Metergraph's page and kept to its JavaScript
-// semantics, so the numbers match it exactly. Shown, never judged.
+// lists). JavaScript semantics throughout; the numbers match Metergraph's
+// hosted figures exactly (conformance/page.json). Shown, never judged.
 
 import { jsonPaths, valueAt } from "./paths.ts";
 import type { FieldKind } from "./view-types.ts";
 
-// The page functions read the view loosely, as the page does: a hosted view
-// and one built from a run file both fit, and so do partial test inputs.
+// These functions read the view loosely: a view from the hosted product, one
+// built from a run file, and partial test inputs all fit.
 export type Loose = any;
 
 /** Below this many values a 10th-to-90th percentile range is mostly noise. */
@@ -17,7 +17,7 @@ export const SPREAD_MIN = 10;
 // A model's JSON often comes fenced in markdown: one surrounding fence of any language, then JSON.
 const FENCE = /^```[A-Za-z0-9_-]*\s*\n([\s\S]*?)\n?```\s*$/;
 
-/** Parse an output the way the page does (JavaScript whitespace rules). */
+/** Parse an output as JSON, trimming with JavaScript whitespace rules. */
 export function parseOutput(output: unknown): { ok: boolean; value: unknown } {
   if (output == null) return { ok: false, value: undefined };
   if (typeof output === "object") return { ok: true, value: output };

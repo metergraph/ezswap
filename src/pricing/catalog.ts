@@ -6,8 +6,8 @@
 // region-pinned; the price is the row effective at the call's time for the
 // alias's model and channel; cache reads come out of the input count where the
 // publisher reports them inside it; long-context and off-peak multipliers
-// apply to every rate. A gateway model id ("creator/model") is looked up under
-// its creator, as the hosted product prices replays.
+// apply to every rate. A router model id ("creator/model") is looked up under
+// its creator. Matches Metergraph's hosted figures (conformance/pricing.json).
 //
 // Reasoning tokens bill as output: they are inside the output count and the
 // catalog has no separate rate for them.
@@ -146,7 +146,8 @@ export interface CatalogPricing extends Pricing {
   quote(query: PriceQuery): Quote;
   /**
    * The canonical "creator/model" id a production call's model resolves to,
-   * trying the spellings the hosted product tries, or null when the catalog
+   * trying the captured provider with the bare model, then the provider and
+   * model as captured, or null when the catalog
    * cannot price it. The noise floor replays and prices this id.
    */
   resolveProduction(provider: string | null, model: string | null, at?: string): string | null;
@@ -482,7 +483,7 @@ export function loadPricing(options: LoadPricingOptions = {}): CatalogPricing {
   const now = options.now ?? (() => new Date());
   const instant = (at: string | undefined): number => (at === undefined ? now().getTime() : parseInstant(at));
 
-  // The hosted lookup: a router provider resolves to the creator in
+  // The lookup: a router provider resolves to the creator in
   // "creator/model", spelled as written; then the creator's folded spelling,
   // which metergraph-core indexes some creators under.
   const lookup = (provider: string, model: string, at: number, usage: Usage): Quote => {
@@ -538,7 +539,7 @@ export function loadPricing(options: LoadPricingOptions = {}): CatalogPricing {
       const when = instant(at);
       const raw = String(model ?? "").trim();
       if (!raw) return null;
-      // As the hosted product resolves production's model for the floor:
+      // Production's model for the floor resolves to the first that prices:
       // the captured provider (a router folded to the creator) with the bare
       // model, then the provider and model as captured.
       const providerKey = String(provider ?? "").trim().toLowerCase();

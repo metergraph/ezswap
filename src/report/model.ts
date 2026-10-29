@@ -404,7 +404,7 @@ export function reportModel(run: RunFile, options: ModelOptions = {}): ReportMod
   const byKey = new Map(stats.map((row) => [row.key, row]));
   const floors = noiseFloors(view, { tracked });
   const summary = equivalenceSummary(view, { tracked, floors });
-  const eq = equivalence({ ...view, tracked_fields: tracked }).treatments;
+  const eq = equivalence({ ...view, tracked_fields: tracked }, { via: "endpoint" }).treatments;
   const labelSets = labelsOn ? arms.map((arm) => noiseLabels(view, arm.label, { tracked })) : [];
   const labelFor = (i: number, key: string) => {
     const set = labelSets[i];
@@ -752,7 +752,7 @@ export function reportModel(run: RunFile, options: ModelOptions = {}): ReportMod
       perCall: prodPerCall,
       text: formatUsd(prodPerCall),
       delta: null,
-      note: hasFloor && costStat ? `${costStat.production} recorded` : null,
+      note: hasFloor && costStat && view.control.summary.cost_per_call_usd != null ? `${costStat.production} recorded` : null,
       monthly: perMonth(prodPerCall),
       monthlyText: perMonth(prodPerCall) == null ? null : `${formatUsd(perMonth(prodPerCall))}/mo`,
       monthlyDelta: null,

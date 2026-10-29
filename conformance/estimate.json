@@ -1,5 +1,5 @@
 {
- "about": "Estimate and upper-bound conformance: expected numbers computed by the hosted product's estimate and reservation functions from the same prices.yaml. Generated; never edit expected values by hand.",
+ "about": "Estimate and upper-bound conformance: expected numbers computed by Metergraph's estimate and reservation functions from the same prices.yaml. Generated; never edit expected values by hand.",
  "catalog": {
   "commit": "e0d9203fd42d85a341ab339d9c2178bd526f5b67"
  },

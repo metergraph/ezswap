@@ -18,8 +18,8 @@ export interface PayloadOptions {
 /**
  * A forced tool as a function tool and a forced choice. The schema goes as
  * strict: false, since a schema one provider accepts another's strict mode
- * may reject. The key order is the hosted product's, which the upper bound
- * measures.
+ * may reject. The key order is fixed: the upper bound measures this JSON, and
+ * conformance/estimate.json pins the bytes.
  */
 export function forcedToolRequest(tool: ForcedTool): { tool: Record<string, unknown>; tool_choice: Record<string, unknown> } {
   const fn: Record<string, unknown> = { name: tool.name, parameters: tool.parameters, strict: false };

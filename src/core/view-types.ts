@@ -1,6 +1,6 @@
-// The experiment view: the JSON shape hosted Metergraph's Experiments page
-// reads, built here from a run file. Keys are snake_case because the shape is
-// shared with the hosted product and pinned by the fixtures in conformance/.
+// The experiment view: the JSON shape every statistic in core reads, built
+// here from a run file. Keys are snake_case because the shape is shared with
+// Metergraph's hosted product and pinned by the fixtures in conformance/.
 
 /** What the statistics need from one output, taken from its full text. */
 export interface Facts {
@@ -19,7 +19,7 @@ export interface Facts {
 /**
  * One call's result as the statistics read it: a treatment's or noise-floor
  * replay, or the control (production's recorded call). Every field is
- * optional, as the reference reads them with defaults.
+ * optional and read with a default when absent.
  */
 export interface Outcome {
   output?: string | null;
@@ -90,7 +90,7 @@ export interface ResultView {
   temperature_ignored_with_reasoning: boolean;
   response_format_dropped: boolean;
   output_truncated: boolean;
-  /** Not in the hosted shape: whether the provider flagged a refusal. */
+  /** Whether the provider flagged a refusal. Local only: the conformance fixtures do not carry it. */
   refusal: boolean;
 }
 
@@ -102,7 +102,7 @@ export interface CaseControlView {
   finish_reason: string | null;
   output_tokens: number | null;
   output_truncated: boolean;
-  /** Not in the hosted shape: whether production's reply was flagged a refusal. */
+  /** Whether production's reply was flagged a refusal. Local only: the conformance fixtures do not carry it. */
   refusal: boolean;
 }
 
@@ -225,9 +225,9 @@ export interface ExperimentView {
   /** Each tracked field's values per replayed case: `control` and one series per arm label. */
   fields: Record<string, Record<string, unknown[]>> | null;
   cases: CaseView[] | null;
-  /** Not in v1. */
+  /** Always null: replay has no judge. */
   judge: null;
   noise_floor: NoiseFloorView | null;
-  /** Not in v1. */
+  /** Always null: replay computes no similarity. */
   similarity: null;
 }

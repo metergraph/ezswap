@@ -1,7 +1,8 @@
-// Python semantics the per-arm summary and the noise floor depend on. Those
-// two are ports of Metergraph's Python reference, and their figures must match
-// it to the last bit (conformance/), so where Python and JavaScript disagree
-// on rounding, summation, whitespace or string length, these follow Python.
+// Python semantics the per-arm summary and the noise floor depend on. Their
+// figures must match Metergraph's hosted figures to the last bit
+// (conformance/summarize.json, conformance/noise_floor.json), so where Python
+// and JavaScript disagree on rounding, summation, whitespace or string length,
+// these follow Python.
 
 /** Python's `str.isspace()` characters, which `str.strip()` and `\s` use. */
 const PY_WS = "\\t\\n\\x0b\\x0c\\r\\x1c-\\x1f \\x85\\xa0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000";
@@ -57,7 +58,7 @@ export function pyMedian(values: readonly number[]): number | null {
   return ((sorted[mid - 1] as number) + (sorted[mid] as number)) / 2;
 }
 
-/** Linear-interpolated quantile, as the reference's `_quantile`. */
+/** Linear-interpolated (inclusive) quantile. */
 export function pyQuantile(values: readonly number[], q: number): number | null {
   if (values.length === 0) return null;
   const ordered = [...values].sort((a, b) => a - b);
@@ -182,8 +183,8 @@ function pyJsonString(text: string): string {
 }
 
 /**
- * `json.dumps(value)` with ensure_ascii, as the reference uses to bound and
- * to compare values. `compact` is `separators=(",", ":")`.
+ * `json.dumps(value)` with ensure_ascii, used to bound and to compare
+ * values. `compact` is `separators=(",", ":")`.
  */
 export function pyJsonDumps(value: unknown, options: { sortKeys?: boolean; compact?: boolean } = {}): string {
   const item = options.compact ? "," : ", ";

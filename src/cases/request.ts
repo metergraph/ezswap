@@ -73,7 +73,7 @@ function reasoningEffort(payload: Json): string | null {
   return null;
 }
 
-/** The production settings a replay carries. Unlike the hosted product, stop and top_p go through. */
+/** The production settings a replay carries, stop and top_p included. */
 export function capturedParams(payload: unknown): CallParams {
   if (!isObject(payload)) {
     return { temperature: null, maxTokens: null, topP: null, stop: null, reasoningEffort: null };

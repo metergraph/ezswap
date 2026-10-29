@@ -1,8 +1,8 @@
 // A replay run has no paid "Control, replayed" column; its noise floor's
 // first replay (A1) is the control replayed the same way. With
 // `floorAsReplay`, the stat rows and the grid read latency (and cost) against
-// A1, as equivalence does. The default stays the hosted page's behaviour,
-// which conformance/page.json pins.
+// A1, as equivalence does. The default reads only a paid column, the
+// behaviour conformance/page.json pins.
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
