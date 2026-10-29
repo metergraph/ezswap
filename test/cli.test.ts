@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { EXIT, HELP, main, type CliIo } from "../src/cli/main.ts";
 import type { FetchLike } from "../src/providers/index.ts";
@@ -300,7 +301,7 @@ test("--monthly-calls must be a whole number", async () => {
     stderr: { write: (s: string) => (err.push(s), true), isTTY: false },
     env: {},
   };
-  const code = await main(["demo", "--monthly-calls", "lots", "--out", "/private/tmp/claude-501/replay-cli-test"], io as never);
+  const code = await main(["demo", "--monthly-calls", "lots", "--out", join(tmpdir(), "replay-cli-monthly")], io as never);
   assert.equal(code, 2);
   assert.match(err.join(""), /--monthly-calls must be a whole number/);
 });

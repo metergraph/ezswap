@@ -617,6 +617,8 @@ async function demoCommand(values: Values, io: CliIo, say: (text: string) => voi
   const source = fileURLToPath(new URL("run.json", DEMO_DIR));
   const run = await readRunFile(source);
   const tracked = trackedOption(values.track);
+  // Check every option before anything is written.
+  monthlyCallsOption(values["monthly-calls"]);
   const out = resolve(values.out ?? "replay-out");
   await mkdir(out, { recursive: true });
   const runPath = join(out, "run.json");
