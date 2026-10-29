@@ -1,0 +1,2312 @@
+{
+  "about": "One experiment view and what the reference implementation's equivalence() returns for it. Regenerate the expected values from the reference implementation, never by hand.",
+  "view": {
+    "id": "11111111-1111-4111-8111-111111111111",
+    "status": "done",
+    "workload": "summarizeTicket",
+    "workload_id": "summarizeTicket",
+    "sample": {
+      "last_n": 13,
+      "cases": 13,
+      "replayed": 12,
+      "not_replayable": 1
+    },
+    "tracked_fields": [
+      "$.priority",
+      "$.category",
+      "$.ok",
+      "$.tags",
+      "$.summary",
+      "$.body",
+      "$.mixed",
+      "$.absent",
+      "$[\"odd key\"]",
+      "$.items[0].id",
+      "$.label16"
+    ],
+    "estimate_usd": 0.5,
+    "budget_usd": 5,
+    "spent_usd": 0.1,
+    "reserved_usd": 0,
+    "replay_spent_usd": 0,
+    "error_code": null,
+    "created_at": "2026-10-14T00:00:00+00:00",
+    "started_at": "2026-10-14T00:00:00+00:00",
+    "finished_at": "2026-10-14T00:00:00+00:00",
+    "repeats": null,
+    "control": {
+      "model": "gpt-5.4",
+      "provider": "openai",
+      "settings_seen": {},
+      "models_seen": {},
+      "summary": {
+        "cases": 12,
+        "errors": 0,
+        "cost_per_call_usd": 0.00255,
+        "latency_ms_p50": 1103.5,
+        "output_tokens_p50": 45.5,
+        "output_chars_p50": 326,
+        "json_parse_rate": 1,
+        "same_keys_rate": null,
+        "empty_or_refused_rate": 0,
+        "cut_off_rate": 0,
+        "cached_input_share": null,
+        "cached_input_calls": 0,
+        "temperature_dropped": 0,
+        "response_format_dropped": 0
+      }
+    },
+    "arms": [
+      {
+        "label": "Luna",
+        "model": "gpt-6-luna",
+        "provider": "openai",
+        "settings": {},
+        "temperature_ignored_with_reasoning": false,
+        "web_search_fees_missing": false,
+        "summary": {
+          "cases": 12,
+          "errors": 0,
+          "cost_per_call_usd": 0.000455,
+          "latency_ms_p50": 360.5,
+          "output_tokens_p50": 30,
+          "output_chars_p50": 330.5,
+          "json_parse_rate": 1,
+          "same_keys_rate": 0.9167,
+          "empty_or_refused_rate": 0,
+          "cut_off_rate": 0,
+          "cached_input_share": null,
+          "cached_input_calls": 0,
+          "temperature_dropped": 0,
+          "response_format_dropped": 0,
+          "temperature_ignored_with_reasoning": 0
+        },
+        "control_summary": {
+          "cases": 12,
+          "errors": 0,
+          "cost_per_call_usd": 0.00255,
+          "latency_ms_p50": 1103.5,
+          "output_tokens_p50": 45.5,
+          "output_chars_p50": 326,
+          "json_parse_rate": 1,
+          "same_keys_rate": null,
+          "empty_or_refused_rate": 0,
+          "cut_off_rate": 0,
+          "cached_input_share": null,
+          "cached_input_calls": 0,
+          "temperature_dropped": 0,
+          "response_format_dropped": 0
+        }
+      },
+      {
+        "label": "Flash",
+        "model": "gemini-3.8-flash",
+        "provider": "google",
+        "settings": {},
+        "temperature_ignored_with_reasoning": false,
+        "web_search_fees_missing": false,
+        "summary": {
+          "cases": 12,
+          "errors": 5,
+          "cost_per_call_usd": 0.03,
+          "latency_ms_p50": 12004,
+          "output_tokens_p50": 30,
+          "output_chars_p50": 325,
+          "json_parse_rate": 1,
+          "same_keys_rate": 0.7143,
+          "empty_or_refused_rate": 0,
+          "cut_off_rate": 0,
+          "cached_input_share": null,
+          "cached_input_calls": 0,
+          "temperature_dropped": 0,
+          "response_format_dropped": 0,
+          "temperature_ignored_with_reasoning": 0
+        },
+        "control_summary": {
+          "cases": 7,
+          "errors": 0,
+          "cost_per_call_usd": 0.00255714,
+          "latency_ms_p50": 1048,
+          "output_tokens_p50": 44,
+          "output_chars_p50": 328,
+          "json_parse_rate": 1,
+          "same_keys_rate": null,
+          "empty_or_refused_rate": 0,
+          "cut_off_rate": 0,
+          "cached_input_share": null,
+          "cached_input_calls": 0,
+          "temperature_dropped": 0,
+          "response_format_dropped": 0
+        }
+      },
+      {
+        "label": "Same",
+        "model": "gpt-5.4",
+        "provider": "openai",
+        "settings": {},
+        "temperature_ignored_with_reasoning": false,
+        "web_search_fees_missing": false,
+        "summary": {
+          "cases": 12,
+          "errors": 0,
+          "cost_per_call_usd": 0.00255,
+          "latency_ms_p50": 10650,
+          "output_tokens_p50": 30,
+          "output_chars_p50": 323.5,
+          "json_parse_rate": 1,
+          "same_keys_rate": 1,
+          "empty_or_refused_rate": 0,
+          "cut_off_rate": 0,
+          "cached_input_share": null,
+          "cached_input_calls": 0,
+          "temperature_dropped": 0,
+          "response_format_dropped": 0,
+          "temperature_ignored_with_reasoning": 0
+        },
+        "control_summary": {
+          "cases": 12,
+          "errors": 0,
+          "cost_per_call_usd": 0.00255,
+          "latency_ms_p50": 1103.5,
+          "output_tokens_p50": 45.5,
+          "output_chars_p50": 326,
+          "json_parse_rate": 1,
+          "same_keys_rate": null,
+          "empty_or_refused_rate": 0,
+          "cut_off_rate": 0,
+          "cached_input_share": null,
+          "cached_input_calls": 0,
+          "temperature_dropped": 0,
+          "response_format_dropped": 0
+        }
+      }
+    ],
+    "fields": {
+      "$.priority": {
+        "control": [
+          1,
+          2,
+          3,
+          2.5,
+          4,
+          1,
+          2,
+          3,
+          10,
+          0,
+          7,
+          1
+        ],
+        "Luna": [
+          2,
+          3,
+          null,
+          3.5,
+          5.125,
+          2,
+          3,
+          4,
+          11,
+          1,
+          8,
+          2
+        ],
+        "Flash": [
+          null,
+          -1,
+          null,
+          -0.5,
+          1.125,
+          null,
+          null,
+          null,
+          7,
+          null,
+          4,
+          "high"
+        ],
+        "Same": [
+          1,
+          2,
+          3,
+          2.5,
+          4,
+          1,
+          2,
+          3,
+          10,
+          0,
+          7,
+          1
+        ]
+      },
+      "$.category": {
+        "control": [
+          "billing",
+          "bug",
+          "billing",
+          "other",
+          "bug",
+          "billing",
+          "bug",
+          "billing",
+          "other",
+          "bug",
+          "billing",
+          "bug"
+        ],
+        "Luna": [
+          "bug",
+          "bug",
+          "billing",
+          "other",
+          "bug",
+          "billing",
+          "bug",
+          "billing",
+          "bug",
+          "bug",
+          "billing",
+          "bug"
+        ],
+        "Flash": [
+          null,
+          "bug",
+          "billing",
+          "other",
+          "bug",
+          null,
+          null,
+          null,
+          "bug",
+          null,
+          "billing",
+          null
+        ],
+        "Same": [
+          "billing",
+          "bug",
+          "billing",
+          "other",
+          "bug",
+          "billing",
+          "bug",
+          "billing",
+          "other",
+          "bug",
+          "billing",
+          "bug"
+        ]
+      },
+      "$.ok": {
+        "control": [
+          false,
+          true,
+          true,
+          false,
+          true,
+          true,
+          false,
+          true,
+          true,
+          false,
+          true,
+          true
+        ],
+        "Luna": [
+          true,
+          false,
+          true,
+          false,
+          true,
+          false,
+          true,
+          false,
+          true,
+          false,
+          true,
+          false
+        ],
+        "Flash": [
+          null,
+          false,
+          true,
+          false,
+          true,
+          null,
+          null,
+          null,
+          true,
+          null,
+          true,
+          null
+        ],
+        "Same": [
+          false,
+          true,
+          true,
+          false,
+          true,
+          true,
+          false,
+          true,
+          true,
+          false,
+          true,
+          true
+        ]
+      },
+      "$.tags": {
+        "control": [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "a"
+          ],
+          [],
+          [
+            1,
+            2
+          ],
+          [
+            {
+              "k": 1
+            },
+            null
+          ],
+          [
+            "x",
+            "y",
+            "z"
+          ],
+          [
+            "a"
+          ],
+          [
+            "b"
+          ],
+          [
+            "c"
+          ],
+          [],
+          [
+            "a",
+            "b"
+          ],
+          [
+            "q"
+          ]
+        ],
+        "Luna": [
+          [
+            "a",
+            "b",
+            "extra"
+          ],
+          [
+            "a"
+          ],
+          [],
+          [
+            1,
+            2,
+            "extra"
+          ],
+          [
+            {
+              "k": 1
+            },
+            null
+          ],
+          [
+            "x",
+            "y",
+            "z"
+          ],
+          [
+            "a",
+            "extra"
+          ],
+          [
+            "b"
+          ],
+          [
+            "c"
+          ],
+          [
+            "extra"
+          ],
+          [
+            "a",
+            "b"
+          ],
+          [
+            "q"
+          ]
+        ],
+        "Flash": [
+          null,
+          [
+            "a"
+          ],
+          [],
+          [
+            1,
+            2,
+            "extra"
+          ],
+          [
+            {
+              "k": 1
+            },
+            null
+          ],
+          null,
+          null,
+          null,
+          [
+            "c"
+          ],
+          null,
+          [
+            "a",
+            "b"
+          ],
+          null
+        ],
+        "Same": [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "a"
+          ],
+          [],
+          [
+            1,
+            2
+          ],
+          [
+            {
+              "k": 1
+            },
+            null
+          ],
+          [
+            "x",
+            "y",
+            "z"
+          ],
+          [
+            "a"
+          ],
+          [
+            "b"
+          ],
+          [
+            "c"
+          ],
+          [],
+          [
+            "a",
+            "b"
+          ],
+          [
+            "q"
+          ]
+        ]
+      },
+      "$.summary": {
+        "control": [
+          "  Summary number 0  ",
+          "  Summary number 1  ",
+          "  Summary number 2  ",
+          "  Summary number 3  ",
+          "  Summary number 4  ",
+          "  Summary number 5  ",
+          "  Summary number 6  ",
+          "  Summary number 7  ",
+          "  Summary number 8  ",
+          "  Summary number 9  ",
+          "  Summary number 10  ",
+          "  Summary number 11  "
+        ],
+        "Luna": [
+          "Different summary",
+          "Summary number 1",
+          "Different summary",
+          "Summary number 3",
+          "Different summary",
+          "Summary number 5",
+          "Different summary",
+          "Summary number 7",
+          "Different summary",
+          "Summary number 9",
+          "Different summary",
+          "Summary number 11"
+        ],
+        "Flash": [
+          null,
+          "Summary number 1",
+          "Different summary",
+          "Summary number 3",
+          "Different summary",
+          null,
+          null,
+          null,
+          "Different summary",
+          null,
+          "Different summary",
+          null
+        ],
+        "Same": [
+          "  Summary number 0  ",
+          "  Summary number 1  ",
+          "  Summary number 2  ",
+          "  Summary number 3  ",
+          "  Summary number 4  ",
+          "  Summary number 5  ",
+          "  Summary number 6  ",
+          "  Summary number 7  ",
+          "  Summary number 8  ",
+          "  Summary number 9  ",
+          "  Summary number 10  ",
+          "  Summary number 11  "
+        ]
+      },
+      "$.body": {
+        "control": [
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 0",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 1",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 2",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 3",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 4",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 5",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 6",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 7",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 8",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 9",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 10",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 11"
+        ],
+        "Luna": [
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. changed",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 1",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 2",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 3",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 4",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. changed",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 6",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 7",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 8",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 9",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. changed",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 11"
+        ],
+        "Flash": [
+          null,
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 1",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 2",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 3",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 4",
+          null,
+          null,
+          null,
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 8",
+          null,
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. changed",
+          null
+        ],
+        "Same": [
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 0",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 1",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 2",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 3",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 4",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 5",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 6",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 7",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 8",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 9",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 10",
+          "Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 11"
+        ]
+      },
+      "$.mixed": {
+        "control": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "Luna": [
+          "text 0",
+          "text 1",
+          "text 2",
+          "text 3",
+          "text 4",
+          "text 5",
+          "text 6",
+          "text 7",
+          "text 8",
+          "text 9",
+          "text 10",
+          "text 11"
+        ],
+        "Flash": [
+          null,
+          "text 1",
+          "text 2",
+          "text 3",
+          "text 4",
+          null,
+          null,
+          null,
+          "text 8",
+          null,
+          "text 10",
+          null
+        ],
+        "Same": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      "$.absent": {
+        "control": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "Luna": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "Flash": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "Same": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "$[\"odd key\"]": {
+        "control": [
+          "v0",
+          "v1",
+          "v0",
+          "v1",
+          "v0",
+          "v1",
+          "v0",
+          "v1",
+          "v0",
+          "v1",
+          "v0",
+          "v1"
+        ],
+        "Luna": [
+          "v0",
+          "v0",
+          "v0",
+          "v0",
+          "v0",
+          "v0",
+          "v0",
+          "v0",
+          "v0",
+          "v0",
+          "v0",
+          "v0"
+        ],
+        "Flash": [
+          null,
+          "v0",
+          "v0",
+          "v0",
+          "v0",
+          null,
+          null,
+          null,
+          "v0",
+          null,
+          "v0",
+          null
+        ],
+        "Same": [
+          "v0",
+          "v1",
+          "v0",
+          "v1",
+          "v0",
+          "v1",
+          "v0",
+          "v1",
+          "v0",
+          "v1",
+          "v0",
+          "v1"
+        ]
+      },
+      "$.items[0].id": {
+        "control": [
+          "id-0",
+          "id-1",
+          "id-2",
+          "id-3",
+          "id-0",
+          "id-1",
+          "id-2",
+          "id-3",
+          "id-0",
+          "id-1",
+          "id-2",
+          "id-3"
+        ],
+        "Luna": [
+          "id-0",
+          "id-1",
+          "id-2",
+          "id-3",
+          "id-0",
+          "id-1",
+          "id-2",
+          "id-3",
+          "id-0",
+          "id-1",
+          "id-2",
+          "id-3"
+        ],
+        "Flash": [
+          null,
+          "id-1",
+          "id-2",
+          "id-3",
+          "id-0",
+          null,
+          null,
+          null,
+          "id-0",
+          null,
+          "id-2",
+          null
+        ],
+        "Same": [
+          "id-0",
+          "id-1",
+          "id-2",
+          "id-3",
+          "id-0",
+          "id-1",
+          "id-2",
+          "id-3",
+          "id-0",
+          "id-1",
+          "id-2",
+          "id-3"
+        ]
+      },
+      "$.label16": {
+        "control": [
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          null,
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂"
+        ],
+        "Luna": [
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          null,
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂"
+        ],
+        "Flash": [
+          null,
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          null,
+          null,
+          null,
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          null,
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          null
+        ],
+        "Same": [
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂",
+          "🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂"
+        ]
+      }
+    },
+    "cases": [
+      {
+        "trace_id": "trace-0",
+        "status": "replayed",
+        "reason": null,
+        "input_preview": null,
+        "limitations": [],
+        "control": {
+          "output": "{\"priority\": 1, \"category\": \"billing\", \"ok\": false, \"tags\": [\"a\", \"b\"], \"summary\": \"  Summary number 0  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 0\", \"mixed\": 0, \"odd key\": \"v0\", \"items\": [{\"id\": \"id-0\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+          "cost_usd": 0.002,
+          "latency_ms": 900,
+          "finish_reason": "stop",
+          "output_tokens": 40,
+          "output_truncated": false
+        },
+        "arms": {
+          "Luna": {
+            "output": "{\"priority\": 2, \"category\": \"bug\", \"ok\": true, \"tags\": [\"a\", \"b\", \"extra\"], \"summary\": \"Different summary\", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. changed\", \"mixed\": \"text 0\", \"odd key\": \"v0\", \"items\": [{\"id\": \"id-0\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.0004,
+            "latency_ms": 300,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Flash": {
+            "output": null,
+            "cost_usd": null,
+            "latency_ms": null,
+            "finish_reason": null,
+            "output_tokens": null,
+            "error": "provider_error",
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Same": {
+            "output": "{\"priority\": 1, \"category\": \"billing\", \"ok\": false, \"tags\": [\"a\", \"b\"], \"summary\": \"  Summary number 0  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 0\", \"mixed\": 0, \"odd key\": \"v0\", \"items\": [{\"id\": \"id-0\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.002,
+            "latency_ms": 9000,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          }
+        }
+      },
+      {
+        "trace_id": "trace-1",
+        "status": "replayed",
+        "reason": null,
+        "input_preview": null,
+        "limitations": [],
+        "control": {
+          "output": "```json\n{\"priority\": 2, \"category\": \"bug\", \"ok\": true, \"tags\": [\"a\"], \"summary\": \"  Summary number 1  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 1\", \"mixed\": 1, \"odd key\": \"v1\", \"items\": [{\"id\": \"id-1\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}\n```",
+          "cost_usd": 0.0021,
+          "latency_ms": 937,
+          "finish_reason": "stop",
+          "output_tokens": 41,
+          "output_truncated": false
+        },
+        "arms": {
+          "Luna": {
+            "output": "{\"priority\": 3, \"category\": \"bug\", \"ok\": false, \"tags\": [\"a\"], \"summary\": \"Summary number 1\", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 1\", \"mixed\": \"text 1\", \"odd key\": \"v0\", \"items\": [{\"id\": \"id-1\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.00041000000000000005,
+            "latency_ms": 311,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Flash": {
+            "output": "{\"priority\": -1, \"category\": \"bug\", \"ok\": false, \"tags\": [\"a\"], \"summary\": \"Summary number 1\", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 1\", \"mixed\": \"text 1\", \"odd key\": \"v0\", \"items\": [{\"id\": \"id-1\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.03,
+            "latency_ms": 12001,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Same": {
+            "output": "{\"priority\": 2, \"category\": \"bug\", \"ok\": true, \"tags\": [\"a\"], \"summary\": \"  Summary number 1  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 1\", \"mixed\": 1, \"odd key\": \"v1\", \"items\": [{\"id\": \"id-1\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.0021,
+            "latency_ms": 9300,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          }
+        }
+      },
+      {
+        "trace_id": "trace-2",
+        "status": "replayed",
+        "reason": null,
+        "input_preview": null,
+        "limitations": [],
+        "control": {
+          "output": "{\"priority\": 3, \"category\": \"billing\", \"ok\": true, \"tags\": [], \"summary\": \"  Summary number 2  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 2\", \"mixed\": 2, \"odd key\": \"v0\", \"items\": [{\"id\": \"id-2\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+          "cost_usd": 0.0022,
+          "latency_ms": 974,
+          "finish_reason": "stop",
+          "output_tokens": 42,
+          "output_truncated": false
+        },
+        "arms": {
+          "Luna": {
+            "output": "{\"category\": \"billing\", \"ok\": true, \"tags\": [], \"summary\": \"Different summary\", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 2\", \"mixed\": \"text 2\", \"odd key\": \"v0\", \"items\": [{\"id\": \"id-2\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.00042,
+            "latency_ms": 322,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Flash": {
+            "output": "{\"category\": \"billing\", \"ok\": true, \"tags\": [], \"summary\": \"Different summary\", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 2\", \"mixed\": \"text 2\", \"odd key\": \"v0\", \"items\": [{\"id\": \"id-2\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.03,
+            "latency_ms": 12002,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Same": {
+            "output": "{\"priority\": 3, \"category\": \"billing\", \"ok\": true, \"tags\": [], \"summary\": \"  Summary number 2  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 2\", \"mixed\": 2, \"odd key\": \"v0\", \"items\": [{\"id\": \"id-2\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.0022,
+            "latency_ms": 9600,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          }
+        }
+      },
+      {
+        "trace_id": "trace-3",
+        "status": "replayed",
+        "reason": null,
+        "input_preview": null,
+        "limitations": [],
+        "control": {
+          "output": "{\"priority\": 2.5, \"catego",
+          "cost_usd": 0.0023,
+          "latency_ms": 1011,
+          "finish_reason": "stop",
+          "output_tokens": 43,
+          "output_truncated": true
+        },
+        "arms": {
+          "Luna": {
+            "output": "{\"priority\": 3.5, \"category\": \"other\", \"ok\": false, \"tags\": [1, 2.0, \"extra\"], \"summary\": \"Summary number 3\", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 3\", \"mixed\": \"text 3\", \"odd key\": \"v0\", \"items\": [{\"id\": \"id-3\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.00043000000000000004,
+            "latency_ms": 333,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Flash": {
+            "output": "{\"priority\": -0.5, \"category\": \"other\", \"ok\": false, \"tags\": [1, 2.0, \"extra\"], \"summary\": \"Summary number 3\", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 3\", \"mixed\": \"text 3\", \"odd key\": \"v0\", \"items\": [{\"id\": \"id-3\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.03,
+            "latency_ms": 12003,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Same": {
+            "output": "{\"priority\": 2.5, \"category\": \"other\", \"ok\": false, \"tags\": [1, 2.0], \"summary\": \"  Summary number 3  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 3\", \"mixed\": 3, \"odd key\": \"v1\", \"items\": [{\"id\": \"id-3\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.0023,
+            "latency_ms": 9900,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          }
+        }
+      },
+      {
+        "trace_id": "trace-4",
+        "status": "replayed",
+        "reason": null,
+        "input_preview": null,
+        "limitations": [],
+        "control": {
+          "output": "{\"priority\": 4, \"category\": \"bug\", \"ok\": true, \"tags\": [{\"k\": 1}, null], \"summary\": \"  Summary number 4  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 4\", \"mixed\": 4, \"odd key\": \"v0\", \"items\": [{\"id\": \"id-0\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+          "cost_usd": 0.0024000000000000002,
+          "latency_ms": 1048,
+          "finish_reason": "stop",
+          "output_tokens": 44,
+          "output_truncated": false
+        },
+        "arms": {
+          "Luna": {
+            "output": "{\"priority\": 5.125, \"category\": \"bug\", \"ok\": true, \"tags\": [{\"k\": 1}, null], \"summary\": \"Different summary\", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 4\", \"mixed\": \"text 4\", \"odd key\": \"v0\", \"items\": [{\"id\": \"id-0\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.00044,
+            "latency_ms": 344,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Flash": {
+            "output": "{\"priority\": 1.125, \"category\": \"bug\", \"ok\": true, \"tags\": [{\"k\": 1}, null], \"summary\": \"Different summary\", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 4\", \"mixed\": \"text 4\", \"odd key\": \"v0\", \"items\": [{\"id\": \"id-0\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.03,
+            "latency_ms": 12004,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Same": {
+            "output": "{\"priority\": 4, \"category\": \"bug\", \"ok\": true, \"tags\": [{\"k\": 1}, null], \"summary\": \"  Summary number 4  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 4\", \"mixed\": 4, \"odd key\": \"v0\", \"items\": [{\"id\": \"id-0\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.0024000000000000002,
+            "latency_ms": 10200,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          }
+        }
+      },
+      {
+        "trace_id": "trace-5",
+        "status": "replayed",
+        "reason": null,
+        "input_preview": null,
+        "limitations": [],
+        "control": {
+          "output": "{\"priority\": 1, \"category\": \"billing\", \"ok\": true, \"tags\": [\"x\", \"y\", \"z\"], \"summary\": \"  Summary number 5  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 5\", \"mixed\": 5, \"odd key\": \"v1\", \"items\": [{\"id\": \"id-1\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+          "cost_usd": 0.0025,
+          "latency_ms": 1085,
+          "finish_reason": "stop",
+          "output_tokens": 45,
+          "output_truncated": false
+        },
+        "arms": {
+          "Luna": {
+            "output": "{\"priority\": 2, \"category\": \"billing\", \"ok\": false, \"tags\": [\"x\", \"y\", \"z\"], \"summary\": \"Summary number 5\", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. changed\", \"mixed\": \"text 5\", \"odd key\": \"v0\", \"items\": [{\"id\": \"id-1\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.00045000000000000004,
+            "latency_ms": 355,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Flash": {
+            "output": null,
+            "cost_usd": null,
+            "latency_ms": null,
+            "finish_reason": null,
+            "output_tokens": null,
+            "error": "provider_error",
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Same": {
+            "output": "{\"priority\": 1, \"category\": \"billing\", \"ok\": true, \"tags\": [\"x\", \"y\", \"z\"], \"summary\": \"  Summary number 5  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 5\", \"mixed\": 5, \"odd key\": \"v1\", \"items\": [{\"id\": \"id-1\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.0025,
+            "latency_ms": 10500,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          }
+        }
+      },
+      {
+        "trace_id": "trace-6",
+        "status": "replayed",
+        "reason": null,
+        "input_preview": null,
+        "limitations": [],
+        "control": {
+          "output": "{\"priority\": 2, \"category\": \"bug\", \"ok\": false, \"tags\": [\"a\"], \"summary\": \"  Summary number 6  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 6\", \"mixed\": 6, \"odd key\": \"v0\", \"items\": [{\"id\": \"id-2\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+          "cost_usd": 0.0026,
+          "latency_ms": 1122,
+          "finish_reason": "stop",
+          "output_tokens": 46,
+          "output_truncated": false
+        },
+        "arms": {
+          "Luna": {
+            "output": "{\"priority\": 3, \"category\": \"bug\", \"ok\": true, \"tags\": [\"a\", \"extra\"], \"summary\": \"Different summary\", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 6\", \"mixed\": \"text 6\", \"odd key\": \"v0\", \"items\": [{\"id\": \"id-2\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.00046,
+            "latency_ms": 366,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Flash": {
+            "output": null,
+            "cost_usd": null,
+            "latency_ms": null,
+            "finish_reason": null,
+            "output_tokens": null,
+            "error": "provider_error",
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Same": {
+            "output": "{\"priority\": 2, \"category\": \"bug\", \"ok\": false, \"tags\": [\"a\"], \"summary\": \"  Summary number 6  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 6\", \"mixed\": 6, \"odd key\": \"v0\", \"items\": [{\"id\": \"id-2\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.0026,
+            "latency_ms": 10800,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          }
+        }
+      },
+      {
+        "trace_id": "trace-7",
+        "status": "replayed",
+        "reason": null,
+        "input_preview": null,
+        "limitations": [],
+        "control": {
+          "output": "{\"priority\": 3, \"category\": \"billing\", \"ok\": true, \"tags\": [\"b\"], \"summary\": \"  Summary number 7  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 7\", \"mixed\": 7, \"odd key\": \"v1\", \"items\": [{\"id\": \"id-3\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+          "cost_usd": 0.0027,
+          "latency_ms": 1159,
+          "finish_reason": "stop",
+          "output_tokens": 47,
+          "output_truncated": false
+        },
+        "arms": {
+          "Luna": {
+            "output": "{\"priority\": 4, \"category\": \"billing\", \"ok\": false, \"tags\": [\"b\"], \"summary\": \"Summary number 7\", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 7\", \"mixed\": \"text 7\", \"odd key\": \"v0\", \"items\": [{\"id\": \"id-3\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.00047000000000000004,
+            "latency_ms": 377,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Flash": {
+            "output": null,
+            "cost_usd": null,
+            "latency_ms": null,
+            "finish_reason": null,
+            "output_tokens": null,
+            "error": "provider_error",
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Same": {
+            "output": "{\"priority\": 3, \"category\": \"billing\", \"ok\": true, \"tags\": [\"b\"], \"summary\": \"  Summary number 7  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 7\", \"mixed\": 7, \"odd key\": \"v1\", \"items\": [{\"id\": \"id-3\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.0027,
+            "latency_ms": 11100,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          }
+        }
+      },
+      {
+        "trace_id": "trace-8",
+        "status": "replayed",
+        "reason": null,
+        "input_preview": null,
+        "limitations": [],
+        "control": {
+          "output": "{\"priority\": 10, \"category\": \"other\", \"ok\": true, \"tags\": [\"c\"], \"summary\": \"  Summary number 8  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 8\", \"mixed\": 8, \"odd key\": \"v0\", \"items\": [{\"id\": \"id-0\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+          "cost_usd": 0.0028,
+          "latency_ms": 1196,
+          "finish_reason": "stop",
+          "output_tokens": 48,
+          "output_truncated": false
+        },
+        "arms": {
+          "Luna": {
+            "output": "{\"priority\": 11, \"category\": \"",
+            "cost_usd": 0.00048,
+            "latency_ms": 388,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": true
+          },
+          "Flash": {
+            "output": "{\"priority\": 7, \"category\": \"bug\", \"ok\": true, \"tags\": [\"c\"], \"summary\": \"Different summary\", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 8\", \"mixed\": \"text 8\", \"odd key\": \"v0\", \"items\": [{\"id\": \"id-0\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.03,
+            "latency_ms": 12008,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Same": {
+            "output": "{\"priority\": 10, \"category\": \"other\", \"ok\": true, \"tags\": [\"c\"], \"summary\": \"  Summary number 8  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 8\", \"mixed\": 8, \"odd key\": \"v0\", \"items\": [{\"id\": \"id-0\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.0028,
+            "latency_ms": 11400,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          }
+        }
+      },
+      {
+        "trace_id": "trace-9",
+        "status": "replayed",
+        "reason": null,
+        "input_preview": null,
+        "limitations": [],
+        "control": {
+          "output": "{\"priority\": 0, \"category\": \"bug\", \"ok\": false, \"tags\": [], \"summary\": \"  Summary number 9  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 9\", \"mixed\": 9, \"odd key\": \"v1\", \"items\": [{\"id\": \"id-1\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+          "cost_usd": 0.0029000000000000002,
+          "latency_ms": 1233,
+          "finish_reason": "stop",
+          "output_tokens": 49,
+          "output_truncated": false
+        },
+        "arms": {
+          "Luna": {
+            "output": "{\"priority\": 1, \"category\": \"bug\", \"ok\": false, \"tags\": [\"extra\"], \"summary\": \"Summary number 9\", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 9\", \"mixed\": \"text 9\", \"odd key\": \"v0\", \"items\": [{\"id\": \"id-1\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.00049,
+            "latency_ms": 399,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Flash": {
+            "output": null,
+            "cost_usd": null,
+            "latency_ms": null,
+            "finish_reason": null,
+            "output_tokens": null,
+            "error": "provider_error",
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Same": {
+            "output": "{\"priority\": 0, \"category\": \"bug\", \"ok\": false, \"tags\": [], \"summary\": \"  Summary number 9  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 9\", \"mixed\": 9, \"odd key\": \"v1\", \"items\": [{\"id\": \"id-1\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.0029000000000000002,
+            "latency_ms": 11700,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          }
+        }
+      },
+      {
+        "trace_id": "trace-10",
+        "status": "replayed",
+        "reason": null,
+        "input_preview": null,
+        "limitations": [],
+        "control": {
+          "output": "{\"priority\": 7, \"category\": \"billing\", \"ok\": true, \"tags\": [\"a\", \"b\"], \"summary\": \"  Summary number 10  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 10\", \"mixed\": 10, \"odd key\": \"v0\", \"items\": [{\"id\": \"id-2\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+          "cost_usd": 0.003,
+          "latency_ms": 1270,
+          "finish_reason": "stop",
+          "output_tokens": 50,
+          "output_truncated": false
+        },
+        "arms": {
+          "Luna": {
+            "output": "{\"priority\": 8, \"category\": \"billing\", \"ok\": true, \"tags\": [\"a\", \"b\"], \"summary\": \"Different summary\", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. changed\", \"mixed\": \"text 10\", \"odd key\": \"v0\", \"items\": [{\"id\": \"id-2\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.0005,
+            "latency_ms": 410,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Flash": {
+            "output": "{\"priority\": 4, \"category\": \"billing\", \"ok\": true, \"tags\": [\"a\", \"b\"], \"summary\": \"Different summary\", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. changed\", \"mixed\": \"text 10\", \"odd key\": \"v0\", \"items\": [{\"id\": \"id-2\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.03,
+            "latency_ms": 12010,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Same": {
+            "output": "{\"priority\": 7, \"category\": \"billing\", \"ok\": true, \"tags\": [\"a\", \"b\"], \"summary\": \"  Summary number 10  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 10\", \"mixed\": 10, \"odd key\": \"v0\", \"items\": [{\"id\": \"id-2\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.003,
+            "latency_ms": 12000,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          }
+        }
+      },
+      {
+        "trace_id": "trace-11",
+        "status": "replayed",
+        "reason": null,
+        "input_preview": null,
+        "limitations": [],
+        "control": {
+          "output": "{\"priority\": 1, \"category\": \"bug\", \"ok\": true, \"tags\": [\"q\"], \"summary\": \"  Summary number 11  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 11\", \"mixed\": 11, \"odd key\": \"v1\", \"items\": [{\"id\": \"id-3\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+          "cost_usd": 0.0031000000000000003,
+          "latency_ms": 1307,
+          "finish_reason": "stop",
+          "output_tokens": 51,
+          "output_truncated": false
+        },
+        "arms": {
+          "Luna": {
+            "output": "{\"priority\": 2, \"category\": \"bug\", \"ok\": false, \"tags\": [\"q\"], \"summary\": \"Summary number 11\", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 11\", \"mixed\": \"text 11\", \"odd key\": \"v0\", \"items\": [{\"id\": \"id-3\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.00051,
+            "latency_ms": 421,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Flash": {
+            "output": "{\"priority\": \"high\"}",
+            "cost_usd": 0.03,
+            "latency_ms": 12011,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          },
+          "Same": {
+            "output": "{\"priority\": 1, \"category\": \"bug\", \"ok\": true, \"tags\": [\"q\"], \"summary\": \"  Summary number 11  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 11\", \"mixed\": 11, \"odd key\": \"v1\", \"items\": [{\"id\": \"id-3\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+            "cost_usd": 0.0031000000000000003,
+            "latency_ms": 12300,
+            "finish_reason": "stop",
+            "output_tokens": 30,
+            "error": null,
+            "temperature_dropped": false,
+            "temperature_ignored_with_reasoning": false,
+            "response_format_dropped": false,
+            "output_truncated": false
+          }
+        }
+      },
+      {
+        "trace_id": "trace-12",
+        "status": "not_replayable",
+        "reason": "tool_messages_unsupported",
+        "input_preview": null,
+        "limitations": [],
+        "control": {
+          "output": "{\"priority\": 5, \"category\": \"other\", \"ok\": false, \"tags\": [\"r\"], \"summary\": \"  Summary number 12  \", \"body\": \"Synthetic long body text that runs well past one hundred and twenty characters so the page reads it as long text. case 12\", \"mixed\": 12, \"odd key\": \"v0\", \"items\": [{\"id\": \"id-0\"}], \"label16\": \"🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂🙂\"}",
+          "cost_usd": 0.0032,
+          "latency_ms": 1344,
+          "finish_reason": "stop",
+          "output_tokens": 52,
+          "output_truncated": false
+        },
+        "arms": {}
+      }
+    ],
+    "judge": null
+  },
+  "equivalence": {
+    "treatments": [
+      {
+        "label": "Luna",
+        "cases": 12,
+        "sample_note": null,
+        "cost": {
+          "value": 0.000455,
+          "control": 0.00255,
+          "delta": "82% lower",
+          "sentence": "Luna costs $0.00046 a call against $0.0026 for control over the same 12 cases (82% lower)."
+        },
+        "latency": {
+          "value": 360.5,
+          "control": null,
+          "delta": null,
+          "sentence": "Luna takes a median 361 ms. Production's recorded latency is not timed the way a replay is, so it is not compared; replay the control to compare latency."
+        },
+        "fields": [
+          {
+            "path": "$.priority",
+            "kind": "number",
+            "pairs": 11,
+            "missing": 2,
+            "matched": null,
+            "rate": null,
+            "overlap": null,
+            "median_difference": 1,
+            "middle_halves_overlap": true,
+            "sentence": "Luna differs from control by a median +1 per call across 11 cases; the middle halves of the two overlap. 2 cases had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.category",
+            "kind": "label",
+            "pairs": 12,
+            "missing": 1,
+            "matched": 10,
+            "rate": 0.8333333333333334,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Luna gives the same label as control on 10 of 12 cases. 1 case had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.ok",
+            "kind": "label",
+            "pairs": 12,
+            "missing": 1,
+            "matched": 6,
+            "rate": 0.5,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Luna gives the same label as control on 6 of 12 cases. 1 case had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.tags",
+            "kind": "list",
+            "pairs": 12,
+            "missing": 1,
+            "matched": null,
+            "rate": null,
+            "overlap": 0.8194444444444443,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Luna shares 82% of list items with control on average across 12 cases. 1 case had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.summary",
+            "kind": "text",
+            "pairs": 12,
+            "missing": 1,
+            "matched": 6,
+            "rate": 0.5,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Luna matches control exactly on 6 of 12 cases. 1 case had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.body",
+            "kind": "long_text",
+            "pairs": 12,
+            "missing": 1,
+            "matched": 9,
+            "rate": 0.75,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Luna matches control exactly on 9 of 12 cases. 1 case had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.mixed",
+            "kind": "mixed",
+            "pairs": 12,
+            "missing": 1,
+            "matched": null,
+            "rate": null,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Luna returns values of more than one type here, so they are listed per case only. 1 case had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.absent",
+            "kind": "empty",
+            "pairs": 0,
+            "missing": 13,
+            "matched": null,
+            "rate": null,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "No case has a value on both sides yet. 13 cases had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$[\"odd key\"]",
+            "kind": "label",
+            "pairs": 12,
+            "missing": 1,
+            "matched": 6,
+            "rate": 0.5,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Luna gives the same label as control on 6 of 12 cases. 1 case had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.items[0].id",
+            "kind": "label",
+            "pairs": 12,
+            "missing": 1,
+            "matched": 12,
+            "rate": 1,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Luna gives the same label as control on 12 of 12 cases. 1 case had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.label16",
+            "kind": "text",
+            "pairs": 10,
+            "missing": 3,
+            "matched": 10,
+            "rate": 1,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Luna matches control exactly on 10 of 10 cases. 3 cases had no value on one side.",
+            "noise_floor": null
+          }
+        ],
+        "similarity": null
+      },
+      {
+        "label": "Flash",
+        "cases": 7,
+        "sample_note": "Only 7 cases, too few for a range (a range needs 10).",
+        "cost": {
+          "value": 0.03,
+          "control": 0.00255714,
+          "delta": "12× control",
+          "sentence": "Flash costs $0.030 a call against $0.0026 for control over the same 7 cases (12× control)."
+        },
+        "latency": {
+          "value": 12004,
+          "control": null,
+          "delta": null,
+          "sentence": "Flash takes a median 12 s. Production's recorded latency is not timed the way a replay is, so it is not compared; replay the control to compare latency."
+        },
+        "fields": [
+          {
+            "path": "$.priority",
+            "kind": "mixed",
+            "pairs": 6,
+            "missing": 7,
+            "matched": null,
+            "rate": null,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Flash returns values of more than one type here, so they are listed per case only. 7 cases had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.category",
+            "kind": "label",
+            "pairs": 6,
+            "missing": 7,
+            "matched": 5,
+            "rate": 0.8333333333333334,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Flash gives the same label as control on 5 of 6 cases. 7 cases had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.ok",
+            "kind": "label",
+            "pairs": 6,
+            "missing": 7,
+            "matched": 5,
+            "rate": 0.8333333333333334,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Flash gives the same label as control on 5 of 6 cases. 7 cases had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.tags",
+            "kind": "list",
+            "pairs": 6,
+            "missing": 7,
+            "matched": null,
+            "rate": null,
+            "overlap": 0.9444444444444443,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Flash shares 94% of list items with control on average across 6 cases. 7 cases had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.summary",
+            "kind": "text",
+            "pairs": 6,
+            "missing": 7,
+            "matched": 2,
+            "rate": 0.3333333333333333,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Flash matches control exactly on 2 of 6 cases. 7 cases had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.body",
+            "kind": "long_text",
+            "pairs": 6,
+            "missing": 7,
+            "matched": 5,
+            "rate": 0.8333333333333334,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Flash matches control exactly on 5 of 6 cases. 7 cases had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.mixed",
+            "kind": "mixed",
+            "pairs": 6,
+            "missing": 7,
+            "matched": null,
+            "rate": null,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Flash returns values of more than one type here, so they are listed per case only. 7 cases had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.absent",
+            "kind": "empty",
+            "pairs": 0,
+            "missing": 13,
+            "matched": null,
+            "rate": null,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "No case has a value on both sides yet. 13 cases had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$[\"odd key\"]",
+            "kind": "label",
+            "pairs": 6,
+            "missing": 7,
+            "matched": 4,
+            "rate": 0.6666666666666666,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Flash gives the same label as control on 4 of 6 cases. 7 cases had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.items[0].id",
+            "kind": "label",
+            "pairs": 6,
+            "missing": 7,
+            "matched": 6,
+            "rate": 1,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Flash gives the same label as control on 6 of 6 cases. 7 cases had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.label16",
+            "kind": "text",
+            "pairs": 5,
+            "missing": 8,
+            "matched": 5,
+            "rate": 1,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Flash matches control exactly on 5 of 5 cases. 8 cases had no value on one side.",
+            "noise_floor": null
+          }
+        ],
+        "similarity": null
+      },
+      {
+        "label": "Same",
+        "cases": 12,
+        "sample_note": null,
+        "cost": {
+          "value": 0.00255,
+          "control": 0.00255,
+          "delta": "same",
+          "sentence": "Same costs $0.0026 a call against $0.0026 for control over the same 12 cases (the same)."
+        },
+        "latency": {
+          "value": 10650,
+          "control": null,
+          "delta": null,
+          "sentence": "Same takes a median 11 s. Production's recorded latency is not timed the way a replay is, so it is not compared; replay the control to compare latency."
+        },
+        "fields": [
+          {
+            "path": "$.priority",
+            "kind": "number",
+            "pairs": 12,
+            "missing": 1,
+            "matched": null,
+            "rate": null,
+            "overlap": null,
+            "median_difference": 0,
+            "middle_halves_overlap": true,
+            "sentence": "Same differs from control by a median 0 per call across 12 cases; the middle halves of the two overlap. 1 case had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.category",
+            "kind": "label",
+            "pairs": 12,
+            "missing": 1,
+            "matched": 12,
+            "rate": 1,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Same gives the same label as control on 12 of 12 cases. 1 case had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.ok",
+            "kind": "label",
+            "pairs": 12,
+            "missing": 1,
+            "matched": 12,
+            "rate": 1,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Same gives the same label as control on 12 of 12 cases. 1 case had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.tags",
+            "kind": "list",
+            "pairs": 12,
+            "missing": 1,
+            "matched": null,
+            "rate": null,
+            "overlap": 1,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Same shares 100% of list items with control on average across 12 cases. 1 case had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.summary",
+            "kind": "text",
+            "pairs": 12,
+            "missing": 1,
+            "matched": 12,
+            "rate": 1,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Same matches control exactly on 12 of 12 cases. 1 case had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.body",
+            "kind": "long_text",
+            "pairs": 12,
+            "missing": 1,
+            "matched": 12,
+            "rate": 1,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Same matches control exactly on 12 of 12 cases. 1 case had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.mixed",
+            "kind": "number",
+            "pairs": 12,
+            "missing": 1,
+            "matched": null,
+            "rate": null,
+            "overlap": null,
+            "median_difference": 0,
+            "middle_halves_overlap": true,
+            "sentence": "Same differs from control by a median 0 per call across 12 cases; the middle halves of the two overlap. 1 case had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.absent",
+            "kind": "empty",
+            "pairs": 0,
+            "missing": 13,
+            "matched": null,
+            "rate": null,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "No case has a value on both sides yet. 13 cases had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$[\"odd key\"]",
+            "kind": "label",
+            "pairs": 12,
+            "missing": 1,
+            "matched": 12,
+            "rate": 1,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Same gives the same label as control on 12 of 12 cases. 1 case had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.items[0].id",
+            "kind": "label",
+            "pairs": 12,
+            "missing": 1,
+            "matched": 12,
+            "rate": 1,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Same gives the same label as control on 12 of 12 cases. 1 case had no value on one side.",
+            "noise_floor": null
+          },
+          {
+            "path": "$.label16",
+            "kind": "text",
+            "pairs": 11,
+            "missing": 2,
+            "matched": 11,
+            "rate": 1,
+            "overlap": null,
+            "median_difference": null,
+            "middle_halves_overlap": null,
+            "sentence": "Same matches control exactly on 11 of 11 cases. 2 cases had no value on one side.",
+            "noise_floor": null
+          }
+        ],
+        "similarity": null
+      }
+    ]
+  },
+  "formats": {
+    "usd": [
+      [
+        0,
+        "$0"
+      ],
+      [
+        0.000123456,
+        "$0.00012"
+      ],
+      [
+        1.234e-7,
+        "$1.2e-7"
+      ],
+      [
+        0.00125,
+        "$0.0013"
+      ],
+      [
+        0.0099999,
+        "$0.01"
+      ],
+      [
+        0.0125,
+        "$0.013"
+      ],
+      [
+        0.125,
+        "$0.125"
+      ],
+      [
+        1.005,
+        "$1.00"
+      ],
+      [
+        1.125,
+        "$1.13"
+      ],
+      [
+        2.5,
+        "$2.50"
+      ],
+      [
+        99.995,
+        "$100.00"
+      ],
+      [
+        100.5,
+        "$101"
+      ],
+      [
+        12345.5,
+        "$12,346"
+      ],
+      [
+        -0.5,
+        "$-0.5"
+      ]
+    ],
+    "ms": [
+      [
+        0.5,
+        "1 ms"
+      ],
+      [
+        1.5,
+        "2 ms"
+      ],
+      [
+        999.5,
+        "1000 ms"
+      ],
+      [
+        1000,
+        "1.0 s"
+      ],
+      [
+        1049.99,
+        "1.0 s"
+      ],
+      [
+        1050,
+        "1.1 s"
+      ],
+      [
+        9999,
+        "10.0 s"
+      ],
+      [
+        10000,
+        "10 s"
+      ],
+      [
+        10500,
+        "11 s"
+      ],
+      [
+        123456,
+        "123 s"
+      ]
+    ],
+    "signed": [
+      [
+        0,
+        "0"
+      ],
+      [
+        1,
+        "+1"
+      ],
+      [
+        -1,
+        "−1"
+      ],
+      [
+        0.125,
+        "+0.13"
+      ],
+      [
+        -0.005,
+        "−0.01"
+      ],
+      [
+        0.015,
+        "+0.01"
+      ],
+      [
+        2.5,
+        "+2.50"
+      ],
+      [
+        12.25,
+        "+12.3"
+      ],
+      [
+        -12.35,
+        "−12.3"
+      ],
+      [
+        100.5,
+        "+101"
+      ],
+      [
+        1234,
+        "+1,234"
+      ],
+      [
+        -1234567,
+        "−1,234,567"
+      ],
+      [
+        1e-7,
+        "+0.00"
+      ]
+    ],
+    "percent": [
+      [
+        0,
+        "0%"
+      ],
+      [
+        0.005,
+        "1%"
+      ],
+      [
+        0.015,
+        "2%"
+      ],
+      [
+        0.125,
+        "13%"
+      ],
+      [
+        0.995,
+        "100%"
+      ],
+      [
+        1,
+        "100%"
+      ],
+      [
+        0.8194444444444443,
+        "82%"
+      ]
+    ],
+    "count": [
+      [
+        0,
+        "0"
+      ],
+      [
+        0.5,
+        "1"
+      ],
+      [
+        1.5,
+        "2"
+      ],
+      [
+        999.5,
+        "1,000"
+      ],
+      [
+        1234567.4,
+        "1,234,567"
+      ]
+    ],
+    "sample_note": [
+      [
+        null,
+        null
+      ],
+      [
+        0,
+        "No case has returned on both sides yet."
+      ],
+      [
+        1,
+        "Only 1 case, too few for a range (a range needs 10)."
+      ],
+      [
+        9,
+        "Only 9 cases, too few for a range (a range needs 10)."
+      ],
+      [
+        10,
+        null
+      ],
+      [
+        40,
+        null
+      ]
+    ]
+  }
+}
