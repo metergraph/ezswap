@@ -1,0 +1,455 @@
+{
+ "about": "Estimate and upper-bound conformance: expected numbers computed by the hosted product's estimate and reservation functions from the same prices.yaml. Generated; never edit expected values by hand.",
+ "catalog": {
+  "commit": "e0d9203fd42d85a341ab339d9c2178bd526f5b67"
+ },
+ "at": "2026-10-20T12:00:00Z",
+ "cases": [
+  {
+   "id": "c1",
+   "traceId": null,
+   "ts": null,
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-6-luna",
+   "system": "You are a careful assistant.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "What is the capital of France?"
+    }
+   ],
+   "responseFormat": null,
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": null,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "synthetic",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 41,
+     "outputTokens": 12,
+     "cachedInputTokens": null,
+     "reasoningTokens": null
+    },
+    "costUsd": null,
+    "latencyMs": null
+   },
+   "inputPreview": null,
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "c2",
+   "traceId": null,
+   "ts": null,
+   "source": "replay-jsonl",
+   "provider": "anthropic",
+   "model": "claude-sonnet-5-5",
+   "system": null,
+   "messages": [
+    {
+     "role": "user",
+     "content": "Héllo, café ☕ and 日本語 text."
+    },
+    {
+     "role": "assistant",
+     "content": "Bonjour."
+    },
+    {
+     "role": "user",
+     "content": "Now answer in JSON."
+    }
+   ],
+   "responseFormat": {
+    "type": "json_schema",
+    "json_schema": {
+     "name": "answer",
+     "strict": true,
+     "schema": {
+      "type": "object",
+      "properties": {
+       "text": {
+        "type": "string",
+        "description": "Réponse"
+       }
+      },
+      "required": [
+       "text"
+      ],
+      "additionalProperties": false
+     }
+    }
+   },
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": 1000,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "synthetic",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": null,
+     "outputTokens": null,
+     "cachedInputTokens": null,
+     "reasoningTokens": null
+    },
+    "costUsd": null,
+    "latencyMs": null
+   },
+   "inputPreview": null,
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "c3",
+   "traceId": null,
+   "ts": null,
+   "source": "replay-jsonl",
+   "provider": "vercel",
+   "model": "openai/gpt-6-sol",
+   "system": "Extract fields.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. Summarise the following support ticket in two sentences. "
+    }
+   ],
+   "responseFormat": null,
+   "forcedTool": {
+    "name": "record_ticket",
+    "description": "Record a ticket’s fields",
+    "parameters": {
+     "type": "object",
+     "properties": {
+      "priority": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 5
+      },
+      "summary": {
+       "type": "string"
+      }
+     },
+     "required": [
+      "priority",
+      "summary"
+     ]
+    }
+   },
+   "params": {
+    "temperature": null,
+    "maxTokens": 2000,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "synthetic",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 900,
+     "outputTokens": 3000,
+     "cachedInputTokens": null,
+     "reasoningTokens": null
+    },
+    "costUsd": null,
+    "latencyMs": null
+   },
+   "inputPreview": null,
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "c4",
+   "traceId": null,
+   "ts": null,
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-6-luna",
+   "system": null,
+   "messages": [
+    {
+     "role": "user",
+     "content": "short"
+    }
+   ],
+   "responseFormat": null,
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": null,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "synthetic",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 50000,
+     "outputTokens": 200,
+     "cachedInputTokens": null,
+     "reasoningTokens": null
+    },
+    "costUsd": null,
+    "latencyMs": null
+   },
+   "inputPreview": null,
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": null
+  },
+  {
+   "id": "c5",
+   "traceId": null,
+   "ts": null,
+   "source": "replay-jsonl",
+   "provider": "openai",
+   "model": "gpt-6-luna",
+   "system": "You are a careful assistant.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "What is the capital of France?"
+    }
+   ],
+   "responseFormat": null,
+   "forcedTool": null,
+   "params": {
+    "temperature": null,
+    "maxTokens": null,
+    "topP": null,
+    "stop": null,
+    "reasoningEffort": null
+   },
+   "webSearch": false,
+   "production": {
+    "output": "synthetic",
+    "finishReason": "stop",
+    "refusal": false,
+    "usage": {
+     "inputTokens": 41,
+     "outputTokens": 12,
+     "cachedInputTokens": null,
+     "reasoningTokens": null
+    },
+    "costUsd": null,
+    "latencyMs": null
+   },
+   "inputPreview": null,
+   "fidelity": "full",
+   "missing": [],
+   "notReplayable": "tool_history"
+  }
+ ],
+ "treatments": [
+  {
+   "id": "t1",
+   "label": "Luna",
+   "model": "openai/gpt-6-luna",
+   "settings": {
+    "temperature": null,
+    "maxTokens": null,
+    "reasoningEffort": null
+   },
+   "endpoint": "vercel"
+  },
+  {
+   "id": "t2",
+   "label": "Sonnet capped",
+   "model": "anthropic/claude-sonnet-5.5",
+   "settings": {
+    "temperature": 0.2,
+    "maxTokens": 600,
+    "reasoningEffort": null
+   },
+   "endpoint": "vercel"
+  },
+  {
+   "id": "t3",
+   "label": "Sol high effort",
+   "model": "openai/gpt-6-sol",
+   "settings": {
+    "temperature": null,
+    "maxTokens": 8000,
+    "reasoningEffort": "high"
+   },
+   "endpoint": "vercel"
+  }
+ ],
+ "expected": {
+  "expectedUsd": "0.5920",
+  "upperBoundUsd": "0.65940260",
+  "perArm": {
+   "t1": {
+    "expectedUsd": 0.0108,
+    "upperBoundUsd": "0.01093180"
+   },
+   "t2": {
+    "expectedUsd": 0.1538,
+    "upperBoundUsd": "0.13071600"
+   },
+   "t3": {
+    "expectedUsd": 0.3324,
+    "upperBoundUsd": "0.42671600"
+   }
+  },
+  "floor": {
+   "models": [
+    "openai/gpt-6-luna",
+    "anthropic/claude-sonnet-5.5",
+    "openai/gpt-6-sol",
+    "openai/gpt-6-luna"
+   ],
+   "expectedUsd": 0.095,
+   "upperBoundUsdPerReplay": "0.04551940"
+  },
+  "calls": [
+   {
+    "arm": "t1",
+    "case": "c1",
+    "model": "openai/gpt-6-luna",
+    "maxTokens": 4096,
+    "inputBound": 154,
+    "upperBoundUsd": "0.00206340"
+   },
+   {
+    "arm": "t1",
+    "case": "c2",
+    "model": "openai/gpt-6-luna",
+    "maxTokens": 1000,
+    "inputBound": 424,
+    "upperBoundUsd": "0.00054240"
+   },
+   {
+    "arm": "t1",
+    "case": "c3",
+    "model": "openai/gpt-6-luna",
+    "maxTokens": 2000,
+    "inputBound": 2780,
+    "upperBoundUsd": "0.00127800"
+   },
+   {
+    "arm": "t1",
+    "case": "c4",
+    "model": "openai/gpt-6-luna",
+    "maxTokens": 4096,
+    "inputBound": 50000,
+    "upperBoundUsd": "0.00704800"
+   },
+   {
+    "arm": "t2",
+    "case": "c1",
+    "model": "anthropic/claude-sonnet-5.5",
+    "maxTokens": 600,
+    "inputBound": 154,
+    "upperBoundUsd": "0.00630800"
+   },
+   {
+    "arm": "t2",
+    "case": "c2",
+    "model": "anthropic/claude-sonnet-5.5",
+    "maxTokens": 600,
+    "inputBound": 424,
+    "upperBoundUsd": "0.00684800"
+   },
+   {
+    "arm": "t2",
+    "case": "c3",
+    "model": "anthropic/claude-sonnet-5.5",
+    "maxTokens": 600,
+    "inputBound": 2780,
+    "upperBoundUsd": "0.01156000"
+   },
+   {
+    "arm": "t2",
+    "case": "c4",
+    "model": "anthropic/claude-sonnet-5.5",
+    "maxTokens": 600,
+    "inputBound": 50000,
+    "upperBoundUsd": "0.10600000"
+   },
+   {
+    "arm": "t3",
+    "case": "c1",
+    "model": "openai/gpt-6-sol",
+    "maxTokens": 8000,
+    "inputBound": 154,
+    "upperBoundUsd": "0.08030800"
+   },
+   {
+    "arm": "t3",
+    "case": "c2",
+    "model": "openai/gpt-6-sol",
+    "maxTokens": 8000,
+    "inputBound": 424,
+    "upperBoundUsd": "0.08084800"
+   },
+   {
+    "arm": "t3",
+    "case": "c3",
+    "model": "openai/gpt-6-sol",
+    "maxTokens": 8000,
+    "inputBound": 2780,
+    "upperBoundUsd": "0.08556000"
+   },
+   {
+    "arm": "t3",
+    "case": "c4",
+    "model": "openai/gpt-6-sol",
+    "maxTokens": 8000,
+    "inputBound": 50000,
+    "upperBoundUsd": "0.18000000"
+   },
+   {
+    "arm": "floor",
+    "case": "c1",
+    "model": "openai/gpt-6-luna",
+    "maxTokens": 4096,
+    "upperBoundUsd": "0.00206340"
+   },
+   {
+    "arm": "floor",
+    "case": "c2",
+    "model": "anthropic/claude-sonnet-5.5",
+    "maxTokens": 1000,
+    "upperBoundUsd": "0.01084800"
+   },
+   {
+    "arm": "floor",
+    "case": "c3",
+    "model": "openai/gpt-6-sol",
+    "maxTokens": 2000,
+    "upperBoundUsd": "0.02556000"
+   },
+   {
+    "arm": "floor",
+    "case": "c4",
+    "model": "openai/gpt-6-luna",
+    "maxTokens": 4096,
+    "upperBoundUsd": "0.00704800"
+   }
+  ]
+ }
+}
