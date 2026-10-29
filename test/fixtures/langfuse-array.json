@@ -1,0 +1,32 @@
+[
+  {
+    "id": "lfa-1",
+    "traceId": "lfa-trace-1",
+    "type": "GENERATION",
+    "startTime": "2026-03-05T09:00:00.000Z",
+    "endTime": "2026-03-05T09:00:00.800Z",
+    "model": "gpt-4o-mini",
+    "modelParameters": { "temperature": 0 },
+    "input": [{ "role": "user", "content": "Spell 'example' backwards." }],
+    "output": { "role": "assistant", "content": "elpmaxe" },
+    "usageDetails": { "input": 9, "output": 3 }
+  },
+  {
+    "id": "lfa-2",
+    "traceId": "lfa-trace-1",
+    "type": "EVENT",
+    "startTime": "2026-03-05T09:00:01.000Z",
+    "input": null,
+    "output": null
+  },
+  {
+    "id": "lfa-3",
+    "traceId": "lfa-trace-2",
+    "type": "GENERATION",
+    "startTime": "2026-03-05T09:05:00.000Z",
+    "endTime": "2026-03-05T09:05:01.000Z",
+    "model": "gpt-4o-mini",
+    "input": [{ "role": "user", "content": "Count to three." }],
+    "output": { "role": "assistant", "content": "1, 2, 3" }
+  }
+]
