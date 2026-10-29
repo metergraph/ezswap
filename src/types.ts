@@ -249,7 +249,16 @@ export interface RunFile {
   schema: "metergraph.replay-run/v1";
   createdAt: string;
   tool: { name: "metergraph-replay"; version: string };
-  input: { file: string; adapter: string };
+  input: {
+    file: string;
+    adapter: string;
+    /**
+     * Optional: every call the input file held before sampling, and the
+     * first and last timestamps among them. The report projects a monthly
+     * cost from it (calls a day times 30); without it, no projection.
+     */
+    traffic?: { calls: number; from: string | null; to: string | null } | null;
+  };
   catalog: { version: string };
   settings: {
     sample: number;
