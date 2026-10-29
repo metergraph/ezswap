@@ -1,0 +1,246 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { EXIT, HELP, main, type CliIo } from "../src/cli/main.ts";
+import type { FetchLike } from "../src/providers/index.ts";
+import { chatReply, tempDir, writeTraces } from "./run-helpers.ts";
+
+const KEY = "sk-or-test-not-a-real-key-4242";
+const OTHER_KEY = "sk-openai-test-not-a-real-key-7777";
+const NOW = () => new Date("2026-10-28T12:00:00.000Z");
+
+interface Captured {
+  code: number;
+  stdout: string;
+  stderr: string;
+  fetches: number;
+  bodies: string[];
+}
+
+async function cli(argv: string[], io: Partial<CliIo> = {}, reply: () => Response = () => okResponse()): Promise<Captured> {
+  let stdout = "";
+  let stderr = "";
+  let fetches = 0;
+  const bodies: string[] = [];
+  const fetch: FetchLike = async (_url, init) => {
+    fetches++;
+    bodies.push(String(init.body));
+    return reply();
+  };
+  const code = await main(argv, {
+    stdout: { write: (text: string) => (stdout += text) },
+    stderr: { write: (text: string) => (stderr += text) },
+    stdinIsTTY: false,
+    env: { OPENROUTER_API_KEY: KEY },
+    fetch,
+    now: NOW,
+    signal: new AbortController().signal,
+    ...io,
+  });
+  return { code, stdout, stderr, fetches, bodies };
+}
+
+function okResponse(cost?: number): Response {
+  const body = chatReply('{"category":"bug"}', cost === undefined ? {} : { cost });
+  return new Response(JSON.stringify(body), { status: 200, headers: { "content-type": "application/json" } });
+}
+
+const MODELS = ["--models", "google/gemini-2.5-flash-lite"];
+
+test("--help and --version exit 0; a bad option is a usage error", async () => {
+  const help = await cli(["--help"]);
+  assert.equal(help.code, EXIT.ok);
+  assert.equal(help.stdout, HELP);
+  for (const code of ["0", "1", "2", "3", "4", "5", "6"]) assert.match(HELP, new RegExp(`^  ${code}  `, "m"));
+  assert.doesNotMatch(HELP, /—/);
+  const version = await cli(["--version"]);
+  assert.equal(version.code, EXIT.ok);
+  assert.match(version.stdout, /^\d+\.\d+\.\d+\n$/);
+  const bad = await cli(["run", "x.jsonl", "--frobnicate"]);
+  assert.equal(bad.code, EXIT.usage);
+  const none = await cli([]);
+  assert.equal(none.code, EXIT.usage);
+  const unknown = await cli(["fly"]);
+  assert.equal(unknown.code, EXIT.usage);
+});
+
+test("estimate explains the run and makes no provider call", async () => {
+  const file = writeTraces(tempDir(), 4, (n) => (n === 4 ? { truncated: true } : {}));
+  const out = await cli(["estimate", file, ...MODELS]);
+  assert.equal(out.code, EXIT.ok);
+  assert.equal(out.fetches, 0);
+  assert.match(out.stdout, /3 can be replayed, 1 cannot/);
+  assert.match(out.stdout, /1 because the captured content was cut short/);
+  assert.match(out.stdout, /Expected spend: about \$/);
+  assert.match(out.stdout, /Most it can spend: \$/);
+  assert.doesNotMatch(out.stdout, /—/);
+});
+
+test("estimate --json prints exactly one JSON object", async () => {
+  const file = writeTraces(tempDir(), 3);
+  const out = await cli(["estimate", file, ...MODELS, "--json", "--endpoint", "openai"], { env: {} });
+  assert.equal(out.code, EXIT.ok);
+  const lines = out.stdout.trim().split("\n");
+  assert.equal(lines.length, 1);
+  const json = JSON.parse(lines[0]!);
+  assert.equal(json.ok, true);
+  assert.equal(json.command, "estimate");
+  assert.equal(json.estimate.replayable, 3);
+  assert.deepEqual(json.notes, ["OPENAI_API_KEY is not set; run will need it."]);
+  assert.equal(out.stderr, "");
+});
+
+test("no replayable cases exits 3", async () => {
+  const file = writeTraces(tempDir(), 2, () => ({ truncated: true }));
+  assert.equal((await cli(["estimate", file, ...MODELS])).code, EXIT.noReplayableCases);
+  const run = await cli(["run", file, ...MODELS, "--yes", "--json"]);
+  assert.equal(run.code, EXIT.noReplayableCases);
+  assert.equal(JSON.parse(run.stdout).error.code, "no_replayable_cases");
+  assert.equal(run.fetches, 0);
+});
+
+test("run refuses without a terminal and without --yes, and sends nothing", async () => {
+  const file = writeTraces(tempDir(), 2);
+  const out = await cli(["run", file, ...MODELS, "--out", tempDir()]);
+  assert.equal(out.code, EXIT.refused);
+  assert.equal(out.fetches, 0);
+  assert.match(out.stderr, /--yes/);
+});
+
+test("run asks on a terminal, and a no sends nothing", async () => {
+  const file = writeTraces(tempDir(), 2);
+  let asked = "";
+  const out = await cli(["run", file, ...MODELS, "--out", tempDir()], {
+    stdinIsTTY: true,
+    confirm: async (question) => {
+      asked = question;
+      return false;
+    },
+  });
+  assert.match(asked, /^Spend up to \$/);
+  assert.equal(out.code, EXIT.refused);
+  assert.equal(out.fetches, 0);
+});
+
+test("run refuses an expected spend over the budget, and unpriced models without --allow-unpriced", async () => {
+  const file = writeTraces(tempDir(), 3);
+  const over = await cli(["run", file, ...MODELS, "--budget", "0", "--yes", "--json"]);
+  assert.equal(over.code, EXIT.refused);
+  assert.equal(JSON.parse(over.stdout).error.code, "over_budget");
+  const unpriced = await cli(["run", file, "--models", "example/unknown-model", "--yes", "--json"]);
+  assert.equal(unpriced.code, EXIT.refused);
+  assert.equal(JSON.parse(unpriced.stdout).error.code, "unpriced_models");
+  assert.equal(over.fetches + unpriced.fetches, 0);
+});
+
+test("a missing key exits 5, names the variable, and never prints a key", async () => {
+  const file = writeTraces(tempDir(), 2);
+  const out = await cli(
+    ["run", file, "--models", "openai:gpt-5-mini,google/gemini-2.5-flash-lite", "--yes"],
+    { env: { OPENAI_API_KEY: OTHER_KEY } },
+  );
+  assert.equal(out.code, EXIT.providerConfig);
+  assert.match(out.stderr, /OPENROUTER_API_KEY is not set/);
+  assert.equal(out.fetches, 0);
+  for (const text of [out.stdout, out.stderr]) {
+    assert.ok(!text.includes(OTHER_KEY));
+    assert.ok(!text.includes(KEY));
+  }
+  const json = await cli(["run", file, ...MODELS, "--yes", "--json"], { env: {} });
+  assert.equal(json.code, EXIT.providerConfig);
+  assert.equal(JSON.parse(json.stdout).error.code, "credential_missing");
+});
+
+test("run --yes replays, writes run.json and report.html without the key, and prints the hosted link", async () => {
+  const file = writeTraces(tempDir(), 2);
+  const out = tempDir();
+  const result = await cli(["run", file, ...MODELS, "--yes", "--out", out, "--track", "$.category"], {}, () => okResponse(0.00002));
+  assert.equal(result.code, EXIT.ok, result.stderr);
+  assert.equal(result.fetches, 6);
+  const runText = readFileSync(join(out, "run.json"), "utf8");
+  assert.ok(!runText.includes(KEY));
+  assert.ok(!result.stdout.includes(KEY));
+  const run = JSON.parse(runText);
+  assert.equal(run.replays.length, 6);
+  assert.ok(run.replays.every((r: { costSource: string }) => r.costSource === "endpoint"));
+  assert.deepEqual(run.settings.trackedFields, ["$.category"]);
+  assert.ok(existsSync(join(out, "report.html")));
+  assert.match(result.stdout, /Keep this comparison running on live traffic: \S*utm_medium=cli/);
+  // Production's settings travel with the replay.
+  assert.equal(JSON.parse(result.bodies[0]!).temperature, 0.2);
+});
+
+test("run --temperature and --max-tokens apply to every treatment", async () => {
+  const file = writeTraces(tempDir(), 1);
+  const out = tempDir();
+  const result = await cli(
+    ["run", file, ...MODELS, "--temperature", "0.7", "--max-tokens", "64", "--no-noise-floor", "--yes", "--out", out, "--json"],
+  );
+  assert.equal(result.code, EXIT.ok);
+  const body = JSON.parse(result.bodies[0]!);
+  assert.equal(body.temperature, 0.7);
+  assert.equal(body.max_tokens, 64);
+  assert.equal(result.fetches, 1);
+  const json = JSON.parse(result.stdout);
+  assert.deepEqual(json.replays, { ok: 1, failed: 0, skipped: 0 });
+});
+
+test("a run stopped early by the budget exits 6", async () => {
+  const file = writeTraces(tempDir(), 5);
+  const out = tempDir();
+  // The endpoint reports more than any reservation, so the first settled call stops the run.
+  const result = await cli(
+    ["run", file, ...MODELS, "--yes", "--out", out, "--json", "--concurrency", "1"],
+    {},
+    () => okResponse(0.5),
+  );
+  assert.equal(result.code, EXIT.stoppedEarly);
+  const json = JSON.parse(result.stdout);
+  assert.equal(json.stopped, "reservation_exceeded");
+  assert.equal(result.fetches, 1);
+  assert.ok(existsSync(join(out, "run.json")));
+});
+
+test("an interrupted run writes what exists and exits 6", async () => {
+  const file = writeTraces(tempDir(), 3);
+  const out = tempDir();
+  const stop = new AbortController();
+  const result = await cli(
+    ["run", file, ...MODELS, "--yes", "--out", out, "--json", "--concurrency", "1"],
+    { signal: stop.signal },
+    () => {
+      stop.abort();
+      return okResponse();
+    },
+  );
+  assert.equal(result.code, EXIT.stoppedEarly);
+  assert.equal(JSON.parse(result.stdout).stopped, "interrupted");
+  const run = JSON.parse(readFileSync(join(out, "run.json"), "utf8"));
+  assert.equal(run.replays.filter((r: { status: string }) => r.status === "ok").length, 1);
+});
+
+test("demo needs no key and no network, and report re-renders a run", async () => {
+  const out = tempDir();
+  const demo = await cli(["demo", "--out", out, "--json"], { env: {} });
+  assert.equal(demo.code, EXIT.ok);
+  assert.equal(demo.fetches, 0);
+  const json = JSON.parse(demo.stdout);
+  assert.ok(existsSync(json.runFile) && existsSync(json.report));
+  const run = JSON.parse(readFileSync(json.runFile, "utf8"));
+  assert.equal(run.schema, "metergraph.replay-run/v1");
+  assert.ok(run.replays.length > 0);
+
+  const again = tempDir();
+  const report = await cli(["report", json.runFile, "--out", again]);
+  assert.equal(report.code, EXIT.ok);
+  assert.ok(existsSync(join(again, "report.html")));
+  const missing = await cli(["report", join(again, "nope.json")]);
+  assert.equal(missing.code, EXIT.usage);
+});
+
+test("a missing trace file is a usage error", async () => {
+  const out = await cli(["estimate", join(tempDir(), "missing.jsonl"), ...MODELS, "--json"]);
+  assert.equal(out.code, EXIT.usage);
+  assert.equal(JSON.parse(out.stdout).error.code, "file_not_found");
+});
