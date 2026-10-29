@@ -139,6 +139,17 @@ function namesResponseFormat(detail: string): boolean {
   return /response_format|response format|responseformat|json_schema|json schema/.test(detail);
 }
 
+/**
+ * A signal that aborts with a TimeoutError after `ms`. Unlike
+ * AbortSignal.timeout, its timer keeps the process alive until it fires or
+ * is cleared, so a hung request always ends as a timeout.
+ */
+function deadline(ms: number): { signal: AbortSignal; clear: () => void } {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(new DOMException("The request timed out.", "TimeoutError")), ms);
+  return { signal: controller.signal, clear: () => clearTimeout(timer) };
+}
+
 function isTimeout(error: unknown): boolean {
   const name = (error as { name?: unknown } | null)?.name;
   return name === "TimeoutError";
@@ -148,93 +159,98 @@ export async function post(url: string, payload: Record<string, unknown>, option
   const data = JSON.stringify(payload);
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
     if (options.signal?.aborted) throw new CallFailed("aborted", "the call was cancelled before it was sent");
-    const timeout = AbortSignal.timeout(options.timeoutMs);
-    const signal = options.signal ? AbortSignal.any([options.signal, timeout]) : timeout;
-    const started = options.now();
-    let response: Response;
+    const limit = deadline(options.timeoutMs);
     try {
-      response = await options.fetch(url, {
-        method: "POST",
-        headers: { "content-type": "application/json", ...options.headers },
-        body: data,
-        signal,
-      });
-    } catch (error) {
-      if (neverSent(error)) {
-        if (attempt < MAX_ATTEMPTS) {
-          options.onRetry?.();
-          await options.sleep(2000 * attempt);
-          continue;
+      const timeout = limit.signal;
+      const signal = options.signal ? AbortSignal.any([options.signal, timeout]) : timeout;
+      const started = options.now();
+      let response: Response;
+      try {
+        response = await options.fetch(url, {
+          method: "POST",
+          headers: { "content-type": "application/json", ...options.headers },
+          body: data,
+          signal,
+        });
+      } catch (error) {
+        if (neverSent(error)) {
+          if (attempt < MAX_ATTEMPTS) {
+            options.onRetry?.();
+            await options.sleep(2000 * attempt);
+            continue;
+          }
+          throw new CallFailed("provider_unreachable", "the endpoint could not be reached");
         }
-        throw new CallFailed("provider_unreachable", "the endpoint could not be reached");
+        if (options.signal?.aborted) {
+          throw new CallFailed("aborted", "the call was cancelled while in flight", { maybeBilled: true });
+        }
+        if (isTimeout(error) || timeout.aborted) {
+          throw new CallFailed("provider_timeout", "timed out waiting for the endpoint", { maybeBilled: true });
+        }
+        throw new CallFailed("provider_unreachable", "the connection failed while the request was in flight", {
+          maybeBilled: true,
+        });
       }
-      if (options.signal?.aborted) {
-        throw new CallFailed("aborted", "the call was cancelled while in flight", { maybeBilled: true });
-      }
-      if (isTimeout(error) || timeout.aborted) {
-        throw new CallFailed("provider_timeout", "timed out waiting for the endpoint", { maybeBilled: true });
-      }
-      throw new CallFailed("provider_unreachable", "the connection failed while the request was in flight", {
-        maybeBilled: true,
-      });
-    }
 
-    const status = response.status;
-    if (status < 200 || status >= 300) {
-      if (status === 429 || status === 529) {
-        const wait = retryAfterMs(response.headers, Date.now());
+      const status = response.status;
+      if (status < 200 || status >= 300) {
+        if (status === 429 || status === 529) {
+          const wait = retryAfterMs(response.headers, Date.now());
+          await response.body?.cancel().catch(() => {});
+          if (attempt < MAX_ATTEMPTS) {
+            options.onRetry?.();
+            await options.sleep(wait ?? 2000 * attempt);
+            continue;
+          }
+          throw status === 429
+            ? new CallFailed("provider_rate_limited", "the endpoint answered HTTP 429", { status })
+            : new CallFailed("provider_overloaded", "the endpoint answered HTTP 529 (overloaded)", { status });
+        }
+        if (status >= 400 && status < 500) {
+          const detail = await errorDetail(response);
+          if (status === 400 && namesTemperature(detail)) {
+            throw new CallFailed("temperature_unsupported", "the endpoint refused the temperature setting", { status });
+          }
+          if (status !== 401 && status !== 403 && namesResponseFormat(detail)) {
+            throw new CallFailed("response_format_unsupported", "the endpoint refused the response format", { status });
+          }
+          throw new CallFailed("provider_refused", `the endpoint answered HTTP ${status}`, { status });
+        }
         await response.body?.cancel().catch(() => {});
-        if (attempt < MAX_ATTEMPTS) {
-          options.onRetry?.();
-          await options.sleep(wait ?? 2000 * attempt);
-          continue;
-        }
-        throw status === 429
-          ? new CallFailed("provider_rate_limited", "the endpoint answered HTTP 429", { status })
-          : new CallFailed("provider_overloaded", "the endpoint answered HTTP 529 (overloaded)", { status });
+        throw new CallFailed("provider_unavailable", `the endpoint answered HTTP ${status}`, {
+          status,
+          maybeBilled: true,
+        });
       }
-      if (status >= 400 && status < 500) {
-        const detail = await errorDetail(response);
-        if (status === 400 && namesTemperature(detail)) {
-          throw new CallFailed("temperature_unsupported", "the endpoint refused the temperature setting", { status });
-        }
-        if (status !== 401 && status !== 403 && namesResponseFormat(detail)) {
-          throw new CallFailed("response_format_unsupported", "the endpoint refused the response format", { status });
-        }
-        throw new CallFailed("provider_refused", `the endpoint answered HTTP ${status}`, { status });
-      }
-      await response.body?.cancel().catch(() => {});
-      throw new CallFailed("provider_unavailable", `the endpoint answered HTTP ${status}`, {
-        status,
-        maybeBilled: true,
-      });
-    }
 
-    let raw: { bytes: Uint8Array; over: boolean };
-    try {
-      raw = await readCapped(response, MAX_RESPONSE_BYTES);
-    } catch (error) {
-      if (isTimeout(error) || timeout.aborted) {
-        throw new CallFailed("provider_timeout", "timed out reading the endpoint's reply", { maybeBilled: true, status });
+      let raw: { bytes: Uint8Array; over: boolean };
+      try {
+        raw = await readCapped(response, MAX_RESPONSE_BYTES);
+      } catch (error) {
+        if (isTimeout(error) || timeout.aborted) {
+          throw new CallFailed("provider_timeout", "timed out reading the endpoint's reply", { maybeBilled: true, status });
+        }
+        throw new CallFailed("provider_unreachable", "the reply was cut off", { maybeBilled: true, status });
       }
-      throw new CallFailed("provider_unreachable", "the reply was cut off", { maybeBilled: true, status });
+      if (raw.over) {
+        throw new CallFailed("provider_malformed", "the endpoint's reply exceeds the size limit", {
+          maybeBilled: true,
+          status,
+        });
+      }
+      let body: unknown;
+      try {
+        body = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(raw.bytes));
+      } catch {
+        throw new CallFailed("provider_malformed", "the endpoint's reply is not JSON", { maybeBilled: true, status });
+      }
+      if (body === null || typeof body !== "object" || Array.isArray(body)) {
+        throw new CallFailed("provider_malformed", "the endpoint's reply is not an object", { maybeBilled: true, status });
+      }
+      return { body: body as Record<string, unknown>, latencyMs: Math.max(0, Math.round(options.now() - started)) };
+    } finally {
+      limit.clear();
     }
-    if (raw.over) {
-      throw new CallFailed("provider_malformed", "the endpoint's reply exceeds the size limit", {
-        maybeBilled: true,
-        status,
-      });
-    }
-    let body: unknown;
-    try {
-      body = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(raw.bytes));
-    } catch {
-      throw new CallFailed("provider_malformed", "the endpoint's reply is not JSON", { maybeBilled: true, status });
-    }
-    if (body === null || typeof body !== "object" || Array.isArray(body)) {
-      throw new CallFailed("provider_malformed", "the endpoint's reply is not an object", { maybeBilled: true, status });
-    }
-    return { body: body as Record<string, unknown>, latencyMs: Math.max(0, Math.round(options.now() - started)) };
   }
   throw new CallFailed("provider_unreachable", "no reply from the endpoint");
 }
