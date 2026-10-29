@@ -244,3 +244,17 @@ test("a missing trace file is a usage error", async () => {
   assert.equal(out.code, EXIT.usage);
   assert.equal(JSON.parse(out.stdout).error.code, "file_not_found");
 });
+
+test("--monthly-calls must be a whole number", async () => {
+  const { main } = await import("../src/cli/main.ts");
+  const out: string[] = [];
+  const err: string[] = [];
+  const io = {
+    stdout: { write: (s: string) => (out.push(s), true), isTTY: false },
+    stderr: { write: (s: string) => (err.push(s), true), isTTY: false },
+    env: {},
+  };
+  const code = await main(["demo", "--monthly-calls", "lots", "--out", "/private/tmp/claude-501/replay-cli-test"], io as never);
+  assert.equal(code, 2);
+  assert.match(err.join(""), /--monthly-calls must be a whole number/);
+});

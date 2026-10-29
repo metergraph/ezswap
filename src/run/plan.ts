@@ -40,7 +40,7 @@ export interface PlanOptions {
 }
 
 export interface RunPlan {
-  input: { file: string; adapter: string };
+  input: RunFile["input"];
   /** What the file held, before sampling. */
   file: { calls: number; traces: number; skippedLines: number };
   /** The sampled cases, replayable or not, oldest first. */
@@ -145,6 +145,23 @@ export function sampleCases(all: Case[], size: number): Case[] {
   return picked.sort((a, b) => a.rank - b.rank).map((entry) => entry.item);
 }
 
+/**
+ * How many calls the file holds and the time they span, for the report's
+ * monthly projection. Null when no call has a time.
+ */
+export function trafficOf(calls: { ts: string | null }[]): RunFile["input"]["traffic"] {
+  let from: number | null = null;
+  let to: number | null = null;
+  for (const call of calls) {
+    const t = call.ts ? Date.parse(call.ts) : NaN;
+    if (Number.isNaN(t)) continue;
+    if (from === null || t < from) from = t;
+    if (to === null || t > to) to = t;
+  }
+  if (from === null || to === null) return null;
+  return { calls: calls.length, from: new Date(from).toISOString(), to: new Date(to).toISOString() };
+}
+
 export async function planRun(options: PlanOptions): Promise<RunPlan> {
   const sample = options.sample ?? DEFAULT_SAMPLE;
   if (!Number.isInteger(sample) || sample < 1 || sample > MAX_SAMPLE) {
@@ -193,7 +210,11 @@ export async function planRun(options: PlanOptions): Promise<RunPlan> {
   }
 
   return {
-    input: { file: basename(options.file), adapter: calls[0]?.source ?? options.adapter ?? "unknown" },
+    input: {
+      file: basename(options.file),
+      adapter: calls[0]?.source ?? options.adapter ?? "unknown",
+      traffic: trafficOf(calls),
+    },
     file: { calls: calls.length, traces, skippedLines },
     cases,
     treatments,

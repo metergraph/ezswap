@@ -7,7 +7,12 @@
   },
   "input": {
     "file": "traces.jsonl",
-    "adapter": "replay-jsonl"
+    "adapter": "replay-jsonl",
+    "traffic": {
+      "calls": 22,
+      "from": "2026-10-27T08:00:00.000Z",
+      "to": "2026-10-27T20:57:00.000Z"
+    }
   },
   "catalog": {
     "version": "metergraph-core prices.yaml 2026-10-06 (e0d9203fd42d)"
@@ -19,7 +24,8 @@
       "$.priority"
     ],
     "noiseFloor": true,
-    "budgetUsd": 1
+    "budgetUsd": 1,
+    "monthlyCalls": 250000
   },
   "treatments": [
     {

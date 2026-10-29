@@ -57,6 +57,7 @@ report or the terminal. A run records an endpoint by its preset name or host.
 | `--sample N` | 20 | The latest N replayable cases, one per trace id (max 200). Cases that cannot be replayed among them are kept, with the reason. |
 | `--track PATH` | none | A JSON field to compare with production, such as `$.category`. Repeat it, up to 10. |
 | `--budget USD` | 1.00 | The most the run may spend. |
+| `--monthly-calls N` | from the file | Calls a month the workload makes, for the monthly cost projection. Without it, the projection uses the file's calls a day when the file spans at least a day. |
 | `--no-noise-floor` | off | Skip the two replays of production's model. |
 | `--labels` | off | Within-noise labels in the report. |
 | `--allow-no-search` | off | Replay calls that searched the web, without search. |

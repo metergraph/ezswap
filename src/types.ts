@@ -265,6 +265,8 @@ export interface RunFile {
     trackedFields: string[];
     noiseFloor: boolean;
     budgetUsd: number;
+    /** Calls a month the user said the workload makes, for the monthly cost projection. */
+    monthlyCalls?: number | null;
   };
   treatments: Treatment[];
   /** Every sampled case, replayable or not. */

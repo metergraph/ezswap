@@ -277,6 +277,8 @@ async function writeRun(): Promise<void> {
   });
   // One call at a time, so the floor replays arrive in order.
   const run = await executeRun(plan, { providers: { openrouter: provider }, pricing, now: () => NOW, concurrency: 1, toolVersion: "0.0.0" });
+  // An assumed volume for the made-up helpdesk, so the demo shows a monthly projection.
+  run.settings.monthlyCalls = 250_000;
   await writeFile(RUN, `${JSON.stringify(run, null, 2)}\n`, "utf8");
   console.log(`Wrote ${run.replays.length} replays over ${run.cases.length} cases; spent $${run.spentUsd.toFixed(4)}.`);
 }

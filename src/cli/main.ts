@@ -143,6 +143,8 @@ Spend
   --budget USD             Most the run may spend (default ${DEFAULT_BUDGET_USD.toFixed(2)}). Each call
                            reserves its maximum before it is sent; the run stops
                            when the next case does not fit.
+  --monthly-calls N        Calls a month the workload makes, for the monthly cost
+                           projection (default: estimated from the file's time span).
   --allow-unpriced         Run models the price catalog does not know.
   --yes                    Skip the spend confirmation (needed without a terminal).
   --concurrency N          Calls in flight at once (default ${DEFAULT_RUN_CONCURRENCY}).
@@ -176,6 +178,7 @@ const OPTIONS = {
   "max-tokens": { type: "string" },
   "reasoning-effort": { type: "string" },
   budget: { type: "string" },
+  "monthly-calls": { type: "string" },
   "no-noise-floor": { type: "boolean" },
   labels: { type: "boolean" },
   "allow-no-search": { type: "boolean" },
@@ -246,7 +249,21 @@ function trackedOption(values: string[] | undefined): string[] {
 }
 
 function reportOptions(values: Values, tracked: string[]): ReportOptions {
-  return { ...(tracked.length ? { tracked } : {}), ...(values.labels ? { labels: true } : {}) };
+  const monthly = monthlyCallsOption(values["monthly-calls"]);
+  return {
+    ...(tracked.length ? { tracked } : {}),
+    ...(values.labels ? { labels: true } : {}),
+    ...(monthly !== null ? { monthlyCalls: monthly } : {}),
+  };
+}
+
+function monthlyCallsOption(value: string | undefined): number | null {
+  if (value === undefined) return null;
+  const text = value.trim().replace(/[_,]/g, "");
+  if (!/^\d+$/.test(text) || Number(text) < 1 || !Number.isSafeInteger(Number(text))) {
+    throw new UsageError("--monthly-calls must be a whole number of calls, such as 250000.");
+  }
+  return Number(text);
 }
 
 function pricingHelpUrl(pricing: CatalogPricing): string {
@@ -474,6 +491,8 @@ async function runCommand(values: Values, file: string, io: CliIo, say: (text: s
     if (showProgress) io.stderr.write("\n");
   }
 
+  const monthly = monthlyCallsOption(values["monthly-calls"]);
+  if (monthly !== null) run.settings.monthlyCalls = monthly;
   const out = values.out ?? "replay-out";
   const written = await writeRun(out, run, reportOptions(values, tracked));
   const link = hostedLink(run, "cli");

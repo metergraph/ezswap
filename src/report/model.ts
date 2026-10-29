@@ -169,8 +169,13 @@ export interface ModelOptions {
   monthlyCalls?: number | null;
 }
 
-/** Calls a month from the run's input traffic: calls a day over the file's span, times 30. Null when unknown. */
+/**
+ * Calls a month: the volume the user gave (`--monthly-calls`), else the run's
+ * input traffic (calls a day over the file's span, times 30). Null when unknown.
+ */
 export function monthlyCalls(run: RunFile): number | null {
+  const given = run.settings.monthlyCalls;
+  if (typeof given === "number" && Number.isFinite(given) && given > 0) return Math.round(given);
   const traffic = run.input.traffic;
   if (!traffic || !(traffic.calls > 0) || !traffic.from || !traffic.to) return null;
   const days = (Date.parse(traffic.to) - Date.parse(traffic.from)) / 86_400_000;

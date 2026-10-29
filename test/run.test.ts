@@ -284,3 +284,12 @@ test("writeRun writes run.json and report.html", async () => {
   assert.deepEqual(back, JSON.parse(JSON.stringify(run)));
   assert.match(readFileSync(written.reportPath, "utf8"), /<!doctype html>/i);
 });
+
+test("trafficOf spans the file's timed calls and ignores untimed ones", async () => {
+  const { trafficOf } = await import("../src/run/plan.ts");
+  assert.deepEqual(
+    trafficOf([{ ts: "2026-10-02T00:00:00Z" }, { ts: null }, { ts: "2026-10-01T00:00:00Z" }, { ts: "not a time" }]),
+    { calls: 4, from: "2026-10-01T00:00:00.000Z", to: "2026-10-02T00:00:00.000Z" },
+  );
+  assert.equal(trafficOf([{ ts: null }]), null);
+});
