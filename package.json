@@ -15,10 +15,12 @@
     "README.md"
   ],
   "scripts": {
+    "dev": "node --experimental-strip-types --disable-warning=ExperimentalWarning src/cli/main.ts",
     "test": "node --experimental-strip-types --disable-warning=ExperimentalWarning --test \"test/**/*.test.ts\"",
     "typecheck": "tsc --noEmit",
     "build": "tsc -p tsconfig.build.json",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "build:demo": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/build-demo.ts"
   },
   "engines": {
     "node": ">=22.6"
