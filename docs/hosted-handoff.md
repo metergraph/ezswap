@@ -1,9 +1,10 @@
 # Handing a run to hosted Metergraph
 
 Replay sends no telemetry. The only way a local run reaches hosted
-Metergraph is a link the user chooses to open: the "Keep this running on
-live traffic" button in the HTML report, the line printed after `run`, the
-GitHub Action's comment footer and the README. Every one of them is built by
+Metergraph is a link the user chooses to open: the "Keep this comparison
+running on live traffic" box at the end of the terminal report (printed by
+`run`, `demo` and `report`), the GitHub Action's comment footer and the
+README. Every one of them is built by
 `hostedLink(run, medium)` in `src/report/link.ts`.
 
 ## The link
@@ -15,7 +16,7 @@ https://www.metergraph.dev/replay?utm_source=replay&utm_medium=<medium>&utm_camp
 | Part | Value |
 |---|---|
 | `utm_source` | always `replay` |
-| `utm_medium` | where the link was shown: `report`, `cli`, `action` or `readme` |
+| `utm_medium` | where the link was shown: `cli`, `action` or `readme` |
 | `utm_campaign` | the version of metergraph-replay that made the run, from `run.tool.version` |
 | `#setup=` | the run's setup, described below |
 

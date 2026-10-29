@@ -1,5 +1,5 @@
 // The run: plan (read, sample, estimate), execute (reserve, replay, settle)
-// and write (run.json and report.html).
+// and write (run.json).
 
 export {
   DEFAULT_BUDGET_USD,
@@ -23,7 +23,7 @@ export {
   type ExecuteOptions,
   type Progress,
 } from "./execute.ts";
-export { writeReport, writeRun, type WrittenRun } from "./write.ts";
+export { writeRun, type WrittenRun } from "./write.ts";
 export {
   DEFAULT_ENDPOINT,
   SpecError,

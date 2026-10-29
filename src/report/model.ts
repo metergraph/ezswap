@@ -1,12 +1,13 @@
 // What the report shows, as plain data: every figure and sentence comes from
 // core, read with the noise floor's first replay (A1) as the replayed control.
-// The HTML page and the terminal table both render this; neither computes a
+// The terminal report and the explorer render this; neither computes a
 // statistic of its own. Presentation, never a verdict.
 
-import type { NotReplayableReason, RunFile } from "../types.ts";
+import type { Message, NotReplayableReason, RunFile } from "../types.ts";
 import {
   type ExperimentView,
   type NoiseLabel,
+  type Summary,
   buildView,
   equivalence,
   equivalenceSummary,
@@ -22,10 +23,12 @@ import {
   gridMetrics,
   noiseFloors,
   noiseLabels,
+  formatSigned,
   parseOutput,
+  quantile,
   statRows,
 } from "../core/index.ts";
-import { KIND_LABELS, type Loose, fieldPairs, overlap } from "../core/fields.ts";
+import { KIND_LABELS, type Loose, fieldPairs, overlap, replayedIndexes } from "../core/fields.ts";
 import { settingsPhrase, shortModel } from "../core/grid.ts";
 
 export const NOISE_FLOOR_DOC = "https://github.com/metergraph/replay/blob/main/docs/noise-floor.md";
@@ -120,6 +123,13 @@ export interface FrontierChart {
   frontier: string[];
 }
 
+/** One tracked field whose value on an arm differs from production's on a case. */
+export interface FieldChange {
+  path: string;
+  from: string;
+  to: string;
+}
+
 export interface ArmOutput {
   label: string;
   status: "ok" | "failed" | "missing";
@@ -129,7 +139,10 @@ export interface ArmOutput {
   flags: string[];
   latency: string;
   cost: string;
+  finishReason: string | null;
   differs: boolean;
+  /** Tracked fields whose value differs from production's, read as the field's statistics read it. */
+  changes: FieldChange[];
 }
 
 export interface CaseItem {
@@ -138,11 +151,87 @@ export interface CaseItem {
   status: "replayed" | "not_replayable";
   reason: string | null;
   input: string | null;
+  /** The request as replayed: folded system turns, then the text turns. */
+  system: string | null;
+  messages: Message[];
   limitations: string[];
   production: ArmOutput;
   arms: ArmOutput[];
   floor: ArmOutput[];
   differs: boolean;
+}
+
+/** Which arm a figure belongs to: production (its replay when there is a floor), a treatment, or production against itself. */
+export type ArmRole = "production" | "treatment" | "floor";
+
+export interface CostBar {
+  role: ArmRole;
+  label: string;
+  /** Short name for narrow columns. */
+  name: string;
+  model: string;
+  perCall: number | null;
+  text: string;
+  /** The change against production's replayed model, in core's words. */
+  delta: string | null;
+  /** Production's recorded figure, beside its replay. */
+  note: string | null;
+  monthly: number | null;
+  monthlyText: string | null;
+  monthlyDelta: string | null;
+  badge: LabelCell | null;
+}
+
+export interface LatencyRow {
+  role: ArmRole;
+  label: string;
+  name: string;
+  /** Calls with a latency. */
+  n: number;
+  p10: number | null;
+  p50: number | null;
+  p90: number | null;
+  text: string;
+  delta: string | null;
+  badge: LabelCell | null;
+  /** Every call's latency, for a distribution. */
+  values: number[];
+}
+
+export interface FieldArm {
+  label: string;
+  name: string;
+  /** Agreement (0..1) for labels, text and lists; the median shift for numbers. */
+  value: number | null;
+  valueText: string;
+  detail: string;
+  sentence: string;
+  badge: LabelCell | null;
+  /** Numbers: the middle half of the per-call shift. */
+  range: { lo: number; mid: number; hi: number } | null;
+  /** Labels: how production's label became this arm's, where it changed, most common first. */
+  changes: { from: string; to: string; count: number }[];
+}
+
+export interface FieldPanel {
+  path: string;
+  kind: string;
+  kindLabel: string;
+  /** "share": agreement from 0 to 1; "shift": a signed per-call difference. */
+  scale: "share" | "shift" | "none";
+  floor: { value: number | null; text: string | null; low: number | null; high: number | null } | null;
+  arms: FieldArm[];
+}
+
+export interface FloorPanel {
+  cases: number;
+  model: string;
+  spent: string;
+  text: string[];
+  /** Built-in statistics, A1 beside A2 and their gap. */
+  stats: { label: string; a1: string; a2: string; gap: string }[];
+  /** Tracked fields: agreement and the calls where A1 and A2 disagreed. */
+  fields: { path: string; text: string | null; mismatches: { traceId: string; a1: string; a2: string }[] }[];
 }
 
 export interface ReportModel {
@@ -154,11 +243,18 @@ export interface ReportModel {
   columns: Column[];
   rows: Row[];
   hasFloor: boolean;
-  floor: { cases: number; model: string; spent: string; text: string[] } | null;
+  floor: FloorPanel | null;
   labels: boolean;
   charts: FrontierChart[];
   cases: CaseItem[];
   notReplayable: { reason: string; title: string; count: number; fix: string }[];
+  /** Calls a month the projection uses, or null when unknown. */
+  monthlyCalls: number | null;
+  cost: CostBar[];
+  latency: LatencyRow[];
+  fields: FieldPanel[];
+  /** Production's recorded median latency, which is not compared. */
+  recordedLatency: string | null;
   view: ExperimentView;
 }
 
@@ -266,6 +362,30 @@ function valuesDiffer(kind: string, control: unknown, arm: unknown): boolean {
   if (kind === "list") return overlap(control, arm) < 1;
   return String(control).trim() !== String(arm).trim();
 }
+
+/** A field value as text: strings as they are, anything else as JSON. */
+function showValue(value: unknown): string {
+  if (typeof value === "string") return value;
+  if (value === undefined) return "—";
+  return JSON.stringify(value) ?? String(value);
+}
+
+/**
+ * Short names for arms: a label that is just the model id loses its
+ * creator prefix ("google/gemini-2.5-flash-lite" to "gemini-2.5-flash-lite"),
+ * unless two arms would then share a name.
+ */
+function shortNames(arms: { label: string; model: string }[]): string[] {
+  const short = arms.map((a) => (a.label === a.model ? shortModel(a.model) || a.label : a.label));
+  return short.map((name, i) => (short.indexOf(name) !== short.lastIndexOf(name) ? (arms[i] as { label: string }).label : name));
+}
+
+function spread(values: number[]): { p10: number | null; p50: number | null; p90: number | null } {
+  const sorted = [...values].sort((a, b) => a - b);
+  return { p10: quantile(sorted, 0.1), p50: quantile(sorted, 0.5), p90: quantile(sorted, 0.9) };
+}
+
+const finiteNumber = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
 
 /** Everything the report shows, from the run. */
 export function reportModel(run: RunFile, options: ModelOptions = {}): ReportModel {
@@ -451,12 +571,20 @@ export function reportModel(run: RunFile, options: ModelOptions = {}): ReportMod
   // The case browser.
   const kinds = new Map(tracked.map((path) => [path, fieldComparisons(view.cases ?? [], path, armLabels, view.fields).kind]));
   const differing = new Map<string, Set<string>>();
+  const changesOf = new Map<string, FieldChange[]>();
   for (const label of armLabels) {
     const set = new Set<string>();
     for (const path of tracked) {
       const kind = kinds.get(path) as string;
       if (kind === "mixed" || kind === "empty") continue;
-      for (const p of fieldPairs(view.cases ?? [], path, label, view.fields)) if (valuesDiffer(kind, p.control, p.arm)) set.add(p.trace_id);
+      for (const p of fieldPairs(view.cases ?? [], path, label, view.fields)) {
+        if (!valuesDiffer(kind, p.control, p.arm)) continue;
+        set.add(p.trace_id);
+        const key = `${p.trace_id}\u0000${label}`;
+        const list = changesOf.get(key) ?? [];
+        list.push({ path, from: showValue(p.control), to: showValue(p.arm) });
+        changesOf.set(key, list);
+      }
     }
     differing.set(label, set);
   }
@@ -465,7 +593,7 @@ export function reportModel(run: RunFile, options: ModelOptions = {}): ReportMod
     const original = run.cases.find((k) => k.id === c.case_id);
     const output = (label: string, arm: string, result: Loose): ArmOutput => {
       const replay = replayById.get(`${c.case_id}\u0000${arm}`);
-      if (!result) return { label, status: "missing", output: null, pretty: null, error: replay?.status === "skipped" ? "Not run: the run stopped first" : "No result", flags: [], latency: "—", cost: "—", differs: false };
+      if (!result) return { label, status: "missing", output: null, pretty: null, error: replay?.status === "skipped" ? "Not run: the run stopped first" : "No result", flags: [], latency: "—", cost: "—", finishReason: null, differs: false, changes: [] };
       const flags = (replay?.flags ?? []).map((f) => FLAG_TEXT[f] ?? f);
       if (result.refusal) flags.push("flagged as a refusal");
       if (result.finish_reason && ["length", "max_tokens", "max_output_tokens"].includes(result.finish_reason)) flags.push("cut off at the token limit");
@@ -485,7 +613,9 @@ export function reportModel(run: RunFile, options: ModelOptions = {}): ReportMod
         flags,
         latency: formatMs(result.latency_ms),
         cost: formatUsd(result.cost_usd),
+        finishReason: result.finish_reason ?? null,
         differs,
+        changes: arm !== "control" && !arm.startsWith("floor_") ? (changesOf.get(`${c.trace_id}\u0000${label}`) ?? []) : [],
       };
     };
     const production = output("Production", "control", c.control);
@@ -502,6 +632,8 @@ export function reportModel(run: RunFile, options: ModelOptions = {}): ReportMod
       status: c.status,
       reason: c.reason ? (REASON_TEXT[c.reason as NotReplayableReason]?.title ?? c.reason) : null,
       input: c.input_preview ?? original?.messages.at(-1)?.content ?? null,
+      system: original?.system ?? null,
+      messages: original?.messages ?? [],
       limitations: c.limitations,
       production,
       arms: armOutputs,
@@ -556,17 +688,172 @@ export function reportModel(run: RunFile, options: ModelOptions = {}): ReportMod
           ? "The run stopped when a call could have cost more than the budget left, so some calls were not replayed."
           : null;
 
-  const floorPanel = view.noise_floor
+  const nf = view.noise_floor;
+  const replayedCases = (view.cases ?? []).filter((c) => c.status === "replayed");
+  const floorStats: FloorPanel["stats"] = [];
+  if (nf) {
+    const statText: [string, string, (s: Summary) => string][] = [
+      ["cost_per_call_usd", "Cost per call", (s) => formatUsd(s.cost_per_call_usd)],
+      ["latency_ms_p50", "Latency, median", (s) => formatMs(s.latency_ms_p50)],
+      ["output_chars_p50", "Output length, median", (s) => formatCount(s.output_chars_p50)],
+      ["json_parse_rate", "JSON parses", (s) => formatPercent(s.json_parse_rate)],
+      ["empty_or_refused_rate", "Empty or refused", (s) => formatPercent(s.empty_or_refused_rate)],
+      ["cut_off_rate", "Cut off at token limit", (s) => formatPercent(s.cut_off_rate)],
+    ];
+    for (const [key, label, read] of statText) {
+      const row = rows.find((r) => r.key === key);
+      floorStats.push({ label, a1: read(nf.a1), a2: read(nf.a2), gap: row?.floor ?? "—" });
+    }
+  }
+  const floorFields: FloorPanel["fields"] = nf
+    ? tracked.map((path) => {
+        const series = nf.fields?.[path];
+        const mismatches =
+          series && series.comparison === "match_rate"
+            ? (series.mismatches ?? []).map((traceId) => {
+                const i = replayedCases.findIndex((c) => c.trace_id === traceId);
+                return { traceId, a1: showValue(series.a1?.[i]), a2: showValue(series.a2?.[i]) };
+              })
+            : [];
+        return { path, text: floors[`field:${path}`]?.text ?? null, mismatches };
+      })
+    : [];
+  const floorPanel: FloorPanel | null = nf
     ? {
-        cases: view.noise_floor.cases,
+        cases: nf.cases,
         model: prod,
-        spent: formatUsd(view.noise_floor.spent_usd),
+        spent: formatUsd(nf.spent_usd),
         text: [
           `Each replayable call was sent to ${prod} twice more (A1 and A2), at production's settings, through the same endpoint as the treatments. Whatever separates A2 from A1 is chance, so it is the variation production shows on its own.`,
           `Read a treatment's difference beside that gap: a difference no larger than production's own is one a rerun of production would also show. Neither figure says which output is better.`,
         ],
+        stats: floorStats,
+        fields: floorFields,
       }
     : null;
+
+  // Bars: cost and latency per arm, production first and production against itself last.
+  const armNames = shortNames(arms);
+  const rowOf = (key: string) => rows.find((r) => r.key === key);
+  const costStat = rowOf("cost_per_call_usd");
+  const monthlyStat = rowOf("monthly_cost_usd");
+  const latencyStat = rowOf("latency_ms_p50");
+  const strip = (text: string | null | undefined) => (text ? text.replace(/ (replay|control)$/, "") : null);
+  const perMonth = (perCall: number | null) => (perCall != null && calls ? perCall * calls : null);
+  const prodPerCall = hasFloor ? (a1?.cost_per_call_usd ?? null) : view.control.summary.cost_per_call_usd;
+  const costBars: CostBar[] = [
+    {
+      role: "production",
+      label: hasFloor ? `${prod}, replayed` : prod,
+      name: prod,
+      model: productionModel,
+      perCall: prodPerCall,
+      text: formatUsd(prodPerCall),
+      delta: null,
+      note: hasFloor && costStat ? `${costStat.production} recorded` : null,
+      monthly: perMonth(prodPerCall),
+      monthlyText: perMonth(prodPerCall) == null ? null : `${formatUsd(perMonth(prodPerCall))}/mo`,
+      monthlyDelta: null,
+      badge: null,
+    },
+    ...arms.map((arm, i): CostBar => {
+      const perCall = arm.summary.cost_per_call_usd;
+      const monthlyCell = monthlyStat?.cells[i];
+      return {
+        role: "treatment",
+        label: arm.label,
+        name: armNames[i] as string,
+        model: arm.model,
+        perCall,
+        text: costStat?.cells[i]?.text ?? formatUsd(perCall),
+        delta: strip(costStat?.cells[i]?.delta),
+        note: null,
+        monthly: perMonth(perCall),
+        monthlyText: monthlyCell && monthlyCell.text !== "—" ? `${monthlyCell.text}/mo` : null,
+        monthlyDelta: monthlyCell?.delta ?? null,
+        badge: costStat?.cells[i]?.label ?? null,
+      };
+    }),
+  ];
+  if (nf) {
+    const perCall = nf.summary.cost_per_call_usd;
+    costBars.push({
+      role: "floor",
+      label: "production vs itself",
+      name: "vs itself",
+      model: productionModel,
+      perCall,
+      text: formatUsd(perCall),
+      delta: costStat?.floor ?? null,
+      note: null,
+      monthly: null,
+      monthlyText: null,
+      monthlyDelta: null,
+      badge: null,
+    });
+  }
+
+  const latencies = (pick: (c: (typeof replayedCases)[number]) => Loose): number[] =>
+    replayedCases
+      .map(pick)
+      .filter((r) => r && !r.error && finiteNumber(r.latency_ms))
+      .map((r) => r.latency_ms as number);
+  const latencyRow = (role: ArmRole, label: string, name: string, values: number[], median: number | null, delta: string | null, badge: LabelCell | null): LatencyRow => {
+    const s = spread(values);
+    return { role, label, name, n: values.length, p10: s.p10, p50: median, p90: s.p90, text: formatMs(median), delta, badge, values };
+  };
+  const latency: LatencyRow[] = [
+    hasFloor
+      ? latencyRow("production", `${prod}, replayed`, prod, latencies((c) => c.noise_floor?.a1), a1?.latency_ms_p50 ?? null, null, null)
+      : latencyRow("production", prod, prod, latencies((c) => c.control), view.control.summary.latency_ms_p50, null, null),
+    ...arms.map((arm, i) =>
+      latencyRow("treatment", arm.label, armNames[i] as string, latencies((c) => c.arms[arm.label]), arm.summary.latency_ms_p50, strip(latencyStat?.cells[i]?.delta), latencyStat?.cells[i]?.label ?? null),
+    ),
+  ];
+  if (nf) latency.push(latencyRow("floor", "production vs itself", "vs itself", latencies((c) => c.noise_floor?.a2), nf.a2.latency_ms_p50, latencyStat?.floor ?? null, null));
+
+  // Tracked fields: agreement per arm on one scale with production's agreement with itself.
+  const fieldPanels: FieldPanel[] = tracked.map((path) => {
+    const { kind, comparisons } = fieldComparisons(view.cases ?? [], path, armLabels, view.fields);
+    const f = floorField(view, path, kind === "mixed" ? null : kind);
+    const statRow = rowOf(`field:${path}`);
+    const share = (x: Loose): number | null => {
+      if (!x) return null;
+      if (x.kind === "list") return finiteNumber(x.overlap) ? x.overlap : null;
+      if (x.kind === "label" || x.kind === "text" || x.kind === "long_text") return finiteNumber(x.rate) ? x.rate : null;
+      return null;
+    };
+    const scale: FieldPanel["scale"] = kind === "number" ? "shift" : ["label", "text", "long_text", "list"].includes(kind) ? "share" : "none";
+    return {
+      path,
+      kind,
+      kindLabel: KIND_LABELS[kind],
+      scale,
+      floor: f
+        ? {
+            value: scale === "shift" ? (f.diffBox?.median ?? null) : share(f),
+            text: floors[`field:${path}`]?.text ?? null,
+            low: f.diffBox?.min ?? null,
+            high: f.diffBox?.max ?? null,
+          }
+        : null,
+      arms: comparisons.map((c, i): FieldArm => {
+        const box = c.diffBox ?? null;
+        const value = scale === "shift" ? (box?.median ?? null) : share(c);
+        return {
+          label: c.label,
+          name: armNames[i] as string,
+          value,
+          valueText: scale === "shift" ? formatSigned(value) : formatPercent(value),
+          detail: statRow?.cells[i]?.text ?? "—",
+          sentence: statRow?.sentences?.[i] ?? fieldSentence(c, f),
+          badge: statRow?.cells[i]?.label ?? null,
+          range: box ? { lo: box.q1, mid: box.median, hi: box.q3 } : null,
+          changes: (c.tally ?? []).filter((t) => !t.same).map((t) => ({ from: t.from, to: t.to, count: t.count })),
+        };
+      }),
+    };
+  });
 
   return {
     headline,
@@ -582,6 +869,11 @@ export function reportModel(run: RunFile, options: ModelOptions = {}): ReportMod
     charts,
     cases: caseItems,
     notReplayable,
+    monthlyCalls: calls,
+    cost: costBars,
+    latency,
+    fields: fieldPanels,
+    recordedLatency: hasFloor && latencyStat ? latencyStat.production.replace(/ recorded$/, "") : null,
     view,
   };
 }

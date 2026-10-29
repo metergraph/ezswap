@@ -5,7 +5,7 @@
 
 import { readFileSync } from "node:fs";
 import { copyFile, mkdir, readFile } from "node:fs/promises";
-import { dirname, join, resolve } from "node:path";
+import { isAbsolute, join, relative, resolve } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { parseArgs } from "node:util";
@@ -17,7 +17,8 @@ import {
   type FetchLike,
   type OpenAICompatibleProvider,
 } from "../providers/index.ts";
-import { hostedLink, renderTable, type ReportOptions } from "../report/index.ts";
+import { type ExplorerResult, hostedLink, renderReport, runExplorer, type ReportOptions } from "../report/index.ts";
+import type { ExplorerInput } from "../report/explore/run.ts";
 import {
   DEFAULT_BUDGET_USD,
   DEFAULT_ENDPOINT,
@@ -34,7 +35,6 @@ import {
   parseModels,
   parseTemperature,
   planRun,
-  writeReport,
   writeRun,
   type EndpointSpec,
   type RunPlan,
@@ -56,6 +56,10 @@ export interface CliIo {
   stdout: { write(text: string): unknown; isTTY?: boolean; columns?: number };
   stderr: { write(text: string): unknown; isTTY?: boolean };
   stdinIsTTY: boolean;
+  /** Keys for the explorer; default process.stdin. */
+  stdin?: ExplorerInput;
+  /** Opens the interactive explorer; default runExplorer on the real terminal. Tests replace it. */
+  explore?: (run: RunFile, options: ExploreOptions) => Promise<ExplorerResult["reason"]>;
   env: Record<string, string | undefined>;
   fetch?: FetchLike;
   /** Ask a yes or no question; default reads a line from stdin. */
@@ -65,6 +69,15 @@ export interface CliIo {
   /** Cancels calls in flight; default: a second Ctrl-C. */
   hardSignal?: AbortSignal;
   now?: () => Date;
+}
+
+export interface ExploreOptions extends ReportOptions {
+  /** The run's path as shown in the status bar. */
+  name: string;
+  color: boolean;
+  ascii: boolean;
+  /** The tab to open on. */
+  tab?: number;
 }
 
 class UsageError extends Error {
@@ -100,16 +113,17 @@ export const HELP = `metergraph-replay: replay your production LLM calls on othe
 what changes against a noise floor (production's model replayed twice).
 
 Usage
-  metergraph-replay demo [--out DIR]
+  metergraph-replay demo [--out DIR] [--explore]
   metergraph-replay estimate <traces> --models LIST [options]
   metergraph-replay run <traces> --models LIST [options]
-  metergraph-replay report <run.json> [--out DIR]
+  metergraph-replay report <run.json> [--no-interactive]
 
 Commands
-  demo       Render a report from bundled synthetic traces. No keys, no network.
+  demo       Print the report of bundled synthetic traces. No keys, no network.
   estimate   Count replayable cases and price the run. Makes no provider call.
-  run        Estimate, confirm, replay, then write run.json and report.html.
-  report     Render report.html again from an existing run.json.
+  run        Estimate, confirm, replay, write run.json and print the report.
+  report     Explore a run.json in the terminal: tabs for fields, the noise
+             floor and every call. Prints the report when not interactive.
 
 Models and endpoints
   --models LIST            Comma-separated models, as the catalog names them
@@ -150,8 +164,13 @@ Spend
   --concurrency N          Calls in flight at once (default ${DEFAULT_RUN_CONCURRENCY}).
 
 Output
-  --out DIR                Where run.json and report.html go (default ./replay-out;
-                           for report, next to run.json).
+  --out DIR                Where run.json goes (default ./replay-out).
+  --explore                demo: open the explorer instead of printing the report.
+  --no-interactive         report: print the report instead of opening the explorer.
+  --ascii                  Plain ASCII, no box drawing (default when stdout is not
+                           a terminal or TERM is dumb).
+  --color, --no-color      Colour on or off (default: on in a terminal, unless
+                           NO_COLOR is set).
   --json                   Print one JSON object instead of text.
   --help, --version
 
@@ -186,6 +205,11 @@ const OPTIONS = {
   adapter: { type: "string" },
   out: { type: "string" },
   json: { type: "boolean" },
+  explore: { type: "boolean" },
+  "no-interactive": { type: "boolean" },
+  ascii: { type: "boolean" },
+  color: { type: "boolean" },
+  "no-color": { type: "boolean" },
   yes: { type: "boolean", short: "y" },
   concurrency: { type: "string" },
   help: { type: "boolean", short: "h" },
@@ -494,16 +518,13 @@ async function runCommand(values: Values, file: string, io: CliIo, say: (text: s
   const monthly = monthlyCallsOption(values["monthly-calls"]);
   if (monthly !== null) run.settings.monthlyCalls = monthly;
   const out = values.out ?? "replay-out";
-  const written = await writeRun(out, run, reportOptions(values, tracked));
+  const written = await writeRun(out, run);
   const link = hostedLink(run, "cli");
-  say("");
-  say(renderTable(run, tableOptions(values, io, tracked)).trimEnd());
   say("");
   say(explainOutcome(run));
   say(`Wrote ${written.runPath}`);
-  say(`Report: ${written.reportPath}`);
   say("");
-  say(`Keep this comparison running on live traffic: ${link}`);
+  say(renderReport(run, { ...termOptions(values, io), ...reportOptions(values, tracked), explore: shownPath(written.runPath) }).trimEnd());
 
   const counts = { ok: 0, failed: 0, skipped: 0 };
   for (const replay of run.replays) counts[replay.status]++;
@@ -514,7 +535,6 @@ async function runCommand(values: Values, file: string, io: CliIo, say: (text: s
     json: {
       ...base,
       runFile: written.runPath,
-      report: written.reportPath,
       stopped: run.stopped,
       spentUsd: run.spentUsd,
       budgetUsd: run.settings.budgetUsd,
@@ -524,9 +544,40 @@ async function runCommand(values: Values, file: string, io: CliIo, say: (text: s
   };
 }
 
-function tableOptions(values: Values, io: CliIo, tracked: string[]) {
-  const color = Boolean(io.stdout.isTTY) && !values.json && !io.env["NO_COLOR"];
-  return { ...reportOptions(values, tracked), width: io.stdout.columns ?? 100, color };
+/** Width, colour and character set for the terminal report. */
+function termOptions(values: Values, io: CliIo): { width: number; color: boolean; ascii: boolean } {
+  const tty = Boolean(io.stdout.isTTY);
+  const dumb = io.env["TERM"] === "dumb";
+  const color = values["no-color"] ? false : values.color ? true : tty && !dumb && !io.env["NO_COLOR"];
+  const ascii = Boolean(values.ascii) || !tty || dumb;
+  const columns = io.stdout.columns || Number(io.env["COLUMNS"]) || 100;
+  return { width: columns, color, ascii };
+}
+
+/** A path as the user would type it: relative to here when it is below here. */
+function shownPath(path: string): string {
+  const rel = relative(process.cwd(), path);
+  return rel && !rel.startsWith("..") && !isAbsolute(rel) ? rel : path;
+}
+
+async function defaultExplore(run: RunFile, options: ExploreOptions, io: CliIo): Promise<ExplorerResult["reason"]> {
+  const stdin = io.stdin ?? (process.stdin as unknown as ExplorerInput);
+  const result = await runExplorer(
+    run,
+    { stdin, stdout: io.stdout as never, color: options.color, ascii: options.ascii },
+    { ...options, name: options.name },
+  );
+  return result.reason;
+}
+
+/** Open the explorer; the exit code says how it ended. */
+async function explore(run: RunFile, options: ExploreOptions, io: CliIo): Promise<number> {
+  const reason = io.explore ? await io.explore(run, options) : await defaultExplore(run, options, io);
+  return reason === "SIGINT" ? 130 : reason === "SIGTERM" ? 143 : EXIT.ok;
+}
+
+function interactive(io: CliIo): boolean {
+  return io.stdinIsTTY && Boolean(io.stdout.isTTY) && io.env["TERM"] !== "dumb";
 }
 
 async function readRunFile(path: string): Promise<RunFile> {
@@ -548,17 +599,21 @@ async function readRunFile(path: string): Promise<RunFile> {
   return run;
 }
 
-async function reportCommand(values: Values, file: string, io: CliIo, say: (text: string) => void): Promise<Outcome> {
+async function reportCommand(values: Values, file: string, io: CliIo, say: (text: string) => void, asJson: boolean): Promise<Outcome> {
+  if (values.out !== undefined) throw new UsageError("report draws in the terminal and writes no file, so it takes no --out.");
   const run = await readRunFile(file);
   const tracked = trackedOption(values.track);
-  const reportPath = await writeReport(values.out ?? dirname(resolve(file)), run, reportOptions(values, tracked));
-  say(renderTable(run, tableOptions(values, io, tracked)).trimEnd());
-  say("");
-  say(`Report: ${reportPath}`);
-  return { exitCode: EXIT.ok, json: { command: "report", runFile: resolve(file), report: reportPath } };
+  const term = termOptions(values, io);
+  const json = { command: "report", runFile: resolve(file) };
+  if (!asJson && !values["no-interactive"] && interactive(io)) {
+    const exitCode = await explore(run, { ...reportOptions(values, tracked), name: shownPath(resolve(file)), color: term.color, ascii: term.ascii }, io);
+    return { exitCode, json };
+  }
+  say(renderReport(run, { ...term, ...reportOptions(values, tracked), explore: shownPath(resolve(file)) }).trimEnd());
+  return { exitCode: EXIT.ok, json };
 }
 
-async function demoCommand(values: Values, io: CliIo, say: (text: string) => void): Promise<Outcome> {
+async function demoCommand(values: Values, io: CliIo, say: (text: string) => void, asJson: boolean): Promise<Outcome> {
   const source = fileURLToPath(new URL("run.json", DEMO_DIR));
   const run = await readRunFile(source);
   const tracked = trackedOption(values.track);
@@ -566,16 +621,18 @@ async function demoCommand(values: Values, io: CliIo, say: (text: string) => voi
   await mkdir(out, { recursive: true });
   const runPath = join(out, "run.json");
   await copyFile(source, runPath);
-  const reportPath = await writeReport(out, run, reportOptions(values, tracked));
+  const json = { command: "demo", runFile: runPath, hostedLink: hostedLink(run, "cli") };
+  const term = termOptions(values, io);
+  if (values.explore && !asJson && interactive(io)) {
+    const exitCode = await explore(run, { ...reportOptions(values, tracked), name: shownPath(runPath), color: term.color, ascii: term.ascii }, io);
+    return { exitCode, json };
+  }
   say("A replay of synthetic support-ticket traces, recorded so it needs no keys and no network.");
-  say("");
-  say(renderTable(run, tableOptions(values, io, tracked)).trimEnd());
-  say("");
-  say(`Report: ${reportPath}`);
-  say("");
   say("Try it on your own traces:");
   say("  metergraph-replay estimate traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5");
-  return { exitCode: EXIT.ok, json: { command: "demo", runFile: runPath, report: reportPath, hostedLink: hostedLink(run, "cli") } };
+  say("");
+  say(renderReport(run, { ...term, ...reportOptions(values, tracked), explore: shownPath(runPath) }).trimEnd());
+  return { exitCode: EXIT.ok, json };
 }
 
 // ---------------------------------------------------------------------------
@@ -619,7 +676,7 @@ export async function main(argv: string[], ioOverrides: Partial<CliIo> = {}): Pr
     switch (command) {
       case "demo":
         if (args.length) throw new UsageError("demo takes no file.");
-        outcome = await demoCommand(values, io, say);
+        outcome = await demoCommand(values, io, say, asJson);
         break;
       case "estimate":
         outcome = await estimateCommand(values, needFile("trace file"), io, say);
@@ -628,7 +685,7 @@ export async function main(argv: string[], ioOverrides: Partial<CliIo> = {}): Pr
         outcome = await runCommand(values, needFile("trace file"), io, say);
         break;
       case "report":
-        outcome = await reportCommand(values, needFile("run.json"), io, say);
+        outcome = await reportCommand(values, needFile("run.json"), io, say, asJson);
         break;
       default:
         throw new UsageError(`Unknown command "${command}". Run metergraph-replay --help.`);

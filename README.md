@@ -12,6 +12,11 @@ Local, no account, your own keys. Under construction.
 
 ```sh
 npx metergraph-replay demo
+npx metergraph-replay report replay-out/run.json   # explore every call
 ```
+
+The report lives in the terminal: cost, output signals, tracked fields and
+latency per model, each beside production's own variation, and an explorer
+for every call. See [the command line](docs/cli.md).
 
 Licensed under Apache-2.0.

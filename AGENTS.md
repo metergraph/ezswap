@@ -34,7 +34,7 @@ provider calls the user asked for.
 | `src/providers/` | OpenAI-compatible chat client: retries, fallbacks, usage normalization. |
 | `src/pricing/` | Price catalog (generated JSON) and cost function. |
 | `src/run/` | Estimate, budget, replay orchestration, writing `run.json`. |
-| `src/report/` | Single-file HTML report and terminal table. |
+| `src/report/` | The terminal report (`terminal.ts`, primitives in `term/`), the interactive explorer (`explore/`) and the hosted link. `model.ts` holds every figure and sentence. |
 | `src/cli/` | Commands: `demo`, `estimate`, `run`, `report`. |
 | `conformance/` | Fixtures that pin numbers shared with the hosted Metergraph product. Never edit expected values by hand. |
 | `demo/` | Synthetic traces and recorded outputs for `demo`. |
