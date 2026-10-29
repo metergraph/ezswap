@@ -667,7 +667,9 @@ export function reportModel(run: RunFile, options: ModelOptions = {}): ReportMod
   const parts = [`${formatCount(view.sample.replayed)} production ${view.sample.replayed === 1 ? "call" : "calls"} replayed on ${list}.`];
   if (anyCheaper && cheapest?.delta?.endsWith("% lower")) {
     const less = cheapest.delta.replace(/ lower$/, " less");
-    parts.push(`${cheapest.arm.label} (${shortModel(cheapest.arm.model)}) costs ${less} per call than ${prod}${hasFloor ? " replayed the same way" : ""}.`);
+    const short = shortModel(cheapest.arm.model);
+    const name = cheapest.arm.label === cheapest.arm.model || cheapest.arm.label === short ? short || cheapest.arm.label : `${cheapest.arm.label} (${short})`;
+    parts.push(`${name} costs ${less} per call than ${prod}${hasFloor ? " replayed the same way" : ""}.`);
   }
   parts.push(hasFloor ? `Every difference below sits beside how much ${prod} differs from itself.` : "This run has no noise floor, so differences are shown without production's own variation.");
 

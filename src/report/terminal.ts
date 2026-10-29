@@ -19,6 +19,8 @@ export const MIN_WIDTH = 40;
 export const MAX_WIDTH = 140;
 /** Calls the static report lists under "Calls that differ". */
 export const DIFFER_LIMIT = 5;
+/** What a clickable hosted link shows instead of the long URL. */
+const HOSTED_LABEL = "metergraph.dev/replay";
 
 export interface TerminalOptions {
   /** Columns to fill; clamped to 40..140. */
@@ -40,6 +42,8 @@ export interface Ctx {
   ascii: boolean;
   chars: Charset;
   ell: string;
+  /** Emit OSC 8 hyperlinks: only on a colour terminal, where escape sequences are wanted. */
+  links: boolean;
 }
 
 export function makeCtx(options: { width?: number; color?: boolean; ascii?: boolean }): Ctx {
@@ -50,7 +54,13 @@ export function makeCtx(options: { width?: number; color?: boolean; ascii?: bool
     ascii,
     chars: charset(ascii),
     ell: ascii ? "~" : "…",
+    links: Boolean(options.color) && !ascii,
   };
+}
+
+/** Text that opens `url` when clicked, in terminals that support OSC 8 (others show the text). */
+function hyperlink(url: string, text: string): string {
+  return `\x1b]8;;${url}\x1b\\${text}\x1b]8;;\x1b\\`;
 }
 
 /** The report model with every string cleaned for the terminal (and made ASCII when asked). */
@@ -507,11 +517,17 @@ export function footer(ctx: Ctx, model: ReportModel, link: string, explore: stri
     p.bold("Keep this comparison running on live traffic"),
     "",
     `${p.muted("Set it up in one command:")}  ${p.bold(p.treat(SETUP_COMMAND))}`,
-    ...wrap("Or open the link below. It carries the run's setup only: models, settings, tracked fields and sample size.", inner).map((l) => p.muted(l)),
   ];
+  if (ctx.links) {
+    // Clickable: a short label inside the box instead of the long URL.
+    cta.push(`${p.muted("Or open it with this run's setup:")}  ${p.underline(hyperlink(link, HOSTED_LABEL))}`);
+    cta.push(...wrap("The link carries the setup only: models, settings, tracked fields and sample size.", inner).map((l) => p.muted(l)));
+  } else {
+    cta.push(...wrap("Or open the link below. It carries the run's setup only: models, settings, tracked fields and sample size.", inner).map((l) => p.muted(l)));
+  }
   lines.push(...box(cta, { width: ctx.w, chars: charset(ctx.ascii, "double"), paint: p, border: p.treat, ellipsis: ctx.ell }));
-  // The link stays whole on its own line so it can be copied; the terminal may wrap it.
-  lines.push(` ${p.underline(link)}`);
+  // Without hyperlinks the link stays whole on its own line so it can be copied; the terminal may wrap it.
+  if (!ctx.links) lines.push(` ${p.underline(link)}`);
   if (explore) {
     lines.push("");
     const command = `metergraph-replay report ${cleanLine(explore)}`;
@@ -528,7 +544,8 @@ export function reportLines(ctx: Ctx, model: ReportModel, link: string, explore?
     headerPanel(ctx, model),
     costPanel(ctx, model),
     signalsPanel(ctx, model),
-    fieldsPanel(ctx, model),
+    // The bars carry the figures; the sentences live in the explorer's Fields tab.
+    fieldsPanel(ctx, model, { sentences: false }),
     latencyPanel(ctx, model),
     differPanel(ctx, model),
     notReplayablePanel(ctx, model),

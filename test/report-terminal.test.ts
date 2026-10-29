@@ -65,10 +65,20 @@ test("no line is wider than the terminal, at any width, in either character set"
   assert.equal(Math.max(...wide.split("\n").filter((l) => !LINK.test(l)).map((l) => width(l))), 140);
 });
 
-test("ASCII mode prints only printable ASCII; colour adds only SGR sequences", () => {
+// The one hyperlink the report may emit: the hosted link (OSC 8 open, then close).
+const OWN_LINK = /\x1b\]8;;(?:https:\/\/www\.metergraph\.dev\/replay\?[A-Za-z0-9_=&.%-]*#setup=[A-Za-z0-9_-]*)?\x1b\\/g;
+
+/** Remove the report's own hyperlink, checking it opens and closes exactly once. */
+function withoutOwnLink(out: string, expected: boolean): string {
+  const found = out.match(OWN_LINK) ?? [];
+  assert.equal(found.length, expected ? 2 : 0, "the hosted link is the only hyperlink");
+  return out.replace(OWN_LINK, "");
+}
+
+test("ASCII mode prints only printable ASCII; colour adds only SGR sequences and the hosted link", () => {
   const ascii = renderReport(fixture, { width: 100, ascii: true, labels: true });
   assert.match(ascii, /^[\x20-\x7e\n]*$/);
-  const colored = renderReport(fixture, { width: 100, ascii: false, labels: true, color: true });
+  const colored = withoutOwnLink(renderReport(fixture, { width: 100, ascii: false, labels: true, color: true }), true);
   const escapes = colored.match(/\x1b[^m]*m?/g) ?? [];
   assert.ok(escapes.length > 0);
   for (const e of escapes) assert.match(e, /^\x1b\[[0-9;]*m$/, JSON.stringify(e));
@@ -125,8 +135,9 @@ test("hostile captured text is neutralized before it reaches the terminal", () =
   failed.error = { code: "timeout", message: evil };
   for (const color of [false, true]) {
     for (const ascii of [false, true]) {
-      const out = renderReport(run, { width: 100, color, ascii, labels: true, explore: `out${evil}/run.json` });
-      // Only the report's own SGR styles may appear, and none without colour.
+      const rendered = renderReport(run, { width: 100, color, ascii, labels: true, explore: `out${evil}/run.json` });
+      // Only the report's own SGR styles and hosted link may appear, and none without colour.
+      const out = withoutOwnLink(rendered, color && !ascii);
       const escapes = out.match(/\x1b[\s\S]?[^m]*m?/g) ?? [];
       for (const e of escapes) assert.match(e, /^\x1b\[[0-9;]*m$/, JSON.stringify(e));
       if (!color) assert.doesNotMatch(out, /\x1b/);

@@ -3,9 +3,9 @@
 │                                                                              │
 │ Would a cheaper model have worked for gpt-4.1-mini's calls?                  │
 │ 20 production calls replayed on google/gemini-2.5-flash-lite and             │
-│ openai/gpt-5.4-nano. google/gemini-2.5-flash-lite (gemini-2.5-flash-lite)    │
-│ costs 76% less per call than gpt-4.1-mini replayed the same way. Every       │
-│ difference below sits beside how much gpt-4.1-mini differs from itself.      │
+│ openai/gpt-5.4-nano. gemini-2.5-flash-lite costs 76% less per call than      │
+│ gpt-4.1-mini replayed the same way. Every difference below sits beside how   │
+│ much gpt-4.1-mini differs from itself.                                       │
 │                                                                              │
 │ sample 20 of 22 replayed  ·  source replay-jsonl, traces.jsonl               │
 │ production gpt-4.1-mini  ·  spent $0.013 of $1.00                            │
@@ -40,27 +40,11 @@
 ╭─ Tracked fields ──────────────── ┆ marks production's agreement with itself ─╮
 │ category  label field                             ┆ vs itself 100% agreement │
 │ gemini-2.5-flash-lite  ███████████████████████▍·┆   90%  18 of 20 same label │
-│                        google/gemini-2.5-flash-lite gives the same label as  │
-│                        control on 18 of 20 cases; the control gives the same │
-│                        label as itself on 20 of 20. 2 cases had no value on  │
-│                        one side.                                             │
 │ gpt-5.4-nano           █████████████████████████┃  100%  19 of 19 same label │
-│                        openai/gpt-5.4-nano gives the same label as control   │
-│                        on 19 of 19 cases; the control gives the same label   │
-│                        as itself on 20 of 20. 3 cases had no value on one    │
-│                        side.                                                 │
 │                                                                              │
 │ priority  label field                              ┆ vs itself 85% agreement │
 │ gemini-2.5-flash-lite  ██████████████████████┃····  85%  17 of 20 same label │
-│                        google/gemini-2.5-flash-lite gives the same label as  │
-│                        control on 17 of 20 cases; the control gives the same │
-│                        label as itself on 17 of 20. 2 cases had no value on  │
-│                        one side.                                             │
 │ gpt-5.4-nano           ██████████████████████┃█▏··  89%  17 of 19 same label │
-│                        openai/gpt-5.4-nano gives the same label as control   │
-│                        on 17 of 19 cases; the control gives the same label   │
-│                        as itself on 17 of 20. 3 cases had no value on one    │
-│                        side.                                                 │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 
 ╭─ Latency ────────────────────────────── median, against production replayed ─╮
