@@ -1,0 +1,2548 @@
+{
+  "schema": "metergraph.replay-run/v1",
+  "createdAt": "2026-10-28T16:00:00.000Z",
+  "tool": {
+    "name": "metergraph-replay",
+    "version": "0.0.0"
+  },
+  "input": {
+    "file": "traces.jsonl",
+    "adapter": "replay-jsonl"
+  },
+  "catalog": {
+    "version": "metergraph-core prices.yaml 2026-10-06 (e0d9203fd42d)"
+  },
+  "settings": {
+    "sample": 20,
+    "trackedFields": [
+      "$.category",
+      "$.priority"
+    ],
+    "noiseFloor": true,
+    "budgetUsd": 1
+  },
+  "treatments": [
+    {
+      "id": "t1",
+      "label": "google/gemini-2.5-flash-lite",
+      "model": "google/gemini-2.5-flash-lite",
+      "endpoint": "openrouter",
+      "settings": {
+        "temperature": null,
+        "maxTokens": null,
+        "reasoningEffort": null
+      }
+    },
+    {
+      "id": "t2",
+      "label": "openai/gpt-5.4-nano",
+      "model": "openai/gpt-5.4-nano",
+      "endpoint": "openrouter",
+      "settings": {
+        "temperature": null,
+        "maxTokens": null,
+        "reasoningEffort": null
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "call-0001",
+      "traceId": "ticket-0001",
+      "ts": "2026-10-27T08:00:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: Charged twice for October\nFrom: dana.reyes@example.com\n\nHi, my card statement shows two charges of $49 for the October plan. Can you refund the duplicate?"
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"billing\",\"customer_email\":\"dana.reyes@example.com\",\"summary\":\"Customer was charged twice for the October plan and wants the duplicate refunded.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 169,
+          "outputTokens": 50,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.0001476,
+        "latencyMs": 1083
+      },
+      "inputPreview": "Subject: Charged twice for October From: dana.reyes@example.com Hi, my card statement shows two charges of $49 for the October plan. Can you refund the duplicate?",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0002",
+      "traceId": "ticket-0002",
+      "ts": "2026-10-27T08:37:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: API returns 500 on /deployments\nFrom: ops@example.com\n\nSince this morning every POST to /v2/deployments returns HTTP 500. Our CI pipeline is blocked."
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"api\",\"customer_email\":\"ops@example.com\",\"summary\":\"POST requests to the deployments endpoint fail with HTTP 500, blocking the customer's CI.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 168,
+          "outputTokens": 48,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.000144,
+        "latencyMs": 1080
+      },
+      "inputPreview": "Subject: API returns 500 on /deployments From: ops@example.com Since this morning every POST to /v2/deployments returns HTTP 500. Our CI pipeline is blocked.",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0003",
+      "traceId": "ticket-0003",
+      "ts": "2026-10-27T09:14:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: Can't log in after password reset\nFrom: li.wei@example.com\n\nI reset my password but the login page keeps saying the link expired. I have tried three times."
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"li.wei@example.com\",\"summary\":\"Password reset links show as expired, so the customer cannot log in.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 170,
+          "outputTokens": 45,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.00014,
+        "latencyMs": 1078
+      },
+      "inputPreview": "Subject: Can't log in after password reset From: li.wei@example.com I reset my password but the login page keeps saying the link expired. I have tried three times.",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0004",
+      "traceId": "ticket-0004",
+      "ts": "2026-10-27T09:51:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: Dark mode for the dashboard?\nFrom: sam.okafor@example.com\n\nWould love a dark theme in the dashboard. Staring at it late at night is rough."
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"sam.okafor@example.com\",\"summary\":\"Customer asks for a dark theme in the dashboard.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 165,
+          "outputTokens": 43,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.0001348,
+        "latencyMs": 1075
+      },
+      "inputPreview": "Subject: Dark mode for the dashboard? From: sam.okafor@example.com Would love a dark theme in the dashboard. Staring at it late at night is rough.",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0005",
+      "traceId": "ticket-0005",
+      "ts": "2026-10-27T10:28:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: Sites down in eu-west\nFrom: noc@example.com\n\nAll of our sites in eu-west are timing out. Status page says operational but nothing loads."
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"noc@example.com\",\"summary\":\"Every site in eu-west is timing out although the status page shows operational.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 165,
+          "outputTokens": 46,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.0001396,
+        "latencyMs": 1093
+      },
+      "inputPreview": "Subject: Sites down in eu-west From: noc@example.com All of our sites in eu-west are timing out. Status page says operational but nothing loads.",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0006",
+      "traceId": "ticket-0006",
+      "ts": "2026-10-27T11:05:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: Invoice needs our VAT number\nFrom: accounts@example.com\n\nPlease reissue invoice INV-2207 with our VAT number EX123456 on it. Our auditors need it."
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"accounts@example.com\",\"summary\":\"Customer needs invoice INV-2207 reissued with their VAT number.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 167,
+          "outputTokens": 44,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.0001372,
+        "latencyMs": 1090
+      },
+      "inputPreview": "Subject: Invoice needs our VAT number From: accounts@example.com Please reissue invoice INV-2207 with our VAT number EX123456 on it. Our auditors need it.",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0007",
+      "traceId": "ticket-0007",
+      "ts": "2026-10-27T11:42:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: DNS changes not propagating\nFrom: maria.k@example.com\n\nI updated the A record for shop.example.com six hours ago and it still resolves to the old IP."
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"dns\",\"customer_email\":\"maria.k@example.com\",\"summary\":\"An A record change made six hours ago has not taken effect.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 168,
+          "outputTokens": 42,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.0001344,
+        "latencyMs": 1088
+      },
+      "inputPreview": "Subject: DNS changes not propagating From: maria.k@example.com I updated the A record for shop.example.com six hours ago and it still resolves to the old IP.",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0008",
+      "traceId": "ticket-0008",
+      "ts": "2026-10-27T12:19:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: Add a teammate without a seat?\nFrom: jo@example.com\n\nIs there a way to give our accountant read-only access to invoices without paying for another seat?"
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"account\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"jo@example.com\",\"summary\":\"Customer wants read-only invoice access for an accountant without buying a seat.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 169,
+          "outputTokens": 47,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.0001428,
+        "latencyMs": 1085
+      },
+      "inputPreview": "Subject: Add a teammate without a seat? From: jo@example.com Is there a way to give our accountant read-only access to invoices without paying for another seat?",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0009",
+      "traceId": "ticket-0009",
+      "ts": "2026-10-27T12:56:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: Uploads fail over 2 GB\nFrom: media-team@example.com\n\nUploading files larger than 2 GB to storage fails at 99 percent with a network error. Smaller files are fine."
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"media-team@example.com\",\"summary\":\"Storage uploads over 2 GB fail near completion with a network error.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 171,
+          "outputTokens": 46,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.000142,
+        "latencyMs": 1063
+      },
+      "inputPreview": "Subject: Uploads fail over 2 GB From: media-team@example.com Uploading files larger than 2 GB to storage fails at 99 percent with a network error. Smaller files are fine.",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0010",
+      "traceId": "ticket-0010",
+      "ts": "2026-10-27T13:33:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: Webhooks for failed payments\nFrom: dev@example.com\n\nWe would like a webhook when a customer's payment fails so we can pause their account automatically."
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"api\",\"customer_email\":\"dev@example.com\",\"summary\":\"Customer requests a webhook for failed payments.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 169,
+          "outputTokens": 40,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.0001316,
+        "latencyMs": 1060
+      },
+      "inputPreview": "Subject: Webhooks for failed payments From: dev@example.com We would like a webhook when a customer's payment fails so we can pause their account automatically.",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0011",
+      "traceId": "ticket-0011",
+      "ts": "2026-10-27T14:10:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: Account locked after 2FA phone change\nFrom: priya.n@example.com\n\nI got a new phone and lost my authenticator. Now I am locked out and our launch is tomorrow."
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"account\",\"priority\":\"high\",\"product\":\"auth\",\"customer_email\":\"priya.n@example.com\",\"summary\":\"Customer lost their authenticator with a phone change and is locked out before a launch.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 170,
+          "outputTokens": 50,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.000148,
+        "latencyMs": 801
+      },
+      "inputPreview": "Subject: Account locked after 2FA phone change From: priya.n@example.com I got a new phone and lost my authenticator. Now I am locked out and our launch is tomorrow.",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0012",
+      "traceId": "ticket-0012",
+      "ts": "2026-10-27T14:47:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: Outbound email delayed\nFrom: support@example.com\n\nTransactional emails from our app are arriving 30 to 40 minutes late since yesterday afternoon."
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"email\",\"customer_email\":\"support@example.com\",\"summary\":\"Transactional emails have been delayed by 30 to 40 minutes since yesterday.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 167,
+          "outputTokens": 46,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.0001404,
+        "latencyMs": 804
+      },
+      "inputPreview": "Subject: Outbound email delayed From: support@example.com Transactional emails from our app are arriving 30 to 40 minutes late since yesterday afternoon.",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0013",
+      "traceId": "ticket-0013",
+      "ts": "2026-10-27T15:24:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: Downgrade to the starter plan\nFrom: hello@example.com\n\nWe are a smaller team now. How do I move from Pro to Starter at the end of this billing cycle?"
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"hello@example.com\",\"summary\":\"Customer wants to downgrade from Pro to Starter at the end of the cycle.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 168,
+          "outputTokens": 46,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.0001408,
+        "latencyMs": 796
+      },
+      "inputPreview": "Subject: Downgrade to the starter plan From: hello@example.com We are a smaller team now. How do I move from Pro to Starter at the end of this billing cycle?",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0014",
+      "traceId": "ticket-0014",
+      "ts": "2026-10-27T16:01:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: Dashboard graphs blank in Safari\nFrom: tom.b@example.com\n\nThe usage graphs on the dashboard render empty in Safari 19. Chrome shows them fine."
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"bug\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"tom.b@example.com\",\"summary\":\"Dashboard usage graphs render blank in Safari but work in Chrome.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 166,
+          "outputTokens": 43,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.0001352,
+        "latencyMs": 799
+      },
+      "inputPreview": "Subject: Dashboard graphs blank in Safari From: tom.b@example.com The usage graphs on the dashboard render empty in Safari 19. Chrome shows them fine.",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0015",
+      "traceId": "ticket-0015",
+      "ts": "2026-10-27T16:38:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: Whole API unreachable\nFrom: sre@example.com\n\napi.example.com is refusing connections from every region we test. This is a full outage for us."
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"sre@example.com\",\"summary\":\"The API refuses connections from every tested region, a full outage for the customer.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 166,
+          "outputTokens": 48,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.0001432,
+        "latencyMs": 791
+      },
+      "inputPreview": "Subject: Whole API unreachable From: sre@example.com api.example.com is refusing connections from every region we test. This is a full outage for us.",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0016",
+      "traceId": "ticket-0016",
+      "ts": "2026-10-27T17:15:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: Unexpected storage overage charge\nFrom: finance@example.com\n\nWe were billed $310 in storage overage but our usage graph never went above the plan limit."
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"finance@example.com\",\"summary\":\"Customer disputes a $310 storage overage that their usage graph does not show.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 169,
+          "outputTokens": 48,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.0001444,
+        "latencyMs": 794
+      },
+      "inputPreview": "Subject: Unexpected storage overage charge From: finance@example.com We were billed $310 in storage overage but our usage graph never went above the plan limit.",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0017",
+      "traceId": "ticket-0017",
+      "ts": "2026-10-27T17:52:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: SSO with our identity provider\nFrom: it-admin@example.com\n\nDo you support SAML single sign-on? We need it before we can roll out to the whole company."
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"feature_request\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"it-admin@example.com\",\"summary\":\"Customer asks whether SAML single sign-on is supported before a company rollout.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 168,
+          "outputTokens": 50,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.0001472,
+        "latencyMs": 786
+      },
+      "inputPreview": "Subject: SSO with our identity provider From: it-admin@example.com Do you support SAML single sign-on? We need it before we can roll out to the whole company.",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0018",
+      "traceId": "ticket-0018",
+      "ts": "2026-10-27T18:29:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: Rate limit hit at low volume\nFrom: backend@example.com\n\nWe get 429 responses at around 20 requests a minute, well under the documented limit of 600."
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"api\",\"customer_email\":\"backend@example.com\",\"summary\":\"Customer gets rate limited at 20 requests a minute, far below the documented limit.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 168,
+          "outputTokens": 47,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.0001424,
+        "latencyMs": 789
+      },
+      "inputPreview": "Subject: Rate limit hit at low volume From: backend@example.com We get 429 responses at around 20 requests a minute, well under the documented limit of 600.",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0019",
+      "traceId": "ticket-0019",
+      "ts": "2026-10-27T19:06:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: Change the account owner\nFrom: founder@example.com\n\nOur previous CTO owns the account and has left. Please transfer ownership to me."
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"founder@example.com\",\"summary\":\"Customer asks to transfer account ownership from a departed CTO.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 164,
+          "outputTokens": 44,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.000136,
+        "latencyMs": 781
+      },
+      "inputPreview": "Subject: Change the account owner From: founder@example.com Our previous CTO owns the account and has left. Please transfer ownership to me.",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0020",
+      "traceId": "ticket-0020",
+      "ts": "2026-10-27T19:43:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Subject: Export invoices as CSV\nFrom: (no address)\n\nIt would save us hours each month if we could export all invoices as one CSV file."
+        }
+      ],
+      "responseFormat": {
+        "type": "json_object"
+      },
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":null,\"summary\":\"Customer asks for a CSV export of all invoices.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": {
+          "inputTokens": 162,
+          "outputTokens": 38,
+          "cachedInputTokens": 0,
+          "reasoningTokens": null
+        },
+        "costUsd": 0.0001256,
+        "latencyMs": 784
+      },
+      "inputPreview": "Subject: Export invoices as CSV From: (no address) It would save us hours each month if we could export all invoices as one CSV file.",
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": null
+    },
+    {
+      "id": "call-0021",
+      "traceId": "ticket-0021",
+      "ts": "2026-10-27T20:20:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": "gpt-4.1-mini",
+      "system": null,
+      "messages": [],
+      "responseFormat": null,
+      "forcedTool": null,
+      "params": {
+        "temperature": 0.2,
+        "maxTokens": 300,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"billing\",\"customer_email\":\"ari@example.com\",\"summary\":\"Customer asks about a refund for the annual plan.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": null,
+        "costUsd": null,
+        "latencyMs": null
+      },
+      "inputPreview": null,
+      "fidelity": "full",
+      "missing": [],
+      "notReplayable": "content_truncated"
+    },
+    {
+      "id": "call-0022",
+      "traceId": "ticket-0022",
+      "ts": "2026-10-27T20:57:00.000Z",
+      "source": "replay-jsonl",
+      "provider": "openai",
+      "model": null,
+      "system": null,
+      "messages": [],
+      "responseFormat": null,
+      "forcedTool": null,
+      "params": {
+        "temperature": null,
+        "maxTokens": null,
+        "topP": null,
+        "stop": null,
+        "reasoningEffort": null
+      },
+      "webSearch": false,
+      "production": {
+        "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"dns\",\"customer_email\":\"maria.k@example.com\",\"summary\":\"An A record change made six hours ago has not taken effect.\"}",
+        "finishReason": "stop",
+        "refusal": false,
+        "usage": null,
+        "costUsd": null,
+        "latencyMs": null
+      },
+      "inputPreview": null,
+      "fidelity": "partial",
+      "missing": [
+        "request"
+      ],
+      "notReplayable": "content_unavailable"
+    }
+  ],
+  "replays": [
+    {
+      "caseId": "call-0001",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"billing\",\"customer_email\":\"dana.reyes@example.com\",\"summary\":\"Customer was charged twice for the October plan and wants the duplicate refunded.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 175,
+        "outputTokens": 50,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000375,
+      "costSource": "catalog",
+      "latencyMs": 442,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0001",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"billing\",\"customer_email\":\"dana.reyes@example.com\",\"summary\":\"Customer was charged twice for the October plan and wants the duplicate refunded.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 165,
+        "outputTokens": 244,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 194
+      },
+      "costUsd": 0.000338,
+      "costSource": "catalog",
+      "latencyMs": 1810,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0001",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"billing\",\"customer_email\":\"dana.reyes@example.com\",\"summary\":\"Customer was charged twice for the October plan and wants the duplicate refunded.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 175,
+        "outputTokens": 50,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.00015,
+      "costSource": "catalog",
+      "latencyMs": 1298,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0001",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"billing\",\"customer_email\":\"dana.reyes@example.com\",\"summary\":\"Customer was charged twice for the October plan and wants the duplicate refunded.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 175,
+        "outputTokens": 50,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.00015,
+      "costSource": "catalog",
+      "latencyMs": 769,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0002",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"api\",\"customer_email\":\"ops@example.com\",\"summary\":\"POST requests to the deployments endpoint fail with HTTP 500.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 174,
+        "outputTokens": 41,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000338,
+      "costSource": "catalog",
+      "latencyMs": 443,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0002",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"api\",\"customer_email\":\"ops@example.com\",\"summary\":\"POST requests to the deployments endpoint fail with HTTP 500, blocking the customer's CI.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 164,
+        "outputTokens": 241,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 193
+      },
+      "costUsd": 0.00033405,
+      "costSource": "catalog",
+      "latencyMs": 1814,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0002",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"api\",\"customer_email\":\"ops@example.com\",\"summary\":\"POST requests to the deployments endpoint fail with HTTP 500, blocking the customer's CI.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 174,
+        "outputTokens": 48,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001464,
+      "costSource": "catalog",
+      "latencyMs": 1295,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0002",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"api\",\"customer_email\":\"ops@example.com\",\"summary\":\"POST requests to the deployments endpoint fail with HTTP 500, blocking the customer's CI.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 174,
+        "outputTokens": 48,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001464,
+      "costSource": "catalog",
+      "latencyMs": 772,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0003",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"li.wei@example.com\",\"summary\":\"Password reset links show as expired.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 176,
+        "outputTokens": 37,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000324,
+      "costSource": "catalog",
+      "latencyMs": 444,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0003",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"li.wei@example.com\",\"summary\":\"Password reset links show as expired, so the customer cannot log in.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 166,
+        "outputTokens": 238,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 193
+      },
+      "costUsd": 0.0003307,
+      "costSource": "catalog",
+      "latencyMs": 1804,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0003",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"li.wei@example.com\",\"summary\":\"Password reset links show as expired, so the customer cannot log in.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 176,
+        "outputTokens": 45,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001424,
+      "costSource": "catalog",
+      "latencyMs": 1293,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0003",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"li.wei@example.com\",\"summary\":\"Password reset links show as expired, so the customer cannot log in.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 176,
+        "outputTokens": 45,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001424,
+      "costSource": "catalog",
+      "latencyMs": 774,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0004",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"sam.okafor@example.com\",\"summary\":\"Asks for a dark theme in the dashboard.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 170,
+        "outputTokens": 41,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000334,
+      "costSource": "catalog",
+      "latencyMs": 445,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0004",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"sam.okafor@example.com\",\"summary\":\"Customer asks for a dark theme in the dashboard.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 161,
+        "outputTokens": 235,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 192
+      },
+      "costUsd": 0.00032595,
+      "costSource": "catalog",
+      "latencyMs": 1807,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0004",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"sam.okafor@example.com\",\"summary\":\"Customer asks for a dark theme in the dashboard.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 171,
+        "outputTokens": 43,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001372,
+      "costSource": "catalog",
+      "latencyMs": 1290,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0004",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"sam.okafor@example.com\",\"summary\":\"Customer asks for a dark theme in the dashboard.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 171,
+        "outputTokens": 43,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001372,
+      "costSource": "catalog",
+      "latencyMs": 777,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0005",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"noc@example.com\",\"summary\":\"Every site in eu-west is timing out although the status page shows operational.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 171,
+        "outputTokens": 46,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000355,
+      "costSource": "catalog",
+      "latencyMs": 439,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0005",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"noc@example.com\",\"summary\":\"Every site in eu-west is timing out although the status page shows operational.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 161,
+        "outputTokens": 241,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 195
+      },
+      "costUsd": 0.00033345,
+      "costSource": "catalog",
+      "latencyMs": 1798,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0005",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"noc@example.com\",\"summary\":\"Every site in eu-west is timing out although the status page shows operational.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 170,
+        "outputTokens": 46,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001416,
+      "costSource": "catalog",
+      "latencyMs": 658,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0005",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"noc@example.com\",\"summary\":\"Sites in eu-west time out while the status page reports everything operational.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 170,
+        "outputTokens": 46,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001416,
+      "costSource": "catalog",
+      "latencyMs": 779,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0006",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"accounts@example.com\",\"summary\":\"Customer needs invoice INV-2207 reissued with their VAT number.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 173,
+        "outputTokens": 44,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000349,
+      "costSource": "catalog",
+      "latencyMs": 440,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0006",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"accounts@example.com\",\"summary\":\"Customer needs invoice INV-2207 reissued with their VAT number.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 163,
+        "outputTokens": 239,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 195
+      },
+      "costUsd": 0.00033135,
+      "costSource": "catalog",
+      "latencyMs": 1801,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0006",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"accounts@example.com\",\"summary\":\"Customer needs invoice INV-2207 reissued with their VAT number.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 173,
+        "outputTokens": 44,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001396,
+      "costSource": "catalog",
+      "latencyMs": 655,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0006",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"accounts@example.com\",\"summary\":\"Customer needs invoice INV-2207 reissued with their VAT number.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 173,
+        "outputTokens": 44,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001396,
+      "costSource": "catalog",
+      "latencyMs": 782,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0007",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"dns\",\"customer_email\":\"maria.k@example.com\",\"summary\":\"An A record change made six hours ago has not taken effect.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 174,
+        "outputTokens": 41,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000338,
+      "costSource": "catalog",
+      "latencyMs": 441,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0007",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"dns\",\"customer_email\":\"maria.k@example.com\",\"summary\":\"An A record change made six hours ago has not taken effect.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 164,
+        "outputTokens": 237,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 195
+      },
+      "costUsd": 0.00032905,
+      "costSource": "catalog",
+      "latencyMs": 1792,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0007",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"dns\",\"customer_email\":\"maria.k@example.com\",\"summary\":\"An A record change made six hours ago has not taken effect.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 173,
+        "outputTokens": 41,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001348,
+      "costSource": "catalog",
+      "latencyMs": 653,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0007",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"dns\",\"customer_email\":\"maria.k@example.com\",\"summary\":\"An A record change made six hours ago has not taken effect.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 173,
+        "outputTokens": 42,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001364,
+      "costSource": "catalog",
+      "latencyMs": 785,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0008",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"account\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"jo@example.com\",\"summary\":\"Asks read-only invoice access for an accountant without buying a seat.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 175,
+        "outputTokens": 44,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000351,
+      "costSource": "catalog",
+      "latencyMs": 442,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0008",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"account\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"jo@example.com\",\"summary\":\"Customer wants read-only invoice access for an accountant without buying a seat.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 165,
+        "outputTokens": 241,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 194
+      },
+      "costUsd": 0.00033425,
+      "costSource": "catalog",
+      "latencyMs": 1795,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0008",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"account\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"jo@example.com\",\"summary\":\"Customer wants read-only invoice access for an accountant without buying a seat.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 175,
+        "outputTokens": 47,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001452,
+      "costSource": "catalog",
+      "latencyMs": 650,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0008",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"account\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"jo@example.com\",\"summary\":\"Customer wants read-only invoice access for an accountant without buying a seat.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 175,
+        "outputTokens": 47,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001452,
+      "costSource": "catalog",
+      "latencyMs": 787,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0009",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"media-team@example.com\",\"summary\":\"Storage uploads over 2 GB fail near completion with a network error.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 177,
+        "outputTokens": 46,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000361,
+      "costSource": "catalog",
+      "latencyMs": 436,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0009",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"storage\",\"customer_email\":\"media-team@example.com\",\"summary\":\"Storage uploads over 2 GB fail near completion with a network error.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 166,
+        "outputTokens": 242,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 197
+      },
+      "costUsd": 0.0003357,
+      "costSource": "catalog",
+      "latencyMs": 1835,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0009",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"media-team@example.com\",\"summary\":\"Storage uploads over 2 GB fail near completion with a network error.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 176,
+        "outputTokens": 46,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.000144,
+      "costSource": "catalog",
+      "latencyMs": 1277,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0009",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"media-team@example.com\",\"summary\":\"Storage uploads over 2 GB fail near completion with a network error.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 176,
+        "outputTokens": 46,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.000144,
+      "costSource": "catalog",
+      "latencyMs": 790,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0010",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"api\",\"customer_email\":\"dev@example.com\",\"summary\":\"Asks a webhook for failed payments.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 175,
+        "outputTokens": 37,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000323,
+      "costSource": "catalog",
+      "latencyMs": 436,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0010",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"api\",\"customer_email\":\"dev@example.com\",\"summary\":\"Customer requests a webhook for failed payments.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 164,
+        "outputTokens": 237,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 197
+      },
+      "costUsd": 0.00032905,
+      "costSource": "catalog",
+      "latencyMs": 1839,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0010",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"api\",\"customer_email\":\"dev@example.com\",\"summary\":\"Customer requests a webhook for failed payments.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 174,
+        "outputTokens": 40,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001336,
+      "costSource": "catalog",
+      "latencyMs": 1275,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0010",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"api\",\"customer_email\":\"dev@example.com\",\"summary\":\"Customer requests a webhook for failed payments.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 174,
+        "outputTokens": 40,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001336,
+      "costSource": "catalog",
+      "latencyMs": 792,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0011",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"account\",\"priority\":\"urgent\",\"product\":\"auth\",\"customer_email\":\"priya.n@example.com\",\"summary\":\"Customer lost their authenticator with a phone change and is locked out before a launch.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 164,
+        "outputTokens": 50,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000364,
+      "costSource": "catalog",
+      "latencyMs": 393,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0011",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"account\",\"priority\":\"high\",\"product\":\"auth\",\"customer_email\":\"priya.n@example.com\",\"summary\":\"Customer lost their authenticator with a phone change and is locked out before a launch.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 165,
+        "outputTokens": 265,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 215
+      },
+      "costUsd": 0.00036425,
+      "costSource": "catalog",
+      "latencyMs": 1777,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0011",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"account\",\"priority\":\"high\",\"product\":\"auth\",\"customer_email\":\"priya.n@example.com\",\"summary\":\"Customer lost their authenticator with a phone change and is locked out before a launch.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 175,
+        "outputTokens": 50,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.00015,
+      "costSource": "catalog",
+      "latencyMs": 804,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0011",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"account\",\"priority\":\"high\",\"product\":\"auth\",\"customer_email\":\"priya.n@example.com\",\"summary\":\"Customer lost their authenticator with a phone change and is locked out before a launch.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 175,
+        "outputTokens": 50,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.00015,
+      "costSource": "catalog",
+      "latencyMs": 1265,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0012",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"outage\",\"priority\":\"high\",\"product\":\"email\",\"customer_email\":\"support@example.com\",\"summary\":\"Transactional emails have been delayed by 30 to 40 minutes since yesterday.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 162,
+        "outputTokens": 46,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000346,
+      "costSource": "catalog",
+      "latencyMs": 392,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0012",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"email\",\"customer_email\":\"support@example.com\",\"summary\":\"Transactional emails have been delayed by 30 to 40 minutes since yesterday.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 162,
+        "outputTokens": 262,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 216
+      },
+      "costUsd": 0.0003599,
+      "costSource": "catalog",
+      "latencyMs": 1774,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0012",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"email\",\"customer_email\":\"support@example.com\",\"summary\":\"Transactional emails have been delayed by 30 to 40 minutes since yesterday.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 172,
+        "outputTokens": 46,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001424,
+      "costSource": "catalog",
+      "latencyMs": 807,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0012",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"email\",\"customer_email\":\"support@example.com\",\"summary\":\"Transactional emails have been delayed by 30 to 40 minutes since yesterday.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 172,
+        "outputTokens": 46,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001424,
+      "costSource": "catalog",
+      "latencyMs": 1263,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0013",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"hello@example.com\",\"summary\":\"Asks to downgrade from Pro to Starter at the end of the cycle.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 162,
+        "outputTokens": 43,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000334,
+      "costSource": "catalog",
+      "latencyMs": 391,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0013",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"hello@example.com\",\"summary\":\"Customer wants to downgrade from Pro to Starter at the end of the cycle.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 163,
+        "outputTokens": 261,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 215
+      },
+      "costUsd": 0.00035885,
+      "costSource": "catalog",
+      "latencyMs": 1783,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0013",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"hello@example.com\",\"summary\":\"Customer wants to downgrade from Pro to Starter at the end of the cycle.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 173,
+        "outputTokens": 46,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001428,
+      "costSource": "catalog",
+      "latencyMs": 799,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0013",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"billing\",\"customer_email\":\"hello@example.com\",\"summary\":\"Customer wants to downgrade from Pro to Starter at the end of the cycle.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 173,
+        "outputTokens": 46,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001428,
+      "costSource": "catalog",
+      "latencyMs": 1260,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0014",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"tom.b@example.com\",\"summary\":\"Dashboard usage graphs render blank in Safari but work in Chrome.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 161,
+        "outputTokens": 43,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000333,
+      "costSource": "catalog",
+      "latencyMs": 390,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0014",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"tom.b@example.com\",",
+      "finishReason": "length",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 161,
+        "outputTokens": 300,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 276
+      },
+      "costUsd": 0.0004072,
+      "costSource": "catalog",
+      "latencyMs": 2775,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0014",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"tom.b@example.com\",\"summary\":\"Dashboard usage graphs render blank in Safari but work in Chrome.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 171,
+        "outputTokens": 43,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001372,
+      "costSource": "catalog",
+      "latencyMs": 802,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0014",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"tom.b@example.com\",\"summary\":\"Dashboard usage graphs render blank in Safari but work in Chrome.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 171,
+        "outputTokens": 43,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001372,
+      "costSource": "catalog",
+      "latencyMs": 1258,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0015",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"sre@example.com\",\"summary\":\"The API refuses connections from every tested region.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 160,
+        "outputTokens": 40,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.000032,
+      "costSource": "catalog",
+      "latencyMs": 389,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0015",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"sre@example.com\",\"summary\":\"The API refuses connections from every tested region, a full outage for the customer.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 161,
+        "outputTokens": 262,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 214
+      },
+      "costUsd": 0.0003597,
+      "costSource": "catalog",
+      "latencyMs": 1764,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0015",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"sre@example.com\",\"summary\":\"The API refuses connections from every tested region, a full outage for the customer.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 171,
+        "outputTokens": 48,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001452,
+      "costSource": "catalog",
+      "latencyMs": 794,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0015",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"sre@example.com\",\"summary\":\"The API refuses connections from every tested region, a full outage for the customer.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 171,
+        "outputTokens": 48,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001452,
+      "costSource": "catalog",
+      "latencyMs": 1276,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0016",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"finance@example.com\",\"summary\":\"Customer disputes a $310 storage overage that their usage graph does not show.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 163,
+        "outputTokens": 47,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000351,
+      "costSource": "catalog",
+      "latencyMs": 388,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0016",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"finance@example.com\",\"summary\":\"Customer disputes a $310 storage overage that their usage graph does not show.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 164,
+        "outputTokens": 262,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 214
+      },
+      "costUsd": 0.0003603,
+      "costSource": "catalog",
+      "latencyMs": 1761,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0016",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"finance@example.com\",\"summary\":\"Customer disputes a $310 storage overage that their usage graph does not show.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 174,
+        "outputTokens": 48,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001464,
+      "costSource": "catalog",
+      "latencyMs": 797,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0016",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"finance@example.com\",\"summary\":\"Customer disputes a $310 storage overage that their usage graph does not show.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 174,
+        "outputTokens": 48,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001464,
+      "costSource": "catalog",
+      "latencyMs": 1273,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0017",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"feature_request\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"it-admin@example.com\",\"summary\":\"Asks whether SAML single sign-on is supported before a company rollout.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 162,
+        "outputTokens": 48,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000354,
+      "costSource": "catalog",
+      "latencyMs": 387,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0017",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"auth\",\"customer_email\":\"it-admin@example.com\",\"summary\":\"Customer asks whether SAML single sign-on is supported before a company rollout.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 164,
+        "outputTokens": 263,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 213
+      },
+      "costUsd": 0.00036155,
+      "costSource": "catalog",
+      "latencyMs": 1771,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0017",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"feature_request\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"it-admin@example.com\",\"summary\":\"Customer asks whether SAML single sign-on is supported before a company rollout.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 173,
+        "outputTokens": 50,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001492,
+      "costSource": "catalog",
+      "latencyMs": 789,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0017",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"feature_request\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"it-admin@example.com\",\"summary\":\"Customer asks whether SAML single sign-on is supported before a company rollout.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 173,
+        "outputTokens": 50,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001492,
+      "costSource": "catalog",
+      "latencyMs": 1271,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0018",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"backend@example.com\",\"summary\":\"Customer gets rate limited at 20 requests a minute, far below the documented limit.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 162,
+        "outputTokens": 48,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000354,
+      "costSource": "catalog",
+      "latencyMs": 387,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0018",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"api\",\"customer_email\":\"backend@example.com\",\"summary\":\"Customer gets rate limited at 20 requests a minute, far below the documented limit.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 164,
+        "outputTokens": 260,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 213
+      },
+      "costUsd": 0.0003578,
+      "costSource": "catalog",
+      "latencyMs": 1767,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0018",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"api\",\"customer_email\":\"backend@example.com\",\"summary\":\"Customer gets rate limited at 20 requests a minute, far below the documented limit.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 173,
+        "outputTokens": 47,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001444,
+      "costSource": "catalog",
+      "latencyMs": 791,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0018",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"bug\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"backend@example.com\",\"summary\":\"Customer gets rate limited at 20 requests a minute, far below the documented limit.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 173,
+        "outputTokens": 48,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.000146,
+      "costSource": "catalog",
+      "latencyMs": 1268,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0019",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"founder@example.com\",\"summary\":\"Asks to transfer account ownership from a departed CTO.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 159,
+        "outputTokens": 42,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000327,
+      "costSource": "catalog",
+      "latencyMs": 399,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0019",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"founder@example.com\",\"summary\":\"Customer asks to transfer account ownership from a departed CTO.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 159,
+        "outputTokens": 263,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 219
+      },
+      "costUsd": 0.00036055,
+      "costSource": "catalog",
+      "latencyMs": 1802,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0019",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"founder@example.com\",\"summary\":\"Customer asks to transfer account ownership from a departed CTO.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 168,
+        "outputTokens": 44,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001376,
+      "costSource": "catalog",
+      "latencyMs": 784,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0019",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"founder@example.com\",\"summary\":\"Customer asks to transfer account ownership from a departed CTO.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 168,
+        "outputTokens": 44,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001376,
+      "costSource": "catalog",
+      "latencyMs": 1286,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0020",
+      "arm": "t1",
+      "status": "ok",
+      "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":null,\"summary\":\"Asks for a CSV export of all invoices.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 157,
+        "outputTokens": 35,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0000297,
+      "costSource": "catalog",
+      "latencyMs": 399,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0020",
+      "arm": "t2",
+      "status": "ok",
+      "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":null,\"summary\":\"Customer asks for a CSV export of all invoices.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 157,
+        "outputTokens": 257,
+        "cachedInputTokens": 0,
+        "reasoningTokens": 219
+      },
+      "costUsd": 0.00035265,
+      "costSource": "catalog",
+      "latencyMs": 1799,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0020",
+      "arm": "floor_a1",
+      "status": "ok",
+      "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":null,\"summary\":\"Customer asks for a CSV export of all invoices.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 166,
+        "outputTokens": 38,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001272,
+      "costSource": "catalog",
+      "latencyMs": 786,
+      "flags": [],
+      "error": null
+    },
+    {
+      "caseId": "call-0020",
+      "arm": "floor_a2",
+      "status": "ok",
+      "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":null,\"summary\":\"Customer asks for a CSV export of all invoices.\"}",
+      "finishReason": "stop",
+      "refusal": false,
+      "usage": {
+        "inputTokens": 166,
+        "outputTokens": 38,
+        "cachedInputTokens": 0,
+        "reasoningTokens": null
+      },
+      "costUsd": 0.0001272,
+      "costSource": "catalog",
+      "latencyMs": 1283,
+      "flags": [],
+      "error": null
+    }
+  ],
+  "estimate": {
+    "replayable": 20,
+    "notReplayable": {
+      "content_truncated": 1,
+      "content_unavailable": 1
+    },
+    "expectedUsd": 0.023,
+    "upperBoundUsd": 0.0453734,
+    "perArm": {
+      "t1": {
+        "expectedUsd": 0.002,
+        "upperBoundUsd": 0.0038794
+      },
+      "t2": {
+        "expectedUsd": 0.0056,
+        "upperBoundUsd": 0.0104588
+      },
+      "floor_a1": {
+        "expectedUsd": 0.0077,
+        "upperBoundUsd": 0.0155176
+      },
+      "floor_a2": {
+        "expectedUsd": 0.0077,
+        "upperBoundUsd": 0.0155176
+      }
+    },
+    "unpriced": []
+  },
+  "spentUsd": 0.0133247,
+  "stopped": null
+}
