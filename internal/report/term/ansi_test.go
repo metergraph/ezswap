@@ -2,6 +2,7 @@ package term
 
 import (
 	"regexp"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -143,6 +144,12 @@ func TestHyperlinkIsOSC8WithST(t *testing.T) {
 func env(kv ...string) []string { return kv }
 
 func TestDetectProfile(t *testing.T) {
+	// Without TERM, colorprofile asks Windows itself, and Windows 10 and later
+	// consoles take truecolor.
+	noTerm := colorprofile.ANSI256
+	if runtime.GOOS == "windows" {
+		noTerm = colorprofile.TrueColor
+	}
 	cases := []struct {
 		name string
 		tty  bool
@@ -160,7 +167,7 @@ func TestDetectProfile(t *testing.T) {
 		{"256 from TERM", true, env("TERM=xterm-256color"), ColorAuto, colorprofile.ANSI256},
 		{"16 from TERM", true, env("TERM=xterm"), ColorAuto, colorprofile.ANSI},
 		{"--color, piped, NO_COLOR", false, env("TERM=xterm-256color", "NO_COLOR=1"), ColorAlways, colorprofile.ANSI256},
-		{"--color, no TERM: 256", false, env(), ColorAlways, colorprofile.ANSI256},
+		{"--color, no TERM", false, env(), ColorAlways, noTerm},
 		{"--color, dumb", false, env("TERM=dumb"), ColorAlways, colorprofile.ANSI256},
 	}
 	for _, c := range cases {
