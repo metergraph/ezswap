@@ -1,0 +1,64 @@
+name: Release
+
+# Push a tag like v0.1.0. GoReleaser builds the binaries, publishes the
+# GitHub release and updates the Homebrew tap; then the npm packages are
+# built from the same binaries and published.
+#
+# Secrets: HOMEBREW_TAP_TOKEN (contents: write on metergraph/homebrew-tap)
+# and NPM_TOKEN (publish rights on metergraph-replay and its platform
+# packages).
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+  id-token: write # npm provenance
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+
+      - name: Build and publish the GitHub release
+        uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          VERSION: ${{ github.ref_name }}
+        run: |
+          version="${VERSION#v}"
+          # A prerelease (v0.2.0-rc.1) goes to the next tag, not latest.
+          tag=latest
+          case "$version" in *-*) tag=next ;; esac
+          node scripts/npm-packages.mjs "$version" dist npm-out
+          for dir in npm-out/metergraph-replay-*; do
+            npm publish --access public --provenance --tag "$tag" "$dir"
+          done
+          npm publish --access public --provenance --tag "$tag" npm-out/metergraph-replay

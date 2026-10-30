@@ -1,0 +1,61 @@
+# Release builds: run by .github/workflows/release.yml on a v* tag.
+version: 2
+
+project_name: metergraph-replay
+
+before:
+  hooks:
+    - go mod download
+    - go test ./...
+
+builds:
+  - id: metergraph-replay
+    main: ./cmd/metergraph-replay
+    binary: metergraph-replay
+    env:
+      - CGO_ENABLED=0
+    goos: [darwin, linux, windows]
+    goarch: [amd64, arm64]
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X github.com/metergraph/replay/internal/cli.Version={{ .Version }}
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  use: github
+  sort: asc
+
+homebrew_casks:
+  - name: metergraph-replay
+    repository:
+      owner: metergraph
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    homepage: https://github.com/metergraph/replay
+    description: Replay your production LLM calls on other models, read against a noise floor
+    license: Apache-2.0
+    commit_author:
+      name: metergraph-release
+      email: noreply@metergraph.dev
+    # The binaries are not notarized: clear the quarantine flag so macOS
+    # runs the binary Homebrew installed.
+    hooks:
+      post:
+        install_steps: |
+          on_macos do
+            run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{ .StagedPath }}/metergraph-replay"]
+          end
