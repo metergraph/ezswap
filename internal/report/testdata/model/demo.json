@@ -1,0 +1,2725 @@
+{
+ "headline": "Would a cheaper model have worked for gpt-4.1-mini's calls?",
+ "subhead": "20 production calls replayed on google/gemini-2.5-flash-lite and openai/gpt-5.4-nano. gemini-2.5-flash-lite costs 76% less per call than gpt-4.1-mini replayed the same way. Every difference below sits beside how much gpt-4.1-mini differs from itself.",
+ "meta": [
+  {
+   "label": "Sample",
+   "value": "22 calls, 20 replayed"
+  },
+  {
+   "label": "Source",
+   "value": "replay-jsonl, traces.jsonl"
+  },
+  {
+   "label": "Production model",
+   "value": "gpt-4.1-mini"
+  },
+  {
+   "label": "Created",
+   "value": "28 Oct 2026, 16:00 UTC"
+  },
+  {
+   "label": "Price catalog",
+   "value": "metergraph-core prices.yaml 2026-10-06 (e0d9203fd42d)"
+  },
+  {
+   "label": "Spent",
+   "value": "$0.013 of $1.00 budget"
+  }
+ ],
+ "stopped": null,
+ "productionModel": "gpt-4.1-mini",
+ "columns": [
+  {
+   "id": "t1",
+   "label": "google/gemini-2.5-flash-lite",
+   "model": "google/gemini-2.5-flash-lite",
+   "settings": "Default settings",
+   "endpoint": "openrouter",
+   "n": 20,
+   "note": null
+  },
+  {
+   "id": "t2",
+   "label": "openai/gpt-5.4-nano",
+   "model": "openai/gpt-5.4-nano",
+   "settings": "Default settings",
+   "endpoint": "openrouter",
+   "n": 20,
+   "note": null
+  }
+ ],
+ "rows": [
+  {
+   "key": "monthly_cost_usd",
+   "label": "Monthly cost",
+   "sublabel": "250,000 calls in 30 days, projected from the sample's cost per call",
+   "kind": "stat",
+   "production": "$34.97",
+   "productionNote": "$35.47 replayed",
+   "floor": null,
+   "cells": [
+    {
+     "text": "$8.54",
+     "delta": "saves $26.93/mo",
+     "floor": null,
+     "title": null,
+     "label": null
+    },
+    {
+     "text": "$87.05",
+     "delta": "adds $51.59/mo",
+     "floor": null,
+     "title": null,
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": null
+  },
+  {
+   "key": "cost_per_call_usd",
+   "label": "Cost per call",
+   "sublabel": "against production's model replayed",
+   "kind": "stat",
+   "production": "$0.00014",
+   "productionNote": "$0.00014 replayed",
+   "floor": "same against itself",
+   "cells": [
+    {
+     "text": "$0.000034",
+     "delta": "76% lower",
+     "floor": "same against itself",
+     "title": null,
+     "label": null
+    },
+    {
+     "text": "$0.00035",
+     "delta": "2.5× replay",
+     "floor": "same against itself",
+     "title": null,
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": null
+  },
+  {
+   "key": "latency_ms_p50",
+   "label": "Latency, median",
+   "sublabel": "against production's model replayed",
+   "kind": "stat",
+   "production": "932 ms recorded",
+   "productionNote": "798 ms replayed",
+   "floor": "1.3× itself",
+   "cells": [
+    {
+     "text": "418 ms",
+     "delta": "48% lower",
+     "floor": "1.3× itself",
+     "title": null,
+     "label": null
+    },
+    {
+     "text": "1.8 s",
+     "delta": "2.3× replay",
+     "floor": "1.3× itself",
+     "title": null,
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": null
+  },
+  {
+   "key": "output_chars_p50",
+   "label": "Output length, median characters",
+   "sublabel": null,
+   "kind": "stat",
+   "production": "181",
+   "productionNote": null,
+   "floor": "1.0× itself",
+   "cells": [
+    {
+     "text": "174",
+     "delta": "4% lower",
+     "floor": "1.0× itself",
+     "title": null,
+     "label": null
+    },
+    {
+     "text": "181",
+     "delta": "same",
+     "floor": "1.0× itself",
+     "title": null,
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": null
+  },
+  {
+   "key": "json_parse_rate",
+   "label": "JSON parses",
+   "sublabel": null,
+   "kind": "stat",
+   "production": "100%",
+   "productionNote": null,
+   "floor": "same against itself",
+   "cells": [
+    {
+     "text": "100%",
+     "delta": "same",
+     "floor": "same against itself",
+     "title": null,
+     "label": null
+    },
+    {
+     "text": "95%",
+     "delta": "−5 pts",
+     "floor": "same against itself",
+     "title": null,
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": null
+  },
+  {
+   "key": "same_keys_rate",
+   "label": "Same keys as control",
+   "sublabel": null,
+   "kind": "stat",
+   "production": "—",
+   "productionNote": null,
+   "floor": "100% against itself",
+   "cells": [
+    {
+     "text": "100%",
+     "delta": null,
+     "floor": "100% against itself",
+     "title": "Outputs whose JSON has the same top-level keys as the control’s, over the traces where the control returned a JSON object",
+     "label": null
+    },
+    {
+     "text": "95%",
+     "delta": null,
+     "floor": "100% against itself",
+     "title": "Outputs whose JSON has the same top-level keys as the control’s, over the traces where the control returned a JSON object",
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": null
+  },
+  {
+   "key": "empty_or_refused_rate",
+   "label": "Empty or refused",
+   "sublabel": null,
+   "kind": "stat",
+   "production": "0%",
+   "productionNote": null,
+   "floor": "same against itself",
+   "cells": [
+    {
+     "text": "0%",
+     "delta": "same",
+     "floor": "same against itself",
+     "title": null,
+     "label": null
+    },
+    {
+     "text": "0%",
+     "delta": "same",
+     "floor": "same against itself",
+     "title": null,
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": null
+  },
+  {
+   "key": "cut_off_rate",
+   "label": "Cut off at token limit",
+   "sublabel": null,
+   "kind": "stat",
+   "production": "0%",
+   "productionNote": null,
+   "floor": "same against itself",
+   "cells": [
+    {
+     "text": "0%",
+     "delta": "same",
+     "floor": "same against itself",
+     "title": null,
+     "label": null
+    },
+    {
+     "text": "5%",
+     "delta": "+5 pts",
+     "floor": "same against itself",
+     "title": null,
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": null
+  },
+  {
+   "key": "errors",
+   "label": "Errors",
+   "sublabel": null,
+   "kind": "stat",
+   "production": "0",
+   "productionNote": null,
+   "floor": null,
+   "cells": [
+    {
+     "text": "0",
+     "delta": null,
+     "floor": null,
+     "title": null,
+     "label": null
+    },
+    {
+     "text": "0",
+     "delta": null,
+     "floor": null,
+     "title": null,
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": null
+  },
+  {
+   "key": "field:$.category",
+   "label": "$.category",
+   "sublabel": "Label field",
+   "kind": "field",
+   "production": "—",
+   "productionNote": null,
+   "floor": "100% agreement",
+   "cells": [
+    {
+     "text": "18 of 20 same label",
+     "delta": null,
+     "floor": "100% agreement",
+     "title": "google/gemini-2.5-flash-lite gives the same label as control on 18 of 20 cases.",
+     "label": null
+    },
+    {
+     "text": "19 of 19 same label",
+     "delta": null,
+     "floor": "100% agreement",
+     "title": "openai/gpt-5.4-nano gives the same label as control on 19 of 19 cases.",
+     "label": null
+    }
+   ],
+   "sentences": [
+    "google/gemini-2.5-flash-lite gives the same label as control on 18 of 20 cases; the control gives the same label as itself on 20 of 20. 2 cases had no value on one side.",
+    "openai/gpt-5.4-nano gives the same label as control on 19 of 19 cases; the control gives the same label as itself on 20 of 20. 3 cases had no value on one side."
+   ],
+   "note": null
+  },
+  {
+   "key": "field:$.priority",
+   "label": "$.priority",
+   "sublabel": "Label field",
+   "kind": "field",
+   "production": "—",
+   "productionNote": null,
+   "floor": "85% agreement",
+   "cells": [
+    {
+     "text": "17 of 20 same label",
+     "delta": null,
+     "floor": "85% agreement",
+     "title": "google/gemini-2.5-flash-lite gives the same label as control on 17 of 20 cases.",
+     "label": null
+    },
+    {
+     "text": "17 of 19 same label",
+     "delta": null,
+     "floor": "85% agreement",
+     "title": "openai/gpt-5.4-nano gives the same label as control on 17 of 19 cases.",
+     "label": null
+    }
+   ],
+   "sentences": [
+    "google/gemini-2.5-flash-lite gives the same label as control on 17 of 20 cases; the control gives the same label as itself on 17 of 20. 2 cases had no value on one side.",
+    "openai/gpt-5.4-nano gives the same label as control on 17 of 19 cases; the control gives the same label as itself on 17 of 20. 3 cases had no value on one side."
+   ],
+   "note": null
+  }
+ ],
+ "hasFloor": true,
+ "floor": {
+  "cases": 20,
+  "model": "gpt-4.1-mini",
+  "spent": "$0.0057",
+  "text": [
+   "Each replayable call was sent to gpt-4.1-mini twice more (A1 and A2), at production's settings, through the same endpoint as the treatments. Whatever separates A2 from A1 is chance, so it is the variation production shows on its own.",
+   "Read a treatment's difference beside that gap: a difference no larger than production's own is one a rerun of production would also show. Neither figure says which output is better."
+  ],
+  "stats": [
+   {
+    "label": "Cost per call",
+    "a1": "$0.00014",
+    "a2": "$0.00014",
+    "gap": "same against itself"
+   },
+   {
+    "label": "Latency, median",
+    "a1": "798 ms",
+    "a2": "1.0 s",
+    "gap": "1.3× itself"
+   },
+   {
+    "label": "Output length, median",
+    "a1": "181",
+    "a2": "183",
+    "gap": "1.0× itself"
+   },
+   {
+    "label": "JSON parses",
+    "a1": "100%",
+    "a2": "100%",
+    "gap": "same against itself"
+   },
+   {
+    "label": "Empty or refused",
+    "a1": "0%",
+    "a2": "0%",
+    "gap": "same against itself"
+   },
+   {
+    "label": "Cut off at token limit",
+    "a1": "0%",
+    "a2": "0%",
+    "gap": "same against itself"
+   }
+  ],
+  "fields": [
+   {
+    "path": "$.category",
+    "text": "100% agreement",
+    "mismatches": []
+   },
+   {
+    "path": "$.priority",
+    "text": "85% agreement",
+    "mismatches": [
+     {
+      "traceId": "ticket-0007",
+      "a1": "high",
+      "a2": "medium"
+     },
+     {
+      "traceId": "ticket-0013",
+      "a1": "low",
+      "a2": "medium"
+     },
+     {
+      "traceId": "ticket-0018",
+      "a1": "high",
+      "a2": "urgent"
+     }
+    ]
+   }
+  ]
+ },
+ "labels": false,
+ "charts": [
+  {
+   "key": "field:$.category",
+   "label": "$.category matches",
+   "better": "higher",
+   "format": "percent",
+   "points": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "x": 0.00003414,
+     "xLow": 0.00003360925000000001,
+     "xHigh": 0.00003480049999999999,
+     "xText": "$0.000034",
+     "y": 0.9,
+     "yLow": 0.8,
+     "yHigh": 1,
+     "yText": "90%",
+     "n": 20,
+     "control": false,
+     "onFrontier": true
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "x": 0.00034821499999999997,
+     "xLow": 0.000341615,
+     "xHigh": 0.00035527499999999995,
+     "xText": "$0.00035",
+     "y": 1,
+     "yLow": 1,
+     "yHigh": 1,
+     "yText": "100%",
+     "n": 19,
+     "control": false,
+     "onFrontier": true
+    },
+    {
+     "label": "Production, replayed",
+     "x": 0.00014186,
+     "xLow": null,
+     "xHigh": null,
+     "xText": "$0.00014",
+     "y": 1,
+     "yLow": null,
+     "yHigh": null,
+     "yText": "100% against itself",
+     "n": 20,
+     "control": true,
+     "onFrontier": false
+    }
+   ],
+   "floor": {
+    "y": 1,
+    "text": "Production vs itself: 100%"
+   },
+   "frontier": [
+    "google/gemini-2.5-flash-lite",
+    "openai/gpt-5.4-nano"
+   ]
+  },
+  {
+   "key": "field:$.priority",
+   "label": "$.priority matches",
+   "better": "higher",
+   "format": "percent",
+   "points": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "x": 0.00003414,
+     "xLow": 0.00003360925000000001,
+     "xHigh": 0.00003480049999999999,
+     "xText": "$0.000034",
+     "y": 0.85,
+     "yLow": 0.7,
+     "yHigh": 0.95,
+     "yText": "85%",
+     "n": 20,
+     "control": false,
+     "onFrontier": true
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "x": 0.00034821499999999997,
+     "xLow": 0.000341615,
+     "xHigh": 0.00035527499999999995,
+     "xText": "$0.00035",
+     "y": 0.8947368421052632,
+     "yLow": 0.7894736842105263,
+     "yHigh": 1,
+     "yText": "89%",
+     "n": 19,
+     "control": false,
+     "onFrontier": true
+    },
+    {
+     "label": "Production, replayed",
+     "x": 0.00014186,
+     "xLow": null,
+     "xHigh": null,
+     "xText": "$0.00014",
+     "y": 0.85,
+     "yLow": null,
+     "yHigh": null,
+     "yText": "85% against itself",
+     "n": 20,
+     "control": true,
+     "onFrontier": false
+    }
+   ],
+   "floor": {
+    "y": 0.85,
+    "text": "Production vs itself: 85%"
+   },
+   "frontier": [
+    "google/gemini-2.5-flash-lite",
+    "openai/gpt-5.4-nano"
+   ]
+  },
+  {
+   "key": "latency_ms_p50",
+   "label": "Latency",
+   "better": "lower",
+   "format": "ms",
+   "points": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "x": 0.00003414,
+     "xLow": 0.00003360925000000001,
+     "xHigh": 0.00003480049999999999,
+     "xText": "$0.000034",
+     "y": 417.5,
+     "yLow": 392,
+     "yHigh": 440,
+     "yText": "418 ms",
+     "n": 20,
+     "control": false,
+     "onFrontier": true
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "x": 0.00034821499999999997,
+     "xLow": 0.000341615,
+     "xHigh": 0.00035527499999999995,
+     "xText": "$0.00035",
+     "y": 1798.5,
+     "yLow": 1783,
+     "yHigh": 1803,
+     "yText": "1.8 s",
+     "n": 20,
+     "control": false,
+     "onFrontier": false
+    },
+    {
+     "label": "Production, replayed",
+     "x": 0.00013985999999999995,
+     "xLow": 0.000137759,
+     "xHigh": 0.00014193999999999999,
+     "xText": "$0.00014",
+     "y": 798,
+     "yLow": 789,
+     "yHigh": 805.5,
+     "yText": "798 ms",
+     "n": 20,
+     "control": true,
+     "onFrontier": false
+    }
+   ],
+   "floor": null,
+   "frontier": [
+    "google/gemini-2.5-flash-lite"
+   ]
+  }
+ ],
+ "cases": [
+  {
+   "id": "call-0001",
+   "traceId": "ticket-0001",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: Charged twice for October From: dana.reyes@example.com Hi, my card statement shows two charges of $49 for the October plan. Can you refund the duplicate?",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: Charged twice for October\nFrom: dana.reyes@example.com\n\nHi, my card statement shows two charges of $49 for the October plan. Can you refund the duplicate?"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"billing\",\"customer_email\":\"dana.reyes@example.com\",\"summary\":\"Customer was charged twice for the October plan and wants the duplicate refunded.\"}",
+    "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"medium\",\n  \"product\": \"billing\",\n  \"customer_email\": \"dana.reyes@example.com\",\n  \"summary\": \"Customer was charged twice for the October plan and wants the duplicate refunded.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.1 s",
+    "cost": "$0.00015",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"billing\",\"customer_email\":\"dana.reyes@example.com\",\"summary\":\"Customer was charged twice for the October plan and wants the duplicate refunded.\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"medium\",\n  \"product\": \"billing\",\n  \"customer_email\": \"dana.reyes@example.com\",\n  \"summary\": \"Customer was charged twice for the October plan and wants the duplicate refunded.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "442 ms",
+     "cost": "$0.000037",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"billing\",\"customer_email\":\"dana.reyes@example.com\",\"summary\":\"Customer was charged twice for the October plan and wants the duplicate refunded.\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"medium\",\n  \"product\": \"billing\",\n  \"customer_email\": \"dana.reyes@example.com\",\n  \"summary\": \"Customer was charged twice for the October plan and wants the duplicate refunded.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00034",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"billing\",\"customer_email\":\"dana.reyes@example.com\",\"summary\":\"Customer was charged twice for the October plan and wants the duplicate refunded.\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"medium\",\n  \"product\": \"billing\",\n  \"customer_email\": \"dana.reyes@example.com\",\n  \"summary\": \"Customer was charged twice for the October plan and wants the duplicate refunded.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.3 s",
+     "cost": "$0.00015",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"billing\",\"customer_email\":\"dana.reyes@example.com\",\"summary\":\"Customer was charged twice for the October plan and wants the duplicate refunded.\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"medium\",\n  \"product\": \"billing\",\n  \"customer_email\": \"dana.reyes@example.com\",\n  \"summary\": \"Customer was charged twice for the October plan and wants the duplicate refunded.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "769 ms",
+     "cost": "$0.00015",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": false
+  },
+  {
+   "id": "call-0002",
+   "traceId": "ticket-0002",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: API returns 500 on /deployments From: ops@example.com Since this morning every POST to /v2/deployments returns HTTP 500. Our CI pipeline is blocked.",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: API returns 500 on /deployments\nFrom: ops@example.com\n\nSince this morning every POST to /v2/deployments returns HTTP 500. Our CI pipeline is blocked."
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"api\",\"customer_email\":\"ops@example.com\",\"summary\":\"POST requests to the deployments endpoint fail with HTTP 500, blocking the customer's CI.\"}",
+    "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"high\",\n  \"product\": \"api\",\n  \"customer_email\": \"ops@example.com\",\n  \"summary\": \"POST requests to the deployments endpoint fail with HTTP 500, blocking the customer's CI.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.1 s",
+    "cost": "$0.00014",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"api\",\"customer_email\":\"ops@example.com\",\"summary\":\"POST requests to the deployments endpoint fail with HTTP 500.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"high\",\n  \"product\": \"api\",\n  \"customer_email\": \"ops@example.com\",\n  \"summary\": \"POST requests to the deployments endpoint fail with HTTP 500.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "443 ms",
+     "cost": "$0.000034",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"api\",\"customer_email\":\"ops@example.com\",\"summary\":\"POST requests to the deployments endpoint fail with HTTP 500, blocking the customer's CI.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"high\",\n  \"product\": \"api\",\n  \"customer_email\": \"ops@example.com\",\n  \"summary\": \"POST requests to the deployments endpoint fail with HTTP 500, blocking the customer's CI.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00033",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"api\",\"customer_email\":\"ops@example.com\",\"summary\":\"POST requests to the deployments endpoint fail with HTTP 500, blocking the customer's CI.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"high\",\n  \"product\": \"api\",\n  \"customer_email\": \"ops@example.com\",\n  \"summary\": \"POST requests to the deployments endpoint fail with HTTP 500, blocking the customer's CI.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.3 s",
+     "cost": "$0.00015",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"api\",\"customer_email\":\"ops@example.com\",\"summary\":\"POST requests to the deployments endpoint fail with HTTP 500, blocking the customer's CI.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"high\",\n  \"product\": \"api\",\n  \"customer_email\": \"ops@example.com\",\n  \"summary\": \"POST requests to the deployments endpoint fail with HTTP 500, blocking the customer's CI.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "772 ms",
+     "cost": "$0.00015",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": false
+  },
+  {
+   "id": "call-0003",
+   "traceId": "ticket-0003",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: Can't log in after password reset From: li.wei@example.com I reset my password but the login page keeps saying the link expired. I have tried three times.",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: Can't log in after password reset\nFrom: li.wei@example.com\n\nI reset my password but the login page keeps saying the link expired. I have tried three times."
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"li.wei@example.com\",\"summary\":\"Password reset links show as expired, so the customer cannot log in.\"}",
+    "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"medium\",\n  \"product\": \"auth\",\n  \"customer_email\": \"li.wei@example.com\",\n  \"summary\": \"Password reset links show as expired, so the customer cannot log in.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.1 s",
+    "cost": "$0.00014",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"li.wei@example.com\",\"summary\":\"Password reset links show as expired.\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"medium\",\n  \"product\": \"auth\",\n  \"customer_email\": \"li.wei@example.com\",\n  \"summary\": \"Password reset links show as expired.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "444 ms",
+     "cost": "$0.000032",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"li.wei@example.com\",\"summary\":\"Password reset links show as expired, so the customer cannot log in.\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"medium\",\n  \"product\": \"auth\",\n  \"customer_email\": \"li.wei@example.com\",\n  \"summary\": \"Password reset links show as expired, so the customer cannot log in.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00033",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"li.wei@example.com\",\"summary\":\"Password reset links show as expired, so the customer cannot log in.\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"medium\",\n  \"product\": \"auth\",\n  \"customer_email\": \"li.wei@example.com\",\n  \"summary\": \"Password reset links show as expired, so the customer cannot log in.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.3 s",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"li.wei@example.com\",\"summary\":\"Password reset links show as expired, so the customer cannot log in.\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"medium\",\n  \"product\": \"auth\",\n  \"customer_email\": \"li.wei@example.com\",\n  \"summary\": \"Password reset links show as expired, so the customer cannot log in.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "774 ms",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": false
+  },
+  {
+   "id": "call-0004",
+   "traceId": "ticket-0004",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: Dark mode for the dashboard? From: sam.okafor@example.com Would love a dark theme in the dashboard. Staring at it late at night is rough.",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: Dark mode for the dashboard?\nFrom: sam.okafor@example.com\n\nWould love a dark theme in the dashboard. Staring at it late at night is rough."
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"sam.okafor@example.com\",\"summary\":\"Customer asks for a dark theme in the dashboard.\"}",
+    "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"low\",\n  \"product\": \"dashboard\",\n  \"customer_email\": \"sam.okafor@example.com\",\n  \"summary\": \"Customer asks for a dark theme in the dashboard.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.1 s",
+    "cost": "$0.00013",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"sam.okafor@example.com\",\"summary\":\"Asks for a dark theme in the dashboard.\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"low\",\n  \"product\": \"dashboard\",\n  \"customer_email\": \"sam.okafor@example.com\",\n  \"summary\": \"Asks for a dark theme in the dashboard.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "445 ms",
+     "cost": "$0.000033",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"sam.okafor@example.com\",\"summary\":\"Customer asks for a dark theme in the dashboard.\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"low\",\n  \"product\": \"dashboard\",\n  \"customer_email\": \"sam.okafor@example.com\",\n  \"summary\": \"Customer asks for a dark theme in the dashboard.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00033",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"sam.okafor@example.com\",\"summary\":\"Customer asks for a dark theme in the dashboard.\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"low\",\n  \"product\": \"dashboard\",\n  \"customer_email\": \"sam.okafor@example.com\",\n  \"summary\": \"Customer asks for a dark theme in the dashboard.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.3 s",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"sam.okafor@example.com\",\"summary\":\"Customer asks for a dark theme in the dashboard.\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"low\",\n  \"product\": \"dashboard\",\n  \"customer_email\": \"sam.okafor@example.com\",\n  \"summary\": \"Customer asks for a dark theme in the dashboard.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "777 ms",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": false
+  },
+  {
+   "id": "call-0005",
+   "traceId": "ticket-0005",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: Sites down in eu-west From: noc@example.com All of our sites in eu-west are timing out. Status page says operational but nothing loads.",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: Sites down in eu-west\nFrom: noc@example.com\n\nAll of our sites in eu-west are timing out. Status page says operational but nothing loads."
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"noc@example.com\",\"summary\":\"Every site in eu-west is timing out although the status page shows operational.\"}",
+    "pretty": "{\n  \"category\": \"outage\",\n  \"priority\": \"urgent\",\n  \"product\": \"api\",\n  \"customer_email\": \"noc@example.com\",\n  \"summary\": \"Every site in eu-west is timing out although the status page shows operational.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.1 s",
+    "cost": "$0.00014",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"noc@example.com\",\"summary\":\"Every site in eu-west is timing out although the status page shows operational.\"}",
+     "pretty": "{\n  \"category\": \"outage\",\n  \"priority\": \"urgent\",\n  \"product\": \"api\",\n  \"customer_email\": \"noc@example.com\",\n  \"summary\": \"Every site in eu-west is timing out although the status page shows operational.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "439 ms",
+     "cost": "$0.000036",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"noc@example.com\",\"summary\":\"Every site in eu-west is timing out although the status page shows operational.\"}",
+     "pretty": "{\n  \"category\": \"outage\",\n  \"priority\": \"urgent\",\n  \"product\": \"api\",\n  \"customer_email\": \"noc@example.com\",\n  \"summary\": \"Every site in eu-west is timing out although the status page shows operational.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00033",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"noc@example.com\",\"summary\":\"Every site in eu-west is timing out although the status page shows operational.\"}",
+     "pretty": "{\n  \"category\": \"outage\",\n  \"priority\": \"urgent\",\n  \"product\": \"api\",\n  \"customer_email\": \"noc@example.com\",\n  \"summary\": \"Every site in eu-west is timing out although the status page shows operational.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "658 ms",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"noc@example.com\",\"summary\":\"Sites in eu-west time out while the status page reports everything operational.\"}",
+     "pretty": "{\n  \"category\": \"outage\",\n  \"priority\": \"urgent\",\n  \"product\": \"api\",\n  \"customer_email\": \"noc@example.com\",\n  \"summary\": \"Sites in eu-west time out while the status page reports everything operational.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "779 ms",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": false
+  },
+  {
+   "id": "call-0006",
+   "traceId": "ticket-0006",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: Invoice needs our VAT number From: accounts@example.com Please reissue invoice INV-2207 with our VAT number EX123456 on it. Our auditors need it.",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: Invoice needs our VAT number\nFrom: accounts@example.com\n\nPlease reissue invoice INV-2207 with our VAT number EX123456 on it. Our auditors need it."
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"accounts@example.com\",\"summary\":\"Customer needs invoice INV-2207 reissued with their VAT number.\"}",
+    "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": \"accounts@example.com\",\n  \"summary\": \"Customer needs invoice INV-2207 reissued with their VAT number.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.1 s",
+    "cost": "$0.00014",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"accounts@example.com\",\"summary\":\"Customer needs invoice INV-2207 reissued with their VAT number.\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": \"accounts@example.com\",\n  \"summary\": \"Customer needs invoice INV-2207 reissued with their VAT number.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "440 ms",
+     "cost": "$0.000035",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"accounts@example.com\",\"summary\":\"Customer needs invoice INV-2207 reissued with their VAT number.\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": \"accounts@example.com\",\n  \"summary\": \"Customer needs invoice INV-2207 reissued with their VAT number.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00033",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"accounts@example.com\",\"summary\":\"Customer needs invoice INV-2207 reissued with their VAT number.\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": \"accounts@example.com\",\n  \"summary\": \"Customer needs invoice INV-2207 reissued with their VAT number.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "655 ms",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"accounts@example.com\",\"summary\":\"Customer needs invoice INV-2207 reissued with their VAT number.\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": \"accounts@example.com\",\n  \"summary\": \"Customer needs invoice INV-2207 reissued with their VAT number.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "782 ms",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": false
+  },
+  {
+   "id": "call-0007",
+   "traceId": "ticket-0007",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: DNS changes not propagating From: maria.k@example.com I updated the A record for shop.example.com six hours ago and it still resolves to the old IP.",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: DNS changes not propagating\nFrom: maria.k@example.com\n\nI updated the A record for shop.example.com six hours ago and it still resolves to the old IP."
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"dns\",\"customer_email\":\"maria.k@example.com\",\"summary\":\"An A record change made six hours ago has not taken effect.\"}",
+    "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"medium\",\n  \"product\": \"dns\",\n  \"customer_email\": \"maria.k@example.com\",\n  \"summary\": \"An A record change made six hours ago has not taken effect.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.1 s",
+    "cost": "$0.00013",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"dns\",\"customer_email\":\"maria.k@example.com\",\"summary\":\"An A record change made six hours ago has not taken effect.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"high\",\n  \"product\": \"dns\",\n  \"customer_email\": \"maria.k@example.com\",\n  \"summary\": \"An A record change made six hours ago has not taken effect.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "441 ms",
+     "cost": "$0.000034",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.priority",
+       "from": "medium",
+       "to": "high"
+      }
+     ]
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"dns\",\"customer_email\":\"maria.k@example.com\",\"summary\":\"An A record change made six hours ago has not taken effect.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"medium\",\n  \"product\": \"dns\",\n  \"customer_email\": \"maria.k@example.com\",\n  \"summary\": \"An A record change made six hours ago has not taken effect.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00033",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"dns\",\"customer_email\":\"maria.k@example.com\",\"summary\":\"An A record change made six hours ago has not taken effect.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"high\",\n  \"product\": \"dns\",\n  \"customer_email\": \"maria.k@example.com\",\n  \"summary\": \"An A record change made six hours ago has not taken effect.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "653 ms",
+     "cost": "$0.00013",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"dns\",\"customer_email\":\"maria.k@example.com\",\"summary\":\"An A record change made six hours ago has not taken effect.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"medium\",\n  \"product\": \"dns\",\n  \"customer_email\": \"maria.k@example.com\",\n  \"summary\": \"An A record change made six hours ago has not taken effect.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "785 ms",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": true
+  },
+  {
+   "id": "call-0008",
+   "traceId": "ticket-0008",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: Add a teammate without a seat? From: jo@example.com Is there a way to give our accountant read-only access to invoices without paying for another seat?",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: Add a teammate without a seat?\nFrom: jo@example.com\n\nIs there a way to give our accountant read-only access to invoices without paying for another seat?"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"account\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"jo@example.com\",\"summary\":\"Customer wants read-only invoice access for an accountant without buying a seat.\"}",
+    "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": \"jo@example.com\",\n  \"summary\": \"Customer wants read-only invoice access for an accountant without buying a seat.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.1 s",
+    "cost": "$0.00014",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"jo@example.com\",\"summary\":\"Asks read-only invoice access for an accountant without buying a seat.\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": \"jo@example.com\",\n  \"summary\": \"Asks read-only invoice access for an accountant without buying a seat.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "442 ms",
+     "cost": "$0.000035",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"jo@example.com\",\"summary\":\"Customer wants read-only invoice access for an accountant without buying a seat.\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": \"jo@example.com\",\n  \"summary\": \"Customer wants read-only invoice access for an accountant without buying a seat.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00033",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"jo@example.com\",\"summary\":\"Customer wants read-only invoice access for an accountant without buying a seat.\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": \"jo@example.com\",\n  \"summary\": \"Customer wants read-only invoice access for an accountant without buying a seat.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "650 ms",
+     "cost": "$0.00015",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"jo@example.com\",\"summary\":\"Customer wants read-only invoice access for an accountant without buying a seat.\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": \"jo@example.com\",\n  \"summary\": \"Customer wants read-only invoice access for an accountant without buying a seat.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "787 ms",
+     "cost": "$0.00015",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": false
+  },
+  {
+   "id": "call-0009",
+   "traceId": "ticket-0009",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: Uploads fail over 2 GB From: media-team@example.com Uploading files larger than 2 GB to storage fails at 99 percent with a network error. Smaller files are fine.",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: Uploads fail over 2 GB\nFrom: media-team@example.com\n\nUploading files larger than 2 GB to storage fails at 99 percent with a network error. Smaller files are fine."
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"media-team@example.com\",\"summary\":\"Storage uploads over 2 GB fail near completion with a network error.\"}",
+    "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"medium\",\n  \"product\": \"storage\",\n  \"customer_email\": \"media-team@example.com\",\n  \"summary\": \"Storage uploads over 2 GB fail near completion with a network error.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.1 s",
+    "cost": "$0.00014",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"media-team@example.com\",\"summary\":\"Storage uploads over 2 GB fail near completion with a network error.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"medium\",\n  \"product\": \"storage\",\n  \"customer_email\": \"media-team@example.com\",\n  \"summary\": \"Storage uploads over 2 GB fail near completion with a network error.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "436 ms",
+     "cost": "$0.000036",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"storage\",\"customer_email\":\"media-team@example.com\",\"summary\":\"Storage uploads over 2 GB fail near completion with a network error.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"high\",\n  \"product\": \"storage\",\n  \"customer_email\": \"media-team@example.com\",\n  \"summary\": \"Storage uploads over 2 GB fail near completion with a network error.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00034",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.priority",
+       "from": "medium",
+       "to": "high"
+      }
+     ]
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"media-team@example.com\",\"summary\":\"Storage uploads over 2 GB fail near completion with a network error.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"medium\",\n  \"product\": \"storage\",\n  \"customer_email\": \"media-team@example.com\",\n  \"summary\": \"Storage uploads over 2 GB fail near completion with a network error.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.3 s",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"media-team@example.com\",\"summary\":\"Storage uploads over 2 GB fail near completion with a network error.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"medium\",\n  \"product\": \"storage\",\n  \"customer_email\": \"media-team@example.com\",\n  \"summary\": \"Storage uploads over 2 GB fail near completion with a network error.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "790 ms",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": true
+  },
+  {
+   "id": "call-0010",
+   "traceId": "ticket-0010",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: Webhooks for failed payments From: dev@example.com We would like a webhook when a customer's payment fails so we can pause their account automatically.",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: Webhooks for failed payments\nFrom: dev@example.com\n\nWe would like a webhook when a customer's payment fails so we can pause their account automatically."
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"api\",\"customer_email\":\"dev@example.com\",\"summary\":\"Customer requests a webhook for failed payments.\"}",
+    "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"low\",\n  \"product\": \"api\",\n  \"customer_email\": \"dev@example.com\",\n  \"summary\": \"Customer requests a webhook for failed payments.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.1 s",
+    "cost": "$0.00013",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"api\",\"customer_email\":\"dev@example.com\",\"summary\":\"Asks a webhook for failed payments.\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"low\",\n  \"product\": \"api\",\n  \"customer_email\": \"dev@example.com\",\n  \"summary\": \"Asks a webhook for failed payments.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "436 ms",
+     "cost": "$0.000032",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"api\",\"customer_email\":\"dev@example.com\",\"summary\":\"Customer requests a webhook for failed payments.\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"low\",\n  \"product\": \"api\",\n  \"customer_email\": \"dev@example.com\",\n  \"summary\": \"Customer requests a webhook for failed payments.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00033",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"api\",\"customer_email\":\"dev@example.com\",\"summary\":\"Customer requests a webhook for failed payments.\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"low\",\n  \"product\": \"api\",\n  \"customer_email\": \"dev@example.com\",\n  \"summary\": \"Customer requests a webhook for failed payments.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.3 s",
+     "cost": "$0.00013",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"api\",\"customer_email\":\"dev@example.com\",\"summary\":\"Customer requests a webhook for failed payments.\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"low\",\n  \"product\": \"api\",\n  \"customer_email\": \"dev@example.com\",\n  \"summary\": \"Customer requests a webhook for failed payments.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "792 ms",
+     "cost": "$0.00013",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": false
+  },
+  {
+   "id": "call-0011",
+   "traceId": "ticket-0011",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: Account locked after 2FA phone change From: priya.n@example.com I got a new phone and lost my authenticator. Now I am locked out and our launch is tomorrow.",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: Account locked after 2FA phone change\nFrom: priya.n@example.com\n\nI got a new phone and lost my authenticator. Now I am locked out and our launch is tomorrow."
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"account\",\"priority\":\"high\",\"product\":\"auth\",\"customer_email\":\"priya.n@example.com\",\"summary\":\"Customer lost their authenticator with a phone change and is locked out before a launch.\"}",
+    "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"high\",\n  \"product\": \"auth\",\n  \"customer_email\": \"priya.n@example.com\",\n  \"summary\": \"Customer lost their authenticator with a phone change and is locked out before a launch.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "801 ms",
+    "cost": "$0.00015",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":\"urgent\",\"product\":\"auth\",\"customer_email\":\"priya.n@example.com\",\"summary\":\"Customer lost their authenticator with a phone change and is locked out before a launch.\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"urgent\",\n  \"product\": \"auth\",\n  \"customer_email\": \"priya.n@example.com\",\n  \"summary\": \"Customer lost their authenticator with a phone change and is locked out before a launch.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "393 ms",
+     "cost": "$0.000036",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.priority",
+       "from": "high",
+       "to": "urgent"
+      }
+     ]
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":\"high\",\"product\":\"auth\",\"customer_email\":\"priya.n@example.com\",\"summary\":\"Customer lost their authenticator with a phone change and is locked out before a launch.\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"high\",\n  \"product\": \"auth\",\n  \"customer_email\": \"priya.n@example.com\",\n  \"summary\": \"Customer lost their authenticator with a phone change and is locked out before a launch.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00036",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":\"high\",\"product\":\"auth\",\"customer_email\":\"priya.n@example.com\",\"summary\":\"Customer lost their authenticator with a phone change and is locked out before a launch.\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"high\",\n  \"product\": \"auth\",\n  \"customer_email\": \"priya.n@example.com\",\n  \"summary\": \"Customer lost their authenticator with a phone change and is locked out before a launch.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "804 ms",
+     "cost": "$0.00015",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":\"high\",\"product\":\"auth\",\"customer_email\":\"priya.n@example.com\",\"summary\":\"Customer lost their authenticator with a phone change and is locked out before a launch.\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"high\",\n  \"product\": \"auth\",\n  \"customer_email\": \"priya.n@example.com\",\n  \"summary\": \"Customer lost their authenticator with a phone change and is locked out before a launch.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.3 s",
+     "cost": "$0.00015",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": true
+  },
+  {
+   "id": "call-0012",
+   "traceId": "ticket-0012",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: Outbound email delayed From: support@example.com Transactional emails from our app are arriving 30 to 40 minutes late since yesterday afternoon.",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: Outbound email delayed\nFrom: support@example.com\n\nTransactional emails from our app are arriving 30 to 40 minutes late since yesterday afternoon."
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"email\",\"customer_email\":\"support@example.com\",\"summary\":\"Transactional emails have been delayed by 30 to 40 minutes since yesterday.\"}",
+    "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"high\",\n  \"product\": \"email\",\n  \"customer_email\": \"support@example.com\",\n  \"summary\": \"Transactional emails have been delayed by 30 to 40 minutes since yesterday.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "804 ms",
+    "cost": "$0.00014",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"outage\",\"priority\":\"high\",\"product\":\"email\",\"customer_email\":\"support@example.com\",\"summary\":\"Transactional emails have been delayed by 30 to 40 minutes since yesterday.\"}",
+     "pretty": "{\n  \"category\": \"outage\",\n  \"priority\": \"high\",\n  \"product\": \"email\",\n  \"customer_email\": \"support@example.com\",\n  \"summary\": \"Transactional emails have been delayed by 30 to 40 minutes since yesterday.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "392 ms",
+     "cost": "$0.000035",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.category",
+       "from": "bug",
+       "to": "outage"
+      }
+     ]
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"email\",\"customer_email\":\"support@example.com\",\"summary\":\"Transactional emails have been delayed by 30 to 40 minutes since yesterday.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"high\",\n  \"product\": \"email\",\n  \"customer_email\": \"support@example.com\",\n  \"summary\": \"Transactional emails have been delayed by 30 to 40 minutes since yesterday.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00036",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"email\",\"customer_email\":\"support@example.com\",\"summary\":\"Transactional emails have been delayed by 30 to 40 minutes since yesterday.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"high\",\n  \"product\": \"email\",\n  \"customer_email\": \"support@example.com\",\n  \"summary\": \"Transactional emails have been delayed by 30 to 40 minutes since yesterday.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "807 ms",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"email\",\"customer_email\":\"support@example.com\",\"summary\":\"Transactional emails have been delayed by 30 to 40 minutes since yesterday.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"high\",\n  \"product\": \"email\",\n  \"customer_email\": \"support@example.com\",\n  \"summary\": \"Transactional emails have been delayed by 30 to 40 minutes since yesterday.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.3 s",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": true
+  },
+  {
+   "id": "call-0013",
+   "traceId": "ticket-0013",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: Downgrade to the starter plan From: hello@example.com We are a smaller team now. How do I move from Pro to Starter at the end of this billing cycle?",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: Downgrade to the starter plan\nFrom: hello@example.com\n\nWe are a smaller team now. How do I move from Pro to Starter at the end of this billing cycle?"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"hello@example.com\",\"summary\":\"Customer wants to downgrade from Pro to Starter at the end of the cycle.\"}",
+    "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": \"hello@example.com\",\n  \"summary\": \"Customer wants to downgrade from Pro to Starter at the end of the cycle.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "796 ms",
+    "cost": "$0.00014",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"hello@example.com\",\"summary\":\"Asks to downgrade from Pro to Starter at the end of the cycle.\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": \"hello@example.com\",\n  \"summary\": \"Asks to downgrade from Pro to Starter at the end of the cycle.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "391 ms",
+     "cost": "$0.000033",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"hello@example.com\",\"summary\":\"Customer wants to downgrade from Pro to Starter at the end of the cycle.\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": \"hello@example.com\",\n  \"summary\": \"Customer wants to downgrade from Pro to Starter at the end of the cycle.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00036",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":\"hello@example.com\",\"summary\":\"Customer wants to downgrade from Pro to Starter at the end of the cycle.\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": \"hello@example.com\",\n  \"summary\": \"Customer wants to downgrade from Pro to Starter at the end of the cycle.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "799 ms",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"billing\",\"customer_email\":\"hello@example.com\",\"summary\":\"Customer wants to downgrade from Pro to Starter at the end of the cycle.\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"medium\",\n  \"product\": \"billing\",\n  \"customer_email\": \"hello@example.com\",\n  \"summary\": \"Customer wants to downgrade from Pro to Starter at the end of the cycle.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.3 s",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": false
+  },
+  {
+   "id": "call-0014",
+   "traceId": "ticket-0014",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: Dashboard graphs blank in Safari From: tom.b@example.com The usage graphs on the dashboard render empty in Safari 19. Chrome shows them fine.",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: Dashboard graphs blank in Safari\nFrom: tom.b@example.com\n\nThe usage graphs on the dashboard render empty in Safari 19. Chrome shows them fine."
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"bug\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"tom.b@example.com\",\"summary\":\"Dashboard usage graphs render blank in Safari but work in Chrome.\"}",
+    "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"low\",\n  \"product\": \"dashboard\",\n  \"customer_email\": \"tom.b@example.com\",\n  \"summary\": \"Dashboard usage graphs render blank in Safari but work in Chrome.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "799 ms",
+    "cost": "$0.00014",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"tom.b@example.com\",\"summary\":\"Dashboard usage graphs render blank in Safari but work in Chrome.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"low\",\n  \"product\": \"dashboard\",\n  \"customer_email\": \"tom.b@example.com\",\n  \"summary\": \"Dashboard usage graphs render blank in Safari but work in Chrome.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "390 ms",
+     "cost": "$0.000033",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"tom.b@example.com\",",
+     "pretty": null,
+     "error": null,
+     "flags": [
+      "cut off at the token limit"
+     ],
+     "latency": "2.8 s",
+     "cost": "$0.00041",
+     "finishReason": "length",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"tom.b@example.com\",\"summary\":\"Dashboard usage graphs render blank in Safari but work in Chrome.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"low\",\n  \"product\": \"dashboard\",\n  \"customer_email\": \"tom.b@example.com\",\n  \"summary\": \"Dashboard usage graphs render blank in Safari but work in Chrome.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "802 ms",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"low\",\"product\":\"dashboard\",\"customer_email\":\"tom.b@example.com\",\"summary\":\"Dashboard usage graphs render blank in Safari but work in Chrome.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"low\",\n  \"product\": \"dashboard\",\n  \"customer_email\": \"tom.b@example.com\",\n  \"summary\": \"Dashboard usage graphs render blank in Safari but work in Chrome.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.3 s",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": false
+  },
+  {
+   "id": "call-0015",
+   "traceId": "ticket-0015",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: Whole API unreachable From: sre@example.com api.example.com is refusing connections from every region we test. This is a full outage for us.",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: Whole API unreachable\nFrom: sre@example.com\n\napi.example.com is refusing connections from every region we test. This is a full outage for us."
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"sre@example.com\",\"summary\":\"The API refuses connections from every tested region, a full outage for the customer.\"}",
+    "pretty": "{\n  \"category\": \"outage\",\n  \"priority\": \"urgent\",\n  \"product\": \"api\",\n  \"customer_email\": \"sre@example.com\",\n  \"summary\": \"The API refuses connections from every tested region, a full outage for the customer.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "791 ms",
+    "cost": "$0.00014",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"sre@example.com\",\"summary\":\"The API refuses connections from every tested region.\"}",
+     "pretty": "{\n  \"category\": \"outage\",\n  \"priority\": \"urgent\",\n  \"product\": \"api\",\n  \"customer_email\": \"sre@example.com\",\n  \"summary\": \"The API refuses connections from every tested region.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "389 ms",
+     "cost": "$0.000032",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"sre@example.com\",\"summary\":\"The API refuses connections from every tested region, a full outage for the customer.\"}",
+     "pretty": "{\n  \"category\": \"outage\",\n  \"priority\": \"urgent\",\n  \"product\": \"api\",\n  \"customer_email\": \"sre@example.com\",\n  \"summary\": \"The API refuses connections from every tested region, a full outage for the customer.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00036",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"sre@example.com\",\"summary\":\"The API refuses connections from every tested region, a full outage for the customer.\"}",
+     "pretty": "{\n  \"category\": \"outage\",\n  \"priority\": \"urgent\",\n  \"product\": \"api\",\n  \"customer_email\": \"sre@example.com\",\n  \"summary\": \"The API refuses connections from every tested region, a full outage for the customer.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "794 ms",
+     "cost": "$0.00015",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"outage\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"sre@example.com\",\"summary\":\"The API refuses connections from every tested region, a full outage for the customer.\"}",
+     "pretty": "{\n  \"category\": \"outage\",\n  \"priority\": \"urgent\",\n  \"product\": \"api\",\n  \"customer_email\": \"sre@example.com\",\n  \"summary\": \"The API refuses connections from every tested region, a full outage for the customer.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.3 s",
+     "cost": "$0.00015",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": false
+  },
+  {
+   "id": "call-0016",
+   "traceId": "ticket-0016",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: Unexpected storage overage charge From: finance@example.com We were billed $310 in storage overage but our usage graph never went above the plan limit.",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: Unexpected storage overage charge\nFrom: finance@example.com\n\nWe were billed $310 in storage overage but our usage graph never went above the plan limit."
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"finance@example.com\",\"summary\":\"Customer disputes a $310 storage overage that their usage graph does not show.\"}",
+    "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"medium\",\n  \"product\": \"storage\",\n  \"customer_email\": \"finance@example.com\",\n  \"summary\": \"Customer disputes a $310 storage overage that their usage graph does not show.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "794 ms",
+    "cost": "$0.00014",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"finance@example.com\",\"summary\":\"Customer disputes a $310 storage overage that their usage graph does not show.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"medium\",\n  \"product\": \"storage\",\n  \"customer_email\": \"finance@example.com\",\n  \"summary\": \"Customer disputes a $310 storage overage that their usage graph does not show.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "388 ms",
+     "cost": "$0.000035",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.category",
+       "from": "billing",
+       "to": "bug"
+      }
+     ]
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"finance@example.com\",\"summary\":\"Customer disputes a $310 storage overage that their usage graph does not show.\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"medium\",\n  \"product\": \"storage\",\n  \"customer_email\": \"finance@example.com\",\n  \"summary\": \"Customer disputes a $310 storage overage that their usage graph does not show.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00036",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"finance@example.com\",\"summary\":\"Customer disputes a $310 storage overage that their usage graph does not show.\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"medium\",\n  \"product\": \"storage\",\n  \"customer_email\": \"finance@example.com\",\n  \"summary\": \"Customer disputes a $310 storage overage that their usage graph does not show.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "797 ms",
+     "cost": "$0.00015",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"storage\",\"customer_email\":\"finance@example.com\",\"summary\":\"Customer disputes a $310 storage overage that their usage graph does not show.\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"medium\",\n  \"product\": \"storage\",\n  \"customer_email\": \"finance@example.com\",\n  \"summary\": \"Customer disputes a $310 storage overage that their usage graph does not show.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.3 s",
+     "cost": "$0.00015",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": true
+  },
+  {
+   "id": "call-0017",
+   "traceId": "ticket-0017",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: SSO with our identity provider From: it-admin@example.com Do you support SAML single sign-on? We need it before we can roll out to the whole company.",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: SSO with our identity provider\nFrom: it-admin@example.com\n\nDo you support SAML single sign-on? We need it before we can roll out to the whole company."
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"feature_request\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"it-admin@example.com\",\"summary\":\"Customer asks whether SAML single sign-on is supported before a company rollout.\"}",
+    "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"medium\",\n  \"product\": \"auth\",\n  \"customer_email\": \"it-admin@example.com\",\n  \"summary\": \"Customer asks whether SAML single sign-on is supported before a company rollout.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "786 ms",
+    "cost": "$0.00015",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"it-admin@example.com\",\"summary\":\"Asks whether SAML single sign-on is supported before a company rollout.\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"medium\",\n  \"product\": \"auth\",\n  \"customer_email\": \"it-admin@example.com\",\n  \"summary\": \"Asks whether SAML single sign-on is supported before a company rollout.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "387 ms",
+     "cost": "$0.000035",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"auth\",\"customer_email\":\"it-admin@example.com\",\"summary\":\"Customer asks whether SAML single sign-on is supported before a company rollout.\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"low\",\n  \"product\": \"auth\",\n  \"customer_email\": \"it-admin@example.com\",\n  \"summary\": \"Customer asks whether SAML single sign-on is supported before a company rollout.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00036",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.priority",
+       "from": "medium",
+       "to": "low"
+      }
+     ]
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"it-admin@example.com\",\"summary\":\"Customer asks whether SAML single sign-on is supported before a company rollout.\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"medium\",\n  \"product\": \"auth\",\n  \"customer_email\": \"it-admin@example.com\",\n  \"summary\": \"Customer asks whether SAML single sign-on is supported before a company rollout.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "789 ms",
+     "cost": "$0.00015",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"it-admin@example.com\",\"summary\":\"Customer asks whether SAML single sign-on is supported before a company rollout.\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"medium\",\n  \"product\": \"auth\",\n  \"customer_email\": \"it-admin@example.com\",\n  \"summary\": \"Customer asks whether SAML single sign-on is supported before a company rollout.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.3 s",
+     "cost": "$0.00015",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": true
+  },
+  {
+   "id": "call-0018",
+   "traceId": "ticket-0018",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: Rate limit hit at low volume From: backend@example.com We get 429 responses at around 20 requests a minute, well under the documented limit of 600.",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: Rate limit hit at low volume\nFrom: backend@example.com\n\nWe get 429 responses at around 20 requests a minute, well under the documented limit of 600."
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"api\",\"customer_email\":\"backend@example.com\",\"summary\":\"Customer gets rate limited at 20 requests a minute, far below the documented limit.\"}",
+    "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"high\",\n  \"product\": \"api\",\n  \"customer_email\": \"backend@example.com\",\n  \"summary\": \"Customer gets rate limited at 20 requests a minute, far below the documented limit.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "789 ms",
+    "cost": "$0.00014",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"backend@example.com\",\"summary\":\"Customer gets rate limited at 20 requests a minute, far below the documented limit.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"urgent\",\n  \"product\": \"api\",\n  \"customer_email\": \"backend@example.com\",\n  \"summary\": \"Customer gets rate limited at 20 requests a minute, far below the documented limit.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "387 ms",
+     "cost": "$0.000035",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.priority",
+       "from": "high",
+       "to": "urgent"
+      }
+     ]
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"api\",\"customer_email\":\"backend@example.com\",\"summary\":\"Customer gets rate limited at 20 requests a minute, far below the documented limit.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"high\",\n  \"product\": \"api\",\n  \"customer_email\": \"backend@example.com\",\n  \"summary\": \"Customer gets rate limited at 20 requests a minute, far below the documented limit.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00036",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"high\",\"product\":\"api\",\"customer_email\":\"backend@example.com\",\"summary\":\"Customer gets rate limited at 20 requests a minute, far below the documented limit.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"high\",\n  \"product\": \"api\",\n  \"customer_email\": \"backend@example.com\",\n  \"summary\": \"Customer gets rate limited at 20 requests a minute, far below the documented limit.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "791 ms",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":\"urgent\",\"product\":\"api\",\"customer_email\":\"backend@example.com\",\"summary\":\"Customer gets rate limited at 20 requests a minute, far below the documented limit.\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"urgent\",\n  \"product\": \"api\",\n  \"customer_email\": \"backend@example.com\",\n  \"summary\": \"Customer gets rate limited at 20 requests a minute, far below the documented limit.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.3 s",
+     "cost": "$0.00015",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": true
+  },
+  {
+   "id": "call-0019",
+   "traceId": "ticket-0019",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: Change the account owner From: founder@example.com Our previous CTO owns the account and has left. Please transfer ownership to me.",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: Change the account owner\nFrom: founder@example.com\n\nOur previous CTO owns the account and has left. Please transfer ownership to me."
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"founder@example.com\",\"summary\":\"Customer asks to transfer account ownership from a departed CTO.\"}",
+    "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"medium\",\n  \"product\": \"auth\",\n  \"customer_email\": \"founder@example.com\",\n  \"summary\": \"Customer asks to transfer account ownership from a departed CTO.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "781 ms",
+    "cost": "$0.00014",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"founder@example.com\",\"summary\":\"Asks to transfer account ownership from a departed CTO.\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"medium\",\n  \"product\": \"auth\",\n  \"customer_email\": \"founder@example.com\",\n  \"summary\": \"Asks to transfer account ownership from a departed CTO.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "399 ms",
+     "cost": "$0.000033",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"founder@example.com\",\"summary\":\"Customer asks to transfer account ownership from a departed CTO.\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"medium\",\n  \"product\": \"auth\",\n  \"customer_email\": \"founder@example.com\",\n  \"summary\": \"Customer asks to transfer account ownership from a departed CTO.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00036",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"founder@example.com\",\"summary\":\"Customer asks to transfer account ownership from a departed CTO.\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"medium\",\n  \"product\": \"auth\",\n  \"customer_email\": \"founder@example.com\",\n  \"summary\": \"Customer asks to transfer account ownership from a departed CTO.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "784 ms",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":\"medium\",\"product\":\"auth\",\"customer_email\":\"founder@example.com\",\"summary\":\"Customer asks to transfer account ownership from a departed CTO.\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": \"medium\",\n  \"product\": \"auth\",\n  \"customer_email\": \"founder@example.com\",\n  \"summary\": \"Customer asks to transfer account ownership from a departed CTO.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.3 s",
+     "cost": "$0.00014",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": false
+  },
+  {
+   "id": "call-0020",
+   "traceId": "ticket-0020",
+   "status": "replayed",
+   "reason": null,
+   "input": "Subject: Export invoices as CSV From: (no address) It would save us hours each month if we could export all invoices as one CSV file.",
+   "system": "You triage support tickets for Example Cloud, a hosting product at example.com.\nRead the ticket and reply with one JSON object and nothing else:\n{\"category\": \"billing\" | \"bug\" | \"account\" | \"feature_request\" | \"outage\",\n \"priority\": \"low\" | \"medium\" | \"high\" | \"urgent\",\n \"product\": the product area named or implied (dashboard, api, billing, dns, storage, auth, email),\n \"customer_email\": the sender's address or null,\n \"summary\": one sentence of at most 20 words}",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Subject: Export invoices as CSV\nFrom: (no address)\n\nIt would save us hours each month if we could export all invoices as one CSV file."
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":null,\"summary\":\"Customer asks for a CSV export of all invoices.\"}",
+    "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": null,\n  \"summary\": \"Customer asks for a CSV export of all invoices.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "784 ms",
+    "cost": "$0.00013",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":null,\"summary\":\"Asks for a CSV export of all invoices.\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": null,\n  \"summary\": \"Asks for a CSV export of all invoices.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "399 ms",
+     "cost": "$0.00003",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":null,\"summary\":\"Customer asks for a CSV export of all invoices.\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": null,\n  \"summary\": \"Customer asks for a CSV export of all invoices.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.8 s",
+     "cost": "$0.00035",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [
+    {
+     "label": "A1, production's model replayed",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":null,\"summary\":\"Customer asks for a CSV export of all invoices.\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": null,\n  \"summary\": \"Customer asks for a CSV export of all invoices.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "786 ms",
+     "cost": "$0.00013",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "A2, replayed again",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":\"low\",\"product\":\"billing\",\"customer_email\":null,\"summary\":\"Customer asks for a CSV export of all invoices.\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": \"low\",\n  \"product\": \"billing\",\n  \"customer_email\": null,\n  \"summary\": \"Customer asks for a CSV export of all invoices.\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "1.3 s",
+     "cost": "$0.00013",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "differs": false
+  },
+  {
+   "id": "call-0021",
+   "traceId": "ticket-0021",
+   "status": "not_replayable",
+   "reason": "Content cut short",
+   "input": null,
+   "system": null,
+   "messages": [],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"billing\",\"priority\":\"medium\",\"product\":\"billing\",\"customer_email\":\"ari@example.com\",\"summary\":\"Customer asks about a refund for the annual plan.\"}",
+    "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": \"medium\",\n  \"product\": \"billing\",\n  \"customer_email\": \"ari@example.com\",\n  \"summary\": \"Customer asks about a refund for the annual plan.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "—",
+    "cost": "—",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [],
+   "floor": [],
+   "differs": false
+  },
+  {
+   "id": "call-0022",
+   "traceId": "ticket-0022",
+   "status": "not_replayable",
+   "reason": "No content captured",
+   "input": null,
+   "system": null,
+   "messages": [],
+   "limitations": [
+    "request"
+   ],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"bug\",\"priority\":\"medium\",\"product\":\"dns\",\"customer_email\":\"maria.k@example.com\",\"summary\":\"An A record change made six hours ago has not taken effect.\"}",
+    "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": \"medium\",\n  \"product\": \"dns\",\n  \"customer_email\": \"maria.k@example.com\",\n  \"summary\": \"An A record change made six hours ago has not taken effect.\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "—",
+    "cost": "—",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [],
+   "floor": [],
+   "differs": false
+  }
+ ],
+ "notReplayable": [
+  {
+   "reason": "content_truncated",
+   "title": "Content cut short",
+   "count": 1,
+   "fix": "The exporter cut the content, so the replay would send a different prompt. Raise the exporter's attribute or payload size limit and export again."
+  },
+  {
+   "reason": "content_unavailable",
+   "title": "No content captured",
+   "count": 1,
+   "fix": "The trace carries no prompt or response text. Turn on content capture in your tracing setup and export again."
+  }
+ ],
+ "monthlyCalls": 250000,
+ "cost": [
+  {
+   "role": "production",
+   "label": "gpt-4.1-mini, replayed",
+   "name": "gpt-4.1-mini",
+   "model": "gpt-4.1-mini",
+   "perCall": 0.00014186,
+   "text": "$0.00014",
+   "delta": null,
+   "note": "$0.00014 recorded",
+   "monthly": 35.465,
+   "monthlyText": "$35.47/mo",
+   "monthlyDelta": null,
+   "badge": null
+  },
+  {
+   "role": "treatment",
+   "label": "google/gemini-2.5-flash-lite",
+   "name": "gemini-2.5-flash-lite",
+   "model": "google/gemini-2.5-flash-lite",
+   "perCall": 0.00003414,
+   "text": "$0.000034",
+   "delta": "76% lower",
+   "note": null,
+   "monthly": 8.535,
+   "monthlyText": "$8.54/mo",
+   "monthlyDelta": "saves $26.93/mo",
+   "badge": null
+  },
+  {
+   "role": "treatment",
+   "label": "openai/gpt-5.4-nano",
+   "name": "gpt-5.4-nano",
+   "model": "openai/gpt-5.4-nano",
+   "perCall": 0.00034821,
+   "text": "$0.00035",
+   "delta": "2.5×",
+   "note": null,
+   "monthly": 87.0525,
+   "monthlyText": "$87.05/mo",
+   "monthlyDelta": "adds $51.59/mo",
+   "badge": null
+  },
+  {
+   "role": "floor",
+   "label": "production vs itself",
+   "name": "vs itself",
+   "model": "gpt-4.1-mini",
+   "perCall": 0.00014202,
+   "text": "$0.00014",
+   "delta": "same against itself",
+   "note": null,
+   "monthly": null,
+   "monthlyText": null,
+   "monthlyDelta": null,
+   "badge": null
+  }
+ ],
+ "latency": [
+  {
+   "role": "production",
+   "label": "gpt-4.1-mini, replayed",
+   "name": "gpt-4.1-mini",
+   "n": 20,
+   "p10": 654.8,
+   "p50": 798,
+   "p90": 1293.2,
+   "text": "798 ms",
+   "delta": null,
+   "badge": null,
+   "values": [
+    1298,
+    1295,
+    1293,
+    1290,
+    658,
+    655,
+    653,
+    650,
+    1277,
+    1275,
+    804,
+    807,
+    799,
+    802,
+    794,
+    797,
+    789,
+    791,
+    784,
+    786
+   ]
+  },
+  {
+   "role": "treatment",
+   "label": "google/gemini-2.5-flash-lite",
+   "name": "gemini-2.5-flash-lite",
+   "n": 20,
+   "p10": 387.9,
+   "p50": 417.5,
+   "p90": 443.1,
+   "text": "418 ms",
+   "delta": "48% lower",
+   "badge": null,
+   "values": [
+    442,
+    443,
+    444,
+    445,
+    439,
+    440,
+    441,
+    442,
+    436,
+    436,
+    393,
+    392,
+    391,
+    390,
+    389,
+    388,
+    387,
+    387,
+    399,
+    399
+   ]
+  },
+  {
+   "role": "treatment",
+   "label": "openai/gpt-5.4-nano",
+   "name": "gpt-5.4-nano",
+   "n": 20,
+   "p10": 1766.7,
+   "p50": 1798.5,
+   "p90": 1835.4,
+   "text": "1.8 s",
+   "delta": "2.3×",
+   "badge": null,
+   "values": [
+    1810,
+    1814,
+    1804,
+    1807,
+    1798,
+    1801,
+    1792,
+    1795,
+    1835,
+    1839,
+    1777,
+    1774,
+    1783,
+    2775,
+    1764,
+    1761,
+    1771,
+    1767,
+    1802,
+    1799
+   ]
+  },
+  {
+   "role": "floor",
+   "label": "production vs itself",
+   "name": "vs itself",
+   "n": 20,
+   "p10": 773.8,
+   "p50": 1025,
+   "p90": 1276.7,
+   "text": "1.0 s",
+   "delta": "1.3× itself",
+   "badge": null,
+   "values": [
+    769,
+    772,
+    774,
+    777,
+    779,
+    782,
+    785,
+    787,
+    790,
+    792,
+    1265,
+    1263,
+    1260,
+    1258,
+    1276,
+    1273,
+    1271,
+    1268,
+    1286,
+    1283
+   ]
+  }
+ ],
+ "fields": [
+  {
+   "path": "$.category",
+   "kind": "label",
+   "kindLabel": "Label",
+   "scale": "share",
+   "floor": {
+    "value": 1,
+    "text": "100% agreement",
+    "low": null,
+    "high": null
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "name": "gemini-2.5-flash-lite",
+     "value": 0.9,
+     "valueText": "90%",
+     "detail": "18 of 20 same label",
+     "sentence": "google/gemini-2.5-flash-lite gives the same label as control on 18 of 20 cases; the control gives the same label as itself on 20 of 20. 2 cases had no value on one side.",
+     "badge": null,
+     "range": null,
+     "changes": [
+      {
+       "from": "billing",
+       "to": "bug",
+       "count": 1
+      },
+      {
+       "from": "bug",
+       "to": "outage",
+       "count": 1
+      }
+     ]
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "name": "gpt-5.4-nano",
+     "value": 1,
+     "valueText": "100%",
+     "detail": "19 of 19 same label",
+     "sentence": "openai/gpt-5.4-nano gives the same label as control on 19 of 19 cases; the control gives the same label as itself on 20 of 20. 3 cases had no value on one side.",
+     "badge": null,
+     "range": null,
+     "changes": []
+    }
+   ]
+  },
+  {
+   "path": "$.priority",
+   "kind": "label",
+   "kindLabel": "Label",
+   "scale": "share",
+   "floor": {
+    "value": 0.85,
+    "text": "85% agreement",
+    "low": null,
+    "high": null
+   },
+   "arms": [
+    {
+     "label": "google/gemini-2.5-flash-lite",
+     "name": "gemini-2.5-flash-lite",
+     "value": 0.85,
+     "valueText": "85%",
+     "detail": "17 of 20 same label",
+     "sentence": "google/gemini-2.5-flash-lite gives the same label as control on 17 of 20 cases; the control gives the same label as itself on 17 of 20. 2 cases had no value on one side.",
+     "badge": null,
+     "range": null,
+     "changes": [
+      {
+       "from": "high",
+       "to": "urgent",
+       "count": 2
+      },
+      {
+       "from": "medium",
+       "to": "high",
+       "count": 1
+      }
+     ]
+    },
+    {
+     "label": "openai/gpt-5.4-nano",
+     "name": "gpt-5.4-nano",
+     "value": 0.8947368421052632,
+     "valueText": "89%",
+     "detail": "17 of 19 same label",
+     "sentence": "openai/gpt-5.4-nano gives the same label as control on 17 of 19 cases; the control gives the same label as itself on 17 of 20. 3 cases had no value on one side.",
+     "badge": null,
+     "range": null,
+     "changes": [
+      {
+       "from": "medium",
+       "to": "high",
+       "count": 1
+      },
+      {
+       "from": "medium",
+       "to": "low",
+       "count": 1
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "recordedLatency": "932 ms"
+}

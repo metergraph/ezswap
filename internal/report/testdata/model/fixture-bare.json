@@ -1,0 +1,2324 @@
+{
+ "headline": "Would a cheaper model have worked for gpt-5.4's calls?",
+ "subhead": "21 production calls replayed on Mini and Flash. Mini (gpt-5-mini) costs 82% less per call than gpt-5.4. This run has no noise floor, so differences are shown without production's own variation.",
+ "meta": [
+  {
+   "label": "Sample",
+   "value": "24 calls, 21 replayed"
+  },
+  {
+   "label": "Source",
+   "value": "replay-jsonl, support-traces.jsonl"
+  },
+  {
+   "label": "Production model",
+   "value": "gpt-5.4"
+  },
+  {
+   "label": "Created",
+   "value": "29 Oct 2026, 14:30 UTC"
+  },
+  {
+   "label": "Price catalog",
+   "value": "2026-10-27"
+  },
+  {
+   "label": "Spent",
+   "value": "$0.117 of $2.00 budget"
+  }
+ ],
+ "stopped": null,
+ "productionModel": "gpt-5.4",
+ "columns": [
+  {
+   "id": "t1",
+   "label": "Mini",
+   "model": "openai/gpt-5-mini",
+   "settings": "Default settings",
+   "endpoint": "openrouter",
+   "n": 21,
+   "note": null
+  },
+  {
+   "id": "t2",
+   "label": "Flash",
+   "model": "google/gemini-3.8-flash",
+   "settings": "temperature 0, 1,024 max tokens, low reasoning",
+   "endpoint": "openrouter",
+   "n": 19,
+   "note": null
+  }
+ ],
+ "rows": [
+  {
+   "key": "monthly_cost_usd",
+   "label": "Monthly cost",
+   "sublabel": "needs your call volume",
+   "kind": "stat",
+   "production": "—",
+   "productionNote": null,
+   "floor": null,
+   "cells": [
+    {
+     "text": "—",
+     "delta": null,
+     "floor": null,
+     "title": null,
+     "label": null
+    },
+    {
+     "text": "—",
+     "delta": null,
+     "floor": null,
+     "title": null,
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": "The run does not record how many calls the traced workload makes, so no monthly cost is projected."
+  },
+  {
+   "key": "cost_per_call_usd",
+   "label": "Cost per call",
+   "sublabel": null,
+   "kind": "stat",
+   "production": "$0.0021",
+   "productionNote": null,
+   "floor": null,
+   "cells": [
+    {
+     "text": "$0.00038",
+     "delta": "82% lower",
+     "floor": null,
+     "title": null,
+     "label": null
+    },
+    {
+     "text": "$0.001",
+     "delta": "53% lower",
+     "floor": null,
+     "title": "Over the 19 cases this treatment returned on, production's figure is $0.0021.",
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": null
+  },
+  {
+   "key": "latency_ms_p50",
+   "label": "Latency, median",
+   "sublabel": "not compared with production's recorded latency",
+   "kind": "stat",
+   "production": "1.3 s",
+   "productionNote": null,
+   "floor": null,
+   "cells": [
+    {
+     "text": "379 ms",
+     "delta": null,
+     "floor": null,
+     "title": null,
+     "label": null
+    },
+    {
+     "text": "806 ms",
+     "delta": null,
+     "floor": null,
+     "title": null,
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": null
+  },
+  {
+   "key": "output_chars_p50",
+   "label": "Output length, median characters",
+   "sublabel": null,
+   "kind": "stat",
+   "production": "124",
+   "productionNote": null,
+   "floor": null,
+   "cells": [
+    {
+     "text": "139",
+     "delta": "1.1× control",
+     "floor": null,
+     "title": null,
+     "label": null
+    },
+    {
+     "text": "112",
+     "delta": "10% lower",
+     "floor": null,
+     "title": "Over the 19 cases this treatment returned on, production's figure is 124.",
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": null
+  },
+  {
+   "key": "json_parse_rate",
+   "label": "JSON parses",
+   "sublabel": null,
+   "kind": "stat",
+   "production": "100%",
+   "productionNote": null,
+   "floor": null,
+   "cells": [
+    {
+     "text": "95%",
+     "delta": "−5 pts",
+     "floor": null,
+     "title": null,
+     "label": null
+    },
+    {
+     "text": "95%",
+     "delta": "−5 pts",
+     "floor": null,
+     "title": "Over the 19 cases this treatment returned on, production's figure is 100%.",
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": null
+  },
+  {
+   "key": "same_keys_rate",
+   "label": "Same keys as control",
+   "sublabel": null,
+   "kind": "stat",
+   "production": "—",
+   "productionNote": null,
+   "floor": null,
+   "cells": [
+    {
+     "text": "95%",
+     "delta": null,
+     "floor": null,
+     "title": "Outputs whose JSON has the same top-level keys as the control’s, over the traces where the control returned a JSON object",
+     "label": null
+    },
+    {
+     "text": "18 of 19",
+     "delta": "traces with JSON",
+     "floor": null,
+     "title": "Outputs whose JSON has the same top-level keys as the control’s, over the traces where the control returned a JSON object",
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": null
+  },
+  {
+   "key": "empty_or_refused_rate",
+   "label": "Empty or refused",
+   "sublabel": null,
+   "kind": "stat",
+   "production": "0%",
+   "productionNote": null,
+   "floor": null,
+   "cells": [
+    {
+     "text": "5%",
+     "delta": "+5 pts",
+     "floor": null,
+     "title": null,
+     "label": null
+    },
+    {
+     "text": "0%",
+     "delta": "same",
+     "floor": null,
+     "title": "Over the 19 cases this treatment returned on, production's figure is 0%.",
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": null
+  },
+  {
+   "key": "cut_off_rate",
+   "label": "Cut off at token limit",
+   "sublabel": null,
+   "kind": "stat",
+   "production": "0%",
+   "productionNote": null,
+   "floor": null,
+   "cells": [
+    {
+     "text": "0%",
+     "delta": "same",
+     "floor": null,
+     "title": null,
+     "label": null
+    },
+    {
+     "text": "5%",
+     "delta": "+5 pts",
+     "floor": null,
+     "title": "Over the 19 cases this treatment returned on, production's figure is 0%.",
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": null
+  },
+  {
+   "key": "errors",
+   "label": "Errors",
+   "sublabel": null,
+   "kind": "stat",
+   "production": "0",
+   "productionNote": null,
+   "floor": null,
+   "cells": [
+    {
+     "text": "0",
+     "delta": null,
+     "floor": null,
+     "title": null,
+     "label": null
+    },
+    {
+     "text": "1",
+     "delta": null,
+     "floor": null,
+     "title": null,
+     "label": null
+    }
+   ],
+   "sentences": null,
+   "note": null
+  },
+  {
+   "key": "field:$.category",
+   "label": "$.category",
+   "sublabel": "Label field",
+   "kind": "field",
+   "production": "—",
+   "productionNote": null,
+   "floor": null,
+   "cells": [
+    {
+     "text": "17 of 20 same label",
+     "delta": null,
+     "floor": null,
+     "title": "Mini gives the same label as control on 17 of 20 cases.",
+     "label": null
+    },
+    {
+     "text": "15 of 18 same label",
+     "delta": null,
+     "floor": null,
+     "title": "Flash gives the same label as control on 15 of 18 cases.",
+     "label": null
+    }
+   ],
+   "sentences": [
+    "Mini gives the same label as control on 17 of 20 cases. 4 cases had no value on one side.",
+    "Flash gives the same label as control on 15 of 18 cases. 6 cases had no value on one side."
+   ],
+   "note": null
+  },
+  {
+   "key": "field:$.priority",
+   "label": "$.priority",
+   "sublabel": "Number field",
+   "kind": "field",
+   "production": "—",
+   "productionNote": null,
+   "floor": null,
+   "cells": [
+    {
+     "text": "0 median",
+     "delta": null,
+     "floor": null,
+     "title": "Mini differs from control by a median 0 per call across 20 cases; the middle halves of the two overlap.",
+     "label": null
+    },
+    {
+     "text": "0 median",
+     "delta": null,
+     "floor": null,
+     "title": "Flash differs from control by a median 0 per call across 18 cases; the middle halves of the two overlap.",
+     "label": null
+    }
+   ],
+   "sentences": [
+    "Mini differs from control by a median 0 per call across 20 cases; the middle halves of the two overlap. 4 cases had no value on one side.",
+    "Flash differs from control by a median 0 per call across 18 cases; the middle halves of the two overlap. 6 cases had no value on one side."
+   ],
+   "note": null
+  },
+  {
+   "key": "field:$.tags",
+   "label": "$.tags",
+   "sublabel": "List field",
+   "kind": "field",
+   "production": "—",
+   "productionNote": null,
+   "floor": null,
+   "cells": [
+    {
+     "text": "80% items shared",
+     "delta": null,
+     "floor": null,
+     "title": "Mini shares 80% of list items with control on average across 20 cases.",
+     "label": null
+    },
+    {
+     "text": "67% items shared",
+     "delta": null,
+     "floor": null,
+     "title": "Flash shares 67% of list items with control on average across 18 cases.",
+     "label": null
+    }
+   ],
+   "sentences": [
+    "Mini shares 80% of list items with control on average across 20 cases. 4 cases had no value on one side.",
+    "Flash shares 67% of list items with control on average across 18 cases. 6 cases had no value on one side."
+   ],
+   "note": null
+  }
+ ],
+ "hasFloor": false,
+ "floor": null,
+ "labels": false,
+ "charts": [
+  {
+   "key": "field:$.category",
+   "label": "$.category matches",
+   "better": "higher",
+   "format": "percent",
+   "points": [
+    {
+     "label": "Mini",
+     "x": 0.0003767142857142859,
+     "xLow": 0.0003664738095238096,
+     "xHigh": 0.0003886238095238096,
+     "xText": "$0.00038",
+     "y": 0.85,
+     "yLow": 0.7,
+     "yHigh": 0.95,
+     "yText": "85%",
+     "n": 20,
+     "control": false,
+     "onFrontier": true
+    },
+    {
+     "label": "Flash",
+     "x": 0.0010142631578947368,
+     "xLow": 0.000977036842105263,
+     "xHigh": 0.0010500131578947368,
+     "xText": "$0.001",
+     "y": 0.8333333333333334,
+     "yLow": 0.6666666666666666,
+     "yHigh": 0.9444444444444444,
+     "yText": "83%",
+     "n": 18,
+     "control": false,
+     "onFrontier": false
+    }
+   ],
+   "floor": null,
+   "frontier": [
+    "Mini"
+   ]
+  },
+  {
+   "key": "field:$.priority",
+   "label": "$.priority shift",
+   "better": null,
+   "format": "signed",
+   "points": [
+    {
+     "label": "Mini",
+     "x": 0.0003767142857142859,
+     "xLow": 0.0003664738095238096,
+     "xHigh": 0.0003886238095238096,
+     "xText": "$0.00038",
+     "y": 0,
+     "yLow": 0,
+     "yHigh": 0,
+     "yText": "0",
+     "n": 20,
+     "control": false,
+     "onFrontier": false
+    },
+    {
+     "label": "Flash",
+     "x": 0.0010142631578947368,
+     "xLow": 0.000977036842105263,
+     "xHigh": 0.0010500131578947368,
+     "xText": "$0.001",
+     "y": 0,
+     "yLow": 0,
+     "yHigh": 0,
+     "yText": "0",
+     "n": 18,
+     "control": false,
+     "onFrontier": false
+    }
+   ],
+   "floor": null,
+   "frontier": []
+  },
+  {
+   "key": "field:$.tags",
+   "label": "$.tags overlap",
+   "better": "higher",
+   "format": "percent",
+   "points": [
+    {
+     "label": "Mini",
+     "x": 0.0003767142857142859,
+     "xLow": 0.0003664738095238096,
+     "xHigh": 0.0003886238095238096,
+     "xText": "$0.00038",
+     "y": 0.8,
+     "yLow": 0.7,
+     "yHigh": 0.875,
+     "yText": "80%",
+     "n": 20,
+     "control": false,
+     "onFrontier": true
+    },
+    {
+     "label": "Flash",
+     "x": 0.0010142631578947368,
+     "xLow": 0.000977036842105263,
+     "xHigh": 0.0010500131578947368,
+     "xText": "$0.001",
+     "y": 0.6666666666666669,
+     "yLow": 0.5185185185185186,
+     "yHigh": 0.8148148148148149,
+     "yText": "67%",
+     "n": 18,
+     "control": false,
+     "onFrontier": false
+    }
+   ],
+   "floor": null,
+   "frontier": [
+    "Mini"
+   ]
+  },
+  {
+   "key": "latency_ms_p50",
+   "label": "Latency",
+   "better": "lower",
+   "format": "ms",
+   "points": [
+    {
+     "label": "Mini",
+     "x": 0.0003767142857142859,
+     "xLow": 0.0003664738095238096,
+     "xHigh": 0.0003886238095238096,
+     "xText": "$0.00038",
+     "y": 379,
+     "yLow": 355,
+     "yHigh": 394,
+     "yText": "379 ms",
+     "n": 21,
+     "control": false,
+     "onFrontier": true
+    },
+    {
+     "label": "Flash",
+     "x": 0.0010142631578947368,
+     "xLow": 0.000977036842105263,
+     "xHigh": 0.0010500131578947368,
+     "xText": "$0.001",
+     "y": 806,
+     "yLow": 756,
+     "yHigh": 865,
+     "yText": "806 ms",
+     "n": 19,
+     "control": false,
+     "onFrontier": false
+    }
+   ],
+   "floor": null,
+   "frontier": [
+    "Mini"
+   ]
+  }
+ ],
+ "cases": [
+  {
+   "id": "case-00",
+   "traceId": "trace-0",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user0@example.com: I was charged twice this month",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user0@example.com: I was charged twice this month"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"refund\",\"invoice\"],\"summary\":\"Customer reports: I was charged twice this month\"}",
+    "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": 1,\n  \"tags\": [\n    \"refund\",\n    \"invoice\"\n  ],\n  \"summary\": \"Customer reports: I was charged twice this month\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.5 s",
+    "cost": "$0.0017",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":1,\"tags\":[\"refund\"],\"summary\":\"Customer says I was charged twice this month \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 1,\n  \"tags\": [\n    \"refund\"\n  ],\n  \"summary\": \"Customer says I was charged twice this month \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "355 ms",
+     "cost": "$0.00033",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.category",
+       "from": "billing",
+       "to": "feature_request"
+      },
+      {
+       "path": "$.tags",
+       "from": "[\"refund\",\"invoice\"]",
+       "to": "[\"refund\"]"
+      }
+     ]
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"invoice\",\"other\"],\"summary\":\"Ticket: I was charged twice this month\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": 1,\n  \"tags\": [\n    \"invoice\",\n    \"other\"\n  ],\n  \"summary\": \"Ticket: I was charged twice this month\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "749 ms",
+     "cost": "$0.00086",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.tags",
+       "from": "[\"refund\",\"invoice\"]",
+       "to": "[\"invoice\",\"other\"]"
+      }
+     ]
+    }
+   ],
+   "floor": [],
+   "differs": true
+  },
+  {
+   "id": "case-01",
+   "traceId": "trace-1",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user1@example.com: The export button does nothing",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user1@example.com: The export button does nothing"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer reports: The export button does nothing\"}",
+    "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": 2,\n  \"tags\": [\n    \"login\",\n    \"export\"\n  ],\n  \"summary\": \"Customer reports: The export button does nothing\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.1 s",
+    "cost": "$0.0022",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer says The export button does nothing \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": 2,\n  \"tags\": [\n    \"login\",\n    \"export\"\n  ],\n  \"summary\": \"Customer says The export button does nothing \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "324 ms",
+     "cost": "$0.00041",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"login\",\"export\"],\"summary\":\"Ticket: The export button does nothing\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": 2,\n  \"tags\": [\n    \"login\",\n    \"export\"\n  ],\n  \"summary\": \"Ticket: The export button does nothing\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "717 ms",
+     "cost": "$0.0011",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [],
+   "differs": false
+  },
+  {
+   "id": "case-02",
+   "traceId": "trace-2",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user2@example.com: Cannot log in after the update",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user2@example.com: Cannot log in after the update"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer reports: Cannot log in after the update\"}",
+    "pretty": "{\n  \"category\": \"account\",\n  \"priority\": 3,\n  \"tags\": [\n    \"invoice\",\n    \"mobile\"\n  ],\n  \"summary\": \"Customer reports: Cannot log in after the update\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.2 s",
+    "cost": "$0.0022",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"invoice\"],\"summary\":\"Customer says Cannot log in after the update \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": 3,\n  \"tags\": [\n    \"invoice\"\n  ],\n  \"summary\": \"Customer says Cannot log in after the update \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "360 ms",
+     "cost": "$0.0004",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.tags",
+       "from": "[\"invoice\",\"mobile\"]",
+       "to": "[\"invoice\"]"
+      }
+     ]
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Ticket: Cannot log in after the update\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": 3,\n  \"tags\": [\n    \"invoice\",\n    \"mobile\"\n  ],\n  \"summary\": \"Ticket: Cannot log in after the update\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "865 ms",
+     "cost": "$0.0011",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [],
+   "differs": true
+  },
+  {
+   "id": "case-03",
+   "traceId": "trace-3",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user3@example.com: <img src=x onerror=\"alert('preview')\"> & \"quotes\" </script>",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user3@example.com: <img src=x onerror=\"alert('preview')\"> & \"quotes\" </script>"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"export\",\"api\"],\"summary\":\"Customer reports: <img src=x onerror=\\\"alert('preview')\\\"> &\"}",
+    "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 4,\n  \"tags\": [\n    \"export\",\n    \"api\"\n  ],\n  \"summary\": \"Customer reports: <img src=x onerror=\\\"alert('preview')\\\"> &\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.1 s",
+    "cost": "$0.0023",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"export\"],\"summary\":\"Customer says <img src=x onerror=\\\"alert('pre \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 4,\n  \"tags\": [\n    \"export\"\n  ],\n  \"summary\": \"Customer says <img src=x onerror=\\\"alert('pre \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "359 ms",
+     "cost": "$0.00039",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.tags",
+       "from": "[\"export\",\"api\"]",
+       "to": "[\"export\"]"
+      }
+     ]
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"export\",\"api\"],\"summary\":\"Ticket: <img src=x onerror=\\\"alert('pre\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 4,\n  \"tags\": [\n    \"export\",\n    \"api\"\n  ],\n  \"summary\": \"Ticket: <img src=x onerror=\\\"alert('pre\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "895 ms",
+     "cost": "$0.0011",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [],
+   "differs": true
+  },
+  {
+   "id": "case-04",
+   "traceId": "trace-4",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user4@example.com: Invoice shows the wrong company address",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user4@example.com: Invoice shows the wrong company address"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"mobile\",\"slow\"],\"summary\":\"Customer reports: Invoice shows the wrong company address\"}",
+    "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": 1,\n  \"tags\": [\n    \"mobile\",\n    \"slow\"\n  ],\n  \"summary\": \"Customer reports: Invoice shows the wrong company address\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.2 s",
+    "cost": "$0.0022",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"mobile\"],\"summary\":\"Customer says Invoice shows the wrong compan \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": 1,\n  \"tags\": [\n    \"mobile\"\n  ],\n  \"summary\": \"Customer says Invoice shows the wrong compan \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "391 ms",
+     "cost": "$0.00038",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.tags",
+       "from": "[\"mobile\",\"slow\"]",
+       "to": "[\"mobile\"]"
+      }
+     ]
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"mobile\",\"slow\"],\"summary\":\"Ticket: Invoice shows the wrong compan\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": 1,\n  \"tags\": [\n    \"mobile\",\n    \"slow\"\n  ],\n  \"summary\": \"Ticket: Invoice shows the wrong compan\"\n}",
+     "error": null,
+     "flags": [
+      "temperature not accepted, sent without it"
+     ],
+     "latency": "897 ms",
+     "cost": "$0.001",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [],
+   "differs": true
+  },
+  {
+   "id": "case-05",
+   "traceId": "trace-5",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user5@example.com: The API returns 500 on large uploads",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user5@example.com: The API returns 500 on large uploads"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"api\",\"refund\"],\"summary\":\"</script><script>alert(\\\"prod\\\")</script> it's \\\"fine\\\"\"}",
+    "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": 2,\n  \"tags\": [\n    \"api\",\n    \"refund\"\n  ],\n  \"summary\": \"</script><script>alert(\\\"prod\\\")</script> it's \\\"fine\\\"\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.3 s",
+    "cost": "$0.0023",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"api\",\"refund\"],\"summary\":\"Customer says The API returns 500 on large u \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": 2,\n  \"tags\": [\n    \"api\",\n    \"refund\"\n  ],\n  \"summary\": \"Customer says The API returns 500 on large u \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "438 ms",
+     "cost": "$0.00039",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"api\",\"refund\"],\"summary\":\"Ticket: The API returns 500 on large u\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": 2,\n  \"tags\": [\n    \"api\",\n    \"refund\"\n  ],\n  \"summary\": \"Ticket: The API returns 500 on large u\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "797 ms",
+     "cost": "$0.001",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [],
+   "differs": false
+  },
+  {
+   "id": "case-06",
+   "traceId": "trace-6",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user6@example.com: Mobile app is slow to open",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user6@example.com: Mobile app is slow to open"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"slow\",\"login\"],\"summary\":\"Customer reports: Mobile app is slow to open\"}",
+    "pretty": "{\n  \"category\": \"account\",\n  \"priority\": 3,\n  \"tags\": [\n    \"slow\",\n    \"login\"\n  ],\n  \"summary\": \"Customer reports: Mobile app is slow to open\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.4 s",
+    "cost": "$0.002",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":4,\"tags\":[\"slow\"],\"summary\":\"Customer says Mobile app is slow to open \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": 4,\n  \"tags\": [\n    \"slow\"\n  ],\n  \"summary\": \"Customer says Mobile app is slow to open \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "322 ms",
+     "cost": "$0.00035",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.priority",
+       "from": "3",
+       "to": "4"
+      },
+      {
+       "path": "$.tags",
+       "from": "[\"slow\",\"login\"]",
+       "to": "[\"slow\"]"
+      }
+     ]
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":3,\"tags\":[\"slow\",\"login\"],\"summary\":\"Ticket: Mobile app is slow to open\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 3,\n  \"tags\": [\n    \"slow\",\n    \"login\"\n  ],\n  \"summary\": \"Ticket: Mobile app is slow to open\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "734 ms",
+     "cost": "$0.00092",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.category",
+       "from": "account",
+       "to": "feature_request"
+      }
+     ]
+    }
+   ],
+   "floor": [],
+   "differs": true
+  },
+  {
+   "id": "case-07",
+   "traceId": "trace-7",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user7@example.com: How do I change my plan?",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user7@example.com: How do I change my plan?"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"refund\",\"invoice\"],\"summary\":\"Customer reports: How do I change my plan?\"}",
+    "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 4,\n  \"tags\": [\n    \"refund\",\n    \"invoice\"\n  ],\n  \"summary\": \"Customer reports: How do I change my plan?\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.4 s",
+    "cost": "$0.0021",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "I can't help with that request.",
+     "pretty": null,
+     "error": null,
+     "flags": [
+      "flagged as a refusal"
+     ],
+     "latency": "383 ms",
+     "cost": "$0.00036",
+     "finishReason": "content_filter",
+     "differs": true,
+     "changes": []
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"invoice\",\"other\"],\"summary\":\"Ticket: How do I change my plan?\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 4,\n  \"tags\": [\n    \"invoice\",\n    \"other\"\n  ],\n  \"summary\": \"Ticket: How do I change my plan?\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "865 ms",
+     "cost": "$0.00098",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.tags",
+       "from": "[\"refund\",\"invoice\"]",
+       "to": "[\"invoice\",\"other\"]"
+      }
+     ]
+    }
+   ],
+   "floor": [],
+   "differs": true
+  },
+  {
+   "id": "case-08",
+   "traceId": "trace-8",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user8@example.com: I was charged twice this month",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user8@example.com: I was charged twice this month"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer reports: I was charged twice this month\"}",
+    "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": 1,\n  \"tags\": [\n    \"login\",\n    \"export\"\n  ],\n  \"summary\": \"Customer reports: I was charged twice this month\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.2 s",
+    "cost": "$0.0024",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer says I was charged twice this month \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": 1,\n  \"tags\": [\n    \"login\",\n    \"export\"\n  ],\n  \"summary\": \"Customer says I was charged twice this month \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "355 ms",
+     "cost": "$0.00041",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"login\",\"export\"],\"summary\":\"Ticket: I was charged twice this month\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": 1,\n  \"tags\": [\n    \"login\",\n    \"export\"\n  ],\n  \"summary\": \"Ticket: I was charged twice this month\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "868 ms",
+     "cost": "$0.0011",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [],
+   "differs": false
+  },
+  {
+   "id": "case-09",
+   "traceId": "trace-9",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user9@example.com: The export button does nothing",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user9@example.com: The export button does nothing"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer reports: The export button does nothing\"}",
+    "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": 2,\n  \"tags\": [\n    \"invoice\",\n    \"mobile\"\n  ],\n  \"summary\": \"Customer reports: The export button does nothing\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.3 s",
+    "cost": "$0.0021",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"invoice\"],\"summary\":\"Customer says The export button does nothing \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": 2,\n  \"tags\": [\n    \"invoice\"\n  ],\n  \"summary\": \"Customer says The export button does nothing \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "407 ms",
+     "cost": "$0.00037",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.tags",
+       "from": "[\"invoice\",\"mobile\"]",
+       "to": "[\"invoice\"]"
+      }
+     ]
+    },
+    {
+     "label": "Flash",
+     "status": "failed",
+     "output": null,
+     "pretty": null,
+     "error": "timeout: The endpoint did not answer in 30 s",
+     "flags": [
+      "retried"
+     ],
+     "latency": "30 s",
+     "cost": "—",
+     "finishReason": null,
+     "differs": true,
+     "changes": []
+    }
+   ],
+   "floor": [],
+   "differs": true
+  },
+  {
+   "id": "case-10",
+   "traceId": "trace-10",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user10@example.com: Cannot log in after the update",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user10@example.com: Cannot log in after the update"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"export\",\"api\"],\"summary\":\"Customer reports: Cannot log in after the update\"}",
+    "pretty": "{\n  \"category\": \"account\",\n  \"priority\": 3,\n  \"tags\": [\n    \"export\",\n    \"api\"\n  ],\n  \"summary\": \"Customer reports: Cannot log in after the update\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.1 s",
+    "cost": "$0.0023",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"export\",\"api\"],\"summary\":\"Customer says Cannot log in after the update \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": 3,\n  \"tags\": [\n    \"export\",\n    \"api\"\n  ],\n  \"summary\": \"Customer says Cannot log in after the update \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "394 ms",
+     "cost": "$0.00042",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"export\",\"api\"],\"summary\":\"Ticket: Cannot log in after the update\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": 3,\n  \"tags\": [\n    \"export\",\n    \"api\"\n  ],\n  \"summary\": \"Ticket: Cannot log in after the update\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "754 ms",
+     "cost": "$0.0011",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [],
+   "differs": false
+  },
+  {
+   "id": "case-11",
+   "traceId": "trace-11",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user11@example.com: Please add dark mode to the dashboard",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user11@example.com: Please add dark mode to the dashboard"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"mobile\",\"slow\"],\"summary\":\"Customer reports: Please add dark mode to the dashboard\"}",
+    "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 4,\n  \"tags\": [\n    \"mobile\",\n    \"slow\"\n  ],\n  \"summary\": \"Customer reports: Please add dark mode to the dashboard\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.1 s",
+    "cost": "$0.0023",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"mobile\",\"slow\"],\"summary\":\"Customer says Please add dark mode to the da \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 4,\n  \"tags\": [\n    \"mobile\",\n    \"slow\"\n  ],\n  \"summary\": \"Customer says Please add dark mode to the da \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "422 ms",
+     "cost": "$0.00041",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"mobile\"",
+     "pretty": null,
+     "error": null,
+     "flags": [
+      "cut off at the token limit"
+     ],
+     "latency": "806 ms",
+     "cost": "$0.0011",
+     "finishReason": "length",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [],
+   "differs": false
+  },
+  {
+   "id": "case-12",
+   "traceId": "trace-12",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user12@example.com: Invoice shows the wrong company address",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user12@example.com: Invoice shows the wrong company address"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"api\",\"refund\"],\"summary\":\"Customer reports: Invoice shows the wrong company address\"}",
+    "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": 1,\n  \"tags\": [\n    \"api\",\n    \"refund\"\n  ],\n  \"summary\": \"Customer reports: Invoice shows the wrong company address\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.2 s",
+    "cost": "$0.0023",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":2,\"tags\":[\"api\"],\"summary\":\"Customer says Invoice shows the wrong compan \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 2,\n  \"tags\": [\n    \"api\"\n  ],\n  \"summary\": \"Customer says Invoice shows the wrong compan \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "352 ms",
+     "cost": "$0.00042",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.category",
+       "from": "billing",
+       "to": "feature_request"
+      },
+      {
+       "path": "$.priority",
+       "from": "1",
+       "to": "2"
+      },
+      {
+       "path": "$.tags",
+       "from": "[\"api\",\"refund\"]",
+       "to": "[\"api\"]"
+      }
+     ]
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"refund\",\"other\"],\"summary\":\"Ticket: Invoice shows the wrong compan\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": 1,\n  \"tags\": [\n    \"refund\",\n    \"other\"\n  ],\n  \"summary\": \"Ticket: Invoice shows the wrong compan\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "843 ms",
+     "cost": "$0.0011",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.tags",
+       "from": "[\"api\",\"refund\"]",
+       "to": "[\"refund\",\"other\"]"
+      }
+     ]
+    }
+   ],
+   "floor": [],
+   "differs": true
+  },
+  {
+   "id": "case-13",
+   "traceId": "trace-13",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user13@example.com: The API returns 500 on large uploads",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user13@example.com: The API returns 500 on large uploads"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"slow\",\"login\"],\"summary\":\"Customer reports: The API returns 500 on large uploads\"}",
+    "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": 2,\n  \"tags\": [\n    \"slow\",\n    \"login\"\n  ],\n  \"summary\": \"Customer reports: The API returns 500 on large uploads\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.5 s",
+    "cost": "$0.0019",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":3,\"tags\":[\"slow\",\"login\"],\"summary\":\"Customer says The API returns 500 on large u \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": 3,\n  \"tags\": [\n    \"slow\",\n    \"login\"\n  ],\n  \"summary\": \"Customer says The API returns 500 on large u \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "403 ms",
+     "cost": "$0.00033",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.priority",
+       "from": "2",
+       "to": "3"
+      }
+     ]
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"login\",\"other\"],\"summary\":\"Ticket: The API returns 500 on large u\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": 2,\n  \"tags\": [\n    \"login\",\n    \"other\"\n  ],\n  \"summary\": \"Ticket: The API returns 500 on large u\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "843 ms",
+     "cost": "$0.00087",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.tags",
+       "from": "[\"slow\",\"login\"]",
+       "to": "[\"login\",\"other\"]"
+      }
+     ]
+    }
+   ],
+   "floor": [],
+   "differs": true
+  },
+  {
+   "id": "case-14",
+   "traceId": "trace-14",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user14@example.com: Mobile app is slow to open",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user14@example.com: Mobile app is slow to open"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"refund\",\"invoice\"],\"summary\":\"Customer reports: Mobile app is slow to open\"}",
+    "pretty": "{\n  \"category\": \"account\",\n  \"priority\": 3,\n  \"tags\": [\n    \"refund\",\n    \"invoice\"\n  ],\n  \"summary\": \"Customer reports: Mobile app is slow to open\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.4 s",
+    "cost": "$0.0023",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"refund\",\"invoice\"],\"summary\":\"Customer says Mobile app is slow to open \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": 3,\n  \"tags\": [\n    \"refund\",\n    \"invoice\"\n  ],\n  \"summary\": \"Customer says Mobile app is slow to open \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "408 ms",
+     "cost": "$0.00041",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":3,\"tags\":[\"invoice\",\"other\"],\"summary\":\"Ticket: Mobile app is slow to open\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": 3,\n  \"tags\": [\n    \"invoice\",\n    \"other\"\n  ],\n  \"summary\": \"Ticket: Mobile app is slow to open\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "706 ms",
+     "cost": "$0.0011",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.category",
+       "from": "account",
+       "to": "billing"
+      },
+      {
+       "path": "$.tags",
+       "from": "[\"refund\",\"invoice\"]",
+       "to": "[\"invoice\",\"other\"]"
+      }
+     ]
+    }
+   ],
+   "floor": [],
+   "differs": true
+  },
+  {
+   "id": "case-15",
+   "traceId": "trace-15",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user15@example.com: How do I change my plan?",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user15@example.com: How do I change my plan?"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer reports: How do I change my plan?\"}",
+    "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 4,\n  \"tags\": [\n    \"login\",\n    \"export\"\n  ],\n  \"summary\": \"Customer reports: How do I change my plan?\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.5 s",
+    "cost": "$0.002",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":5,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer says How do I change my plan? \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 5,\n  \"tags\": [\n    \"login\",\n    \"export\"\n  ],\n  \"summary\": \"Customer says How do I change my plan? \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "326 ms",
+     "cost": "$0.00033",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.priority",
+       "from": "4",
+       "to": "5"
+      }
+     ]
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"export\",\"other\"],\"summary\":\"Ticket: How do I change my plan?\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 4,\n  \"tags\": [\n    \"export\",\n    \"other\"\n  ],\n  \"summary\": \"Ticket: How do I change my plan?\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "756 ms",
+     "cost": "$0.00086",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.tags",
+       "from": "[\"login\",\"export\"]",
+       "to": "[\"export\",\"other\"]"
+      }
+     ]
+    }
+   ],
+   "floor": [],
+   "differs": true
+  },
+  {
+   "id": "case-16",
+   "traceId": "trace-16",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user16@example.com: I was charged twice this month",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user16@example.com: I was charged twice this month"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer reports: I was charged twice this month\"}",
+    "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": 1,\n  \"tags\": [\n    \"invoice\",\n    \"mobile\"\n  ],\n  \"summary\": \"Customer reports: I was charged twice this month\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.4 s",
+    "cost": "$0.0021",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer says I was charged twice this month \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": 1,\n  \"tags\": [\n    \"invoice\",\n    \"mobile\"\n  ],\n  \"summary\": \"Customer says I was charged twice this month \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "379 ms",
+     "cost": "$0.00036",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Ticket: I was charged twice this month\"}",
+     "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": 1,\n  \"tags\": [\n    \"invoice\",\n    \"mobile\"\n  ],\n  \"summary\": \"Ticket: I was charged twice this month\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "842 ms",
+     "cost": "$0.00096",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [],
+   "differs": false
+  },
+  {
+   "id": "case-17",
+   "traceId": "trace-17",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user17@example.com: The export button does nothing",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user17@example.com: The export button does nothing"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"export\",\"api\"],\"summary\":\"Customer reports: The export button does nothing\"}",
+    "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": 2,\n  \"tags\": [\n    \"export\",\n    \"api\"\n  ],\n  \"summary\": \"Customer reports: The export button does nothing\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.3 s",
+    "cost": "$0.0021",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"export\",\"api\"],\"summary\":\"Customer says The export button does nothing \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": 2,\n  \"tags\": [\n    \"export\",\n    \"api\"\n  ],\n  \"summary\": \"Customer says The export button does nothing \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "403 ms",
+     "cost": "$0.00035",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":2,\"tags\":[\"api\",\"other\"],\"summary\":\"Ticket: The export button does nothing\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 2,\n  \"tags\": [\n    \"api\",\n    \"other\"\n  ],\n  \"summary\": \"Ticket: The export button does nothing\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "789 ms",
+     "cost": "$0.00093",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.category",
+       "from": "bug",
+       "to": "feature_request"
+      },
+      {
+       "path": "$.tags",
+       "from": "[\"export\",\"api\"]",
+       "to": "[\"api\",\"other\"]"
+      }
+     ]
+    }
+   ],
+   "floor": [],
+   "differs": true
+  },
+  {
+   "id": "case-18",
+   "traceId": "trace-18",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user18@example.com: Cannot log in after the update",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user18@example.com: Cannot log in after the update"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"mobile\",\"slow\"],\"summary\":\"Customer reports: Cannot log in after the update\"}",
+    "pretty": "{\n  \"category\": \"account\",\n  \"priority\": 3,\n  \"tags\": [\n    \"mobile\",\n    \"slow\"\n  ],\n  \"summary\": \"Customer reports: Cannot log in after the update\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.1 s",
+    "cost": "$0.002",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"mobile\"],\"summary\":\"Customer says Cannot log in after the update \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": 3,\n  \"tags\": [\n    \"mobile\"\n  ],\n  \"summary\": \"Customer says Cannot log in after the update \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "377 ms",
+     "cost": "$0.00035",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.tags",
+       "from": "[\"mobile\",\"slow\"]",
+       "to": "[\"mobile\"]"
+      }
+     ]
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"slow\",\"other\"],\"summary\":\"Ticket: Cannot log in after the update\"}",
+     "pretty": "{\n  \"category\": \"account\",\n  \"priority\": 3,\n  \"tags\": [\n    \"slow\",\n    \"other\"\n  ],\n  \"summary\": \"Ticket: Cannot log in after the update\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "888 ms",
+     "cost": "$0.00092",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.tags",
+       "from": "[\"mobile\",\"slow\"]",
+       "to": "[\"slow\",\"other\"]"
+      }
+     ]
+    }
+   ],
+   "floor": [],
+   "differs": true
+  },
+  {
+   "id": "case-19",
+   "traceId": "trace-19",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user19@example.com: Please add dark mode to the dashboard",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user19@example.com: Please add dark mode to the dashboard"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"api\",\"refund\"],\"summary\":\"Customer reports: Please add dark mode to the dashboard\"}",
+    "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 4,\n  \"tags\": [\n    \"api\",\n    \"refund\"\n  ],\n  \"summary\": \"Customer reports: Please add dark mode to the dashboard\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.3 s",
+    "cost": "$0.002",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"api\",\"refund\"],\"summary\":\"Customer says Please add dark mode to the da \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 4,\n  \"tags\": [\n    \"api\",\n    \"refund\"\n  ],\n  \"summary\": \"Customer says Please add dark mode to the da \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "410 ms",
+     "cost": "$0.00035",
+     "finishReason": "stop",
+     "differs": false,
+     "changes": []
+    },
+    {
+     "label": "Flash",
+     "status": "missing",
+     "output": null,
+     "pretty": null,
+     "error": "Not run: the run stopped first",
+     "flags": [],
+     "latency": "—",
+     "cost": "—",
+     "finishReason": null,
+     "differs": false,
+     "changes": []
+    }
+   ],
+   "floor": [],
+   "differs": false
+  },
+  {
+   "id": "case-20",
+   "traceId": "trace-20",
+   "status": "not_replayable",
+   "reason": "Earlier tool calls in the conversation",
+   "input": "Ticket from user20@example.com: Invoice shows the wrong company address",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user20@example.com: Invoice shows the wrong company address"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"billing\",\"priority\":1,\"tags\":[\"slow\",\"login\"],\"summary\":\"Customer reports: Invoice shows the wrong company address\"}",
+    "pretty": "{\n  \"category\": \"billing\",\n  \"priority\": 1,\n  \"tags\": [\n    \"slow\",\n    \"login\"\n  ],\n  \"summary\": \"Customer reports: Invoice shows the wrong company address\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.3 s",
+    "cost": "$0.0022",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [],
+   "floor": [],
+   "differs": false
+  },
+  {
+   "id": "case-21",
+   "traceId": "trace-21",
+   "status": "not_replayable",
+   "reason": "Content cut short",
+   "input": "Ticket from user21@example.com: The API returns 500 on large uploads",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user21@example.com: The API returns 500 on large uploads"
+    }
+   ],
+   "limitations": [
+    "response_format"
+   ],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"bug\",\"priority\":2,\"tags\":[\"refund\",\"invoice\"],\"summary\":\"Customer reports: The API returns 500 on large uploads\"}",
+    "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": 2,\n  \"tags\": [\n    \"refund\",\n    \"invoice\"\n  ],\n  \"summary\": \"Customer reports: The API returns 500 on large uploads\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.4 s",
+    "cost": "$0.0023",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [],
+   "floor": [],
+   "differs": false
+  },
+  {
+   "id": "case-22",
+   "traceId": "trace-22",
+   "status": "not_replayable",
+   "reason": "Earlier tool calls in the conversation",
+   "input": "Ticket from user22@example.com: Mobile app is slow to open",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user22@example.com: Mobile app is slow to open"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"account\",\"priority\":3,\"tags\":[\"login\",\"export\"],\"summary\":\"Customer reports: Mobile app is slow to open\"}",
+    "pretty": "{\n  \"category\": \"account\",\n  \"priority\": 3,\n  \"tags\": [\n    \"login\",\n    \"export\"\n  ],\n  \"summary\": \"Customer reports: Mobile app is slow to open\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.3 s",
+    "cost": "$0.0024",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [],
+   "floor": [],
+   "differs": false
+  },
+  {
+   "id": "case-23",
+   "traceId": "trace-23",
+   "status": "replayed",
+   "reason": null,
+   "input": "Ticket from user23@example.com: How do I change my plan?",
+   "system": "You triage support tickets for example.com. Reply with JSON.",
+   "messages": [
+    {
+     "role": "user",
+     "content": "Ticket from user23@example.com: How do I change my plan?"
+    }
+   ],
+   "limitations": [],
+   "production": {
+    "label": "Production",
+    "status": "ok",
+    "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer reports: How do I change my plan?\"}",
+    "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 4,\n  \"tags\": [\n    \"invoice\",\n    \"mobile\"\n  ],\n  \"summary\": \"Customer reports: How do I change my plan?\"\n}",
+    "error": null,
+    "flags": [],
+    "latency": "1.1 s",
+    "cost": "$0.0021",
+    "finishReason": "stop",
+    "differs": false,
+    "changes": []
+   },
+   "arms": [
+    {
+     "label": "Mini",
+     "status": "ok",
+     "output": "{\"category\":\"bug\",\"priority\":4,\"tags\":[\"invoice\",\"mobile\"],\"summary\":\"Customer says How do I change my plan? \\\"quoted\\\" & <b>bold</b>\"}",
+     "pretty": "{\n  \"category\": \"bug\",\n  \"priority\": 4,\n  \"tags\": [\n    \"invoice\",\n    \"mobile\"\n  ],\n  \"summary\": \"Customer says How do I change my plan? \\\"quoted\\\" & <b>bold</b>\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "332 ms",
+     "cost": "$0.00039",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.category",
+       "from": "feature_request",
+       "to": "bug"
+      }
+     ]
+    },
+    {
+     "label": "Flash",
+     "status": "ok",
+     "output": "{\"category\":\"feature_request\",\"priority\":4,\"tags\":[\"mobile\",\"other\"],\"summary\":\"Ticket: How do I change my plan?\"}",
+     "pretty": "{\n  \"category\": \"feature_request\",\n  \"priority\": 4,\n  \"tags\": [\n    \"mobile\",\n    \"other\"\n  ],\n  \"summary\": \"Ticket: How do I change my plan?\"\n}",
+     "error": null,
+     "flags": [],
+     "latency": "750 ms",
+     "cost": "$0.001",
+     "finishReason": "stop",
+     "differs": true,
+     "changes": [
+      {
+       "path": "$.tags",
+       "from": "[\"invoice\",\"mobile\"]",
+       "to": "[\"mobile\",\"other\"]"
+      }
+     ]
+    }
+   ],
+   "floor": [],
+   "differs": true
+  }
+ ],
+ "notReplayable": [
+  {
+   "reason": "tool_history",
+   "title": "Earlier tool calls in the conversation",
+   "count": 2,
+   "fix": "A replay cannot rerun the tools that answered earlier turns. Sample calls that start from a user message, before any tool runs."
+  },
+  {
+   "reason": "content_truncated",
+   "title": "Content cut short",
+   "count": 1,
+   "fix": "The exporter cut the content, so the replay would send a different prompt. Raise the exporter's attribute or payload size limit and export again."
+  }
+ ],
+ "monthlyCalls": null,
+ "cost": [
+  {
+   "role": "production",
+   "label": "gpt-5.4",
+   "name": "gpt-5.4",
+   "model": "gpt-5.4",
+   "perCall": 0.00213548,
+   "text": "$0.0021",
+   "delta": null,
+   "note": null,
+   "monthly": null,
+   "monthlyText": null,
+   "monthlyDelta": null,
+   "badge": null
+  },
+  {
+   "role": "treatment",
+   "label": "Mini",
+   "name": "Mini",
+   "model": "openai/gpt-5-mini",
+   "perCall": 0.00037671,
+   "text": "$0.00038",
+   "delta": "82% lower",
+   "note": null,
+   "monthly": null,
+   "monthlyText": null,
+   "monthlyDelta": null,
+   "badge": null
+  },
+  {
+   "role": "treatment",
+   "label": "Flash",
+   "name": "Flash",
+   "model": "google/gemini-3.8-flash",
+   "perCall": 0.00101426,
+   "text": "$0.001",
+   "delta": "53% lower",
+   "note": null,
+   "monthly": null,
+   "monthlyText": null,
+   "monthlyDelta": null,
+   "badge": null
+  }
+ ],
+ "latency": [
+  {
+   "role": "production",
+   "label": "gpt-5.4",
+   "name": "gpt-5.4",
+   "n": 21,
+   "p10": 1071,
+   "p50": 1259,
+   "p90": 1460,
+   "text": "1.3 s",
+   "delta": null,
+   "badge": null,
+   "values": [
+    1488,
+    1071,
+    1213,
+    1058,
+    1214,
+    1312,
+    1397,
+    1366,
+    1214,
+    1348,
+    1129,
+    1069,
+    1246,
+    1489,
+    1419,
+    1460,
+    1411,
+    1259,
+    1112,
+    1347,
+    1127
+   ]
+  },
+  {
+   "role": "treatment",
+   "label": "Mini",
+   "name": "Mini",
+   "n": 21,
+   "p10": 326,
+   "p50": 379,
+   "p90": 410,
+   "text": "379 ms",
+   "delta": null,
+   "badge": null,
+   "values": [
+    355,
+    324,
+    360,
+    359,
+    391,
+    438,
+    322,
+    383,
+    355,
+    407,
+    394,
+    422,
+    352,
+    403,
+    408,
+    326,
+    379,
+    403,
+    377,
+    410,
+    332
+   ]
+  },
+  {
+   "role": "treatment",
+   "label": "Flash",
+   "name": "Flash",
+   "n": 19,
+   "p10": 730.6,
+   "p50": 806,
+   "p90": 889.4,
+   "text": "806 ms",
+   "delta": null,
+   "badge": null,
+   "values": [
+    749,
+    717,
+    865,
+    895,
+    897,
+    797,
+    734,
+    865,
+    868,
+    754,
+    806,
+    843,
+    843,
+    706,
+    756,
+    842,
+    789,
+    888,
+    750
+   ]
+  }
+ ],
+ "fields": [
+  {
+   "path": "$.category",
+   "kind": "label",
+   "kindLabel": "Label",
+   "scale": "share",
+   "floor": null,
+   "arms": [
+    {
+     "label": "Mini",
+     "name": "Mini",
+     "value": 0.85,
+     "valueText": "85%",
+     "detail": "17 of 20 same label",
+     "sentence": "Mini gives the same label as control on 17 of 20 cases. 4 cases had no value on one side.",
+     "badge": null,
+     "range": null,
+     "changes": [
+      {
+       "from": "billing",
+       "to": "feature_request",
+       "count": 2
+      },
+      {
+       "from": "feature_request",
+       "to": "bug",
+       "count": 1
+      }
+     ]
+    },
+    {
+     "label": "Flash",
+     "name": "Flash",
+     "value": 0.8333333333333334,
+     "valueText": "83%",
+     "detail": "15 of 18 same label",
+     "sentence": "Flash gives the same label as control on 15 of 18 cases. 6 cases had no value on one side.",
+     "badge": null,
+     "range": null,
+     "changes": [
+      {
+       "from": "account",
+       "to": "feature_request",
+       "count": 1
+      },
+      {
+       "from": "account",
+       "to": "billing",
+       "count": 1
+      },
+      {
+       "from": "bug",
+       "to": "feature_request",
+       "count": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "path": "$.priority",
+   "kind": "number",
+   "kindLabel": "Number",
+   "scale": "shift",
+   "floor": null,
+   "arms": [
+    {
+     "label": "Mini",
+     "name": "Mini",
+     "value": 0,
+     "valueText": "0",
+     "detail": "0 median",
+     "sentence": "Mini differs from control by a median 0 per call across 20 cases; the middle halves of the two overlap. 4 cases had no value on one side.",
+     "badge": null,
+     "range": {
+      "lo": 0,
+      "mid": 0,
+      "hi": 0
+     },
+     "changes": []
+    },
+    {
+     "label": "Flash",
+     "name": "Flash",
+     "value": 0,
+     "valueText": "0",
+     "detail": "0 median",
+     "sentence": "Flash differs from control by a median 0 per call across 18 cases; the middle halves of the two overlap. 6 cases had no value on one side.",
+     "badge": null,
+     "range": {
+      "lo": 0,
+      "mid": 0,
+      "hi": 0
+     },
+     "changes": []
+    }
+   ]
+  },
+  {
+   "path": "$.tags",
+   "kind": "list",
+   "kindLabel": "List",
+   "scale": "share",
+   "floor": null,
+   "arms": [
+    {
+     "label": "Mini",
+     "name": "Mini",
+     "value": 0.8,
+     "valueText": "80%",
+     "detail": "80% items shared",
+     "sentence": "Mini shares 80% of list items with control on average across 20 cases. 4 cases had no value on one side.",
+     "badge": null,
+     "range": null,
+     "changes": []
+    },
+    {
+     "label": "Flash",
+     "name": "Flash",
+     "value": 0.6666666666666669,
+     "valueText": "67%",
+     "detail": "67% items shared",
+     "sentence": "Flash shares 67% of list items with control on average across 18 cases. 6 cases had no value on one side.",
+     "badge": null,
+     "range": null,
+     "changes": []
+    }
+   ]
+  }
+ ],
+ "recordedLatency": null
+}

@@ -1,0 +1,30 @@
+20 of 22 gpt-4.1-mini calls replayed | traces.jsonl | 28 Oct 2026 | spent $0.013
+
+                   production    itself  A gemini-2.5-flash-l~   B gpt-5.4-nano
+COST
+  per month            $35.47    $35.51                  $8.54*          $87.05*
+  per call           $0.00014  $0.00014              $0.000034*        $0.00035*
+QUALITY
+  category agrees           -      100%                    90%*            100%
+  priority agrees           -       85%                    85%              89%
+  JSON parses            100%      100%                   100%              95%*
+  cut off                  0%        0%                     0%               5%*
+SPEED
+  median latency       798 ms     1.0 s                 418 ms            1.8 s*
+* further from production than production is from itself
+
+WHAT CHANGED
+  ticket-0007  A  priority  medium -> high
+  ticket-0009  B  priority  medium -> high
+  ticket-0011  A  priority  high -> urgent
+  ticket-0012  A  category  bug -> outage
+  ticket-0016  A  category  billing -> bug
+  ticket-0017  B  priority  medium -> low
+  ticket-0018  A  priority  high -> urgent
+
+2 calls not replayable, most often: content cut short (1).
+
+itself: gpt-4.1-mini replayed again, the noise floor. Notes: run with --explain.
+Explore every call: metergraph-replay report replay-out/run.json
+Keep this running on live traffic:
+https://www.metergraph.dev/replay?utm_source=replay&utm_medium=cli&utm_campaign=0.0.0#setup=eyJ2IjoxLCJ0cmVhdG1lbnRzIjpbeyJtb2RlbCI6Imdvb2dsZS9nZW1pbmktMi41LWZsYXNoLWxpdGUiLCJzZXR0aW5ncyI6eyJ0ZW1wZXJhdHVyZSI6bnVsbCwibWF4VG9rZW5zIjpudWxsLCJyZWFzb25pbmdFZmZvcnQiOm51bGx9fSx7Im1vZGVsIjoib3BlbmFpL2dwdC01LjQtbmFubyIsInNldHRpbmdzIjp7InRlbXBlcmF0dXJlIjpudWxsLCJtYXhUb2tlbnMiOm51bGwsInJlYXNvbmluZ0VmZm9ydCI6bnVsbH19XSwidHJhY2tlZEZpZWxkcyI6WyIkLmNhdGVnb3J5IiwiJC5wcmlvcml0eSJdLCJzYW1wbGUiOjIwfQ
