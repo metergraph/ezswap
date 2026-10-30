@@ -1,6 +1,7 @@
 package pricing
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"strconv"
@@ -254,6 +255,40 @@ func TestPythonJSON(t *testing.T) {
 		if got := PythonJSON(c.value); got != c.want {
 			t.Errorf("PythonJSON(%#v) = %s, want %s", c.value, got, c.want)
 		}
+	}
+}
+
+func TestPythonJSONReadsRawJSONInItsOwnOrder(t *testing.T) {
+	cases := []struct {
+		raw  string
+		want string
+	}{
+		// Source spacing does not matter; Python's separators do.
+		{"{\n  \"zeta\":1,\"alpha\" : [true,null],\"mid\":\"\u00e9\"\n}", "{\"zeta\": 1, \"alpha\": [true, null], \"mid\": \"\\u00e9\"}"},
+		// JSON.parse keeps a repeated key once, where it first appeared, with its last value.
+		{`{"a": 1, "b": 2, "a": 3}`, `{"a": 3, "b": 2}`},
+		{`null`, `null`},
+	}
+	for _, c := range cases {
+		if got := PythonJSON(json.RawMessage(c.raw)); got != c.want {
+			t.Errorf("PythonJSON(%s) = %s, want %s", c.raw, got, c.want)
+		}
+	}
+	if got := PythonJSON(json.RawMessage(nil)); got != "null" {
+		t.Errorf("nil raw: %s", got)
+	}
+}
+
+func TestReservationSkipsNullResponseFormat(t *testing.T) {
+	call := TreatmentCall(makeCase(nil), makeTreatment(nil))
+	without := ReservationInputTokens(call, nil)
+	call.ResponseFormat = json.RawMessage(`null`)
+	if got := ReservationInputTokens(call, nil); got != without {
+		t.Errorf("null response format counted: %v vs %v", got, without)
+	}
+	call.ResponseFormat = json.RawMessage(`{"type":"json_object"}`)
+	if got := ReservationInputTokens(call, nil); got != without+float64(len(`{"type": "json_object"}`)) {
+		t.Errorf("json_object bound %v", got)
 	}
 }
 

@@ -214,9 +214,10 @@ func pyNumber(value float64) string {
 	return jsnum.String(value)
 }
 
-// PythonJSON is value as Python's json.dumps writes it by default. A Go map
-// has no key order, so its keys come out sorted; the bound measures only the
-// length, which order does not change.
+// PythonJSON is value as Python's json.dumps writes it by default. Raw JSON
+// (json.RawMessage) keeps its own key order, as the TypeScript's parsed
+// object does. A Go map has no key order, so its keys come out sorted; the
+// bound measures only the length, which order does not change.
 func PythonJSON(value any) string {
 	switch v := value.(type) {
 	case nil:
@@ -250,6 +251,27 @@ func PythonJSON(value any) string {
 			parts[i] = pyString(item)
 		}
 		return "[" + strings.Join(parts, ", ") + "]"
+	case json.RawMessage:
+		// Raw JSON, read as JSON.parse reads it: key order and duplicate keys
+		// as the source has them.
+		if len(strings.TrimSpace(string(v))) == 0 {
+			return "null"
+		}
+		decoded, err := providers.DecodeOrdered(v)
+		if err != nil {
+			return pyString(string(v))
+		}
+		return PythonJSON(decoded)
+	case *providers.OrderedObject:
+		if v == nil {
+			return "null"
+		}
+		keys := v.JSKeys()
+		parts := make([]string, len(keys))
+		for i, key := range keys {
+			parts[i] = pyString(key) + ": " + PythonJSON(v.Values[key])
+		}
+		return "{" + strings.Join(parts, ", ") + "}"
 	case map[string]any:
 		if v == nil {
 			return "null"
@@ -288,7 +310,7 @@ func ReservationInputTokens(call types.ReplayCall, productionInputTokens *float6
 	for _, message := range call.Messages {
 		bytes += len(message.Content)
 	}
-	if call.ResponseFormat != nil {
+	if providers.HasJSON(call.ResponseFormat) {
 		bytes += len(PythonJSON(call.ResponseFormat))
 	}
 	if call.ForcedTool != nil {

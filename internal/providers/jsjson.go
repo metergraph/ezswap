@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"math"
 	"sort"
 	"strconv"
@@ -27,11 +28,30 @@ func isJSSpace(r rune) bool {
 // jsTrim is String.prototype.trim.
 func jsTrim(s string) string { return strings.TrimFunc(s, isJSSpace) }
 
-// orderedObject is a JSON object as JSON.parse builds it: each key once, at
+// OrderedObject is a JSON object as JSON.parse builds it: each key once, at
 // the place it first appeared, holding the last value given for it.
-type orderedObject struct {
-	keys   []string
-	values map[string]any
+type OrderedObject struct {
+	Keys   []string
+	Values map[string]any
+}
+
+// JSKeys is the order JavaScript enumerates the object's keys: integer
+// indexes ascending, then the rest as they first appeared.
+func (o *OrderedObject) JSKeys() []string { return jsKeyOrder(o.Keys) }
+
+// DecodeOrdered reads one JSON value, objects as *OrderedObject, arrays as
+// []any, numbers as float64. Trailing data after the value is an error, as
+// in JSON.parse.
+func DecodeOrdered(raw []byte) (any, error) {
+	decoder := json.NewDecoder(bytes.NewReader(raw))
+	value, err := decodeOrdered(decoder)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := decoder.Token(); err != io.EOF {
+		return nil, fmt.Errorf("data after the JSON value")
+	}
+	return value, nil
 }
 
 // decodeOrdered reads one JSON value, keeping object key order.
@@ -44,7 +64,7 @@ func decodeOrdered(decoder *json.Decoder) (any, error) {
 	case json.Delim:
 		switch t {
 		case '{':
-			object := &orderedObject{values: map[string]any{}}
+			object := &OrderedObject{Values: map[string]any{}}
 			for decoder.More() {
 				keyToken, err := decoder.Token()
 				if err != nil {
@@ -58,10 +78,10 @@ func decodeOrdered(decoder *json.Decoder) (any, error) {
 				if err != nil {
 					return nil, err
 				}
-				if _, seen := object.values[key]; !seen {
-					object.keys = append(object.keys, key)
+				if _, seen := object.Values[key]; !seen {
+					object.Keys = append(object.Keys, key)
 				}
-				object.values[key] = value
+				object.Values[key] = value
 			}
 			if _, err := decoder.Token(); err != nil {
 				return nil, err
@@ -90,14 +110,13 @@ func decodeOrdered(decoder *json.Decoder) (any, error) {
 // orderedArguments is the first tool call's arguments object, read from the
 // reply's bytes and written as JSON.stringify writes it.
 func orderedArguments(raw []byte) (string, bool) {
-	decoder := json.NewDecoder(bytes.NewReader(bytes.TrimPrefix(raw, []byte("\xef\xbb\xbf"))))
-	value, err := decodeOrdered(decoder)
+	value, err := DecodeOrdered(bytes.TrimPrefix(raw, []byte("\xef\xbb\xbf")))
 	if err != nil {
 		return "", false
 	}
 	field := func(value any, key string) any {
-		if object, ok := value.(*orderedObject); ok {
-			return object.values[key]
+		if object, ok := value.(*OrderedObject); ok {
+			return object.Values[key]
 		}
 		return nil
 	}
@@ -108,7 +127,7 @@ func orderedArguments(raw []byte) (string, bool) {
 		return nil
 	}
 	args := field(field(index(field(field(index(field(value, "choices"), 0), "message"), "tool_calls"), 0), "function"), "arguments")
-	if _, ok := args.(*orderedObject); !ok {
+	if _, ok := args.(*OrderedObject); !ok {
 		return "", false
 	}
 	return jsonStringify(args), true
@@ -180,8 +199,8 @@ func writeJSON(b *strings.Builder, value any) {
 			writeJSON(b, item)
 		}
 		b.WriteByte(']')
-	case *orderedObject:
-		writeObject(b, jsKeyOrder(v.keys), v.values)
+	case *OrderedObject:
+		writeObject(b, jsKeyOrder(v.Keys), v.Values)
 	case map[string]any:
 		keys := make([]string, 0, len(v))
 		for key := range v {

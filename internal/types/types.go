@@ -12,7 +12,10 @@
 // files stay readable across versions. A nil pointer is JSON null.
 package types
 
-import "context"
+import (
+	"context"
+	"encoding/json"
+)
 
 // ---------------------------------------------------------------------------
 // Captured calls (adapter output)
@@ -32,7 +35,9 @@ type CapturedCall struct {
 	Model    *string `json:"model"`
 	// The request body in the provider's own shape (OpenAI chat or
 	// Responses, Anthropic Messages, Gemini), or the replay JSONL request, as
-	// decoded JSON (map[string]any, []any, string, float64, bool, nil).
+	// decoded JSON. Objects may be ordered (see cases/jsval) so that schemas
+	// and tool definitions keep production's key order; the value must have
+	// a JSON form.
 	Request  any              `json:"request"`
 	Response CapturedResponse `json:"response"`
 	// True when the source says or shows content was cut.
@@ -44,7 +49,8 @@ type CapturedCall struct {
 type CapturedResponse struct {
 	// Assistant text; nil when the source carried none.
 	Text *string `json:"text"`
-	// Provider-shaped tool calls, when any.
+	// Provider-shaped tool calls, when any. Objects may be ordered, as in
+	// CapturedCall.Request.
 	ToolCalls    []any   `json:"toolCalls"`
 	FinishReason *string `json:"finishReason"`
 	Refusal      bool    `json:"refusal"`
@@ -73,8 +79,9 @@ type Message struct {
 type ForcedTool struct {
 	Name        string  `json:"name"`
 	Description *string `json:"description"`
-	// JSON Schema of the tool's arguments.
-	Parameters map[string]any `json:"parameters"`
+	// JSON Schema of the tool's arguments, as production sent it: raw JSON
+	// so the provider receives the properties in production's order.
+	Parameters json.RawMessage `json:"parameters"`
 }
 
 // CallParams are the production settings a replay can carry.
@@ -113,10 +120,12 @@ type Case struct {
 	System *string `json:"system"`
 	// Text turns, same-role turns merged; the last one is from the user.
 	Messages []Message `json:"messages"`
-	// OpenAI chat `response_format`, translated from any captured shape.
-	ResponseFormat map[string]any `json:"responseFormat"`
-	ForcedTool     *ForcedTool    `json:"forcedTool"`
-	Params         CallParams     `json:"params"`
+	// OpenAI chat `response_format`, translated from any captured shape, as
+	// raw JSON in production's key order (models write fields in schema
+	// order). Nil, written as null, when there is none.
+	ResponseFormat json.RawMessage `json:"responseFormat"`
+	ForcedTool     *ForcedTool     `json:"forcedTool"`
+	Params         CallParams      `json:"params"`
 	// Did production use web search on this call?
 	WebSearch bool `json:"webSearch"`
 	// Production's output: text, or a single tool call's JSON arguments.
@@ -145,16 +154,16 @@ type CaseOutput struct {
 // nothing else.
 type ReplayCall struct {
 	// Model id as the endpoint names it, e.g. "openai/gpt-5-mini".
-	Model           string         `json:"model"`
-	System          *string        `json:"system"`
-	Messages        []Message      `json:"messages"`
-	MaxTokens       float64        `json:"maxTokens"`
-	Temperature     *float64       `json:"temperature"`
-	TopP            *float64       `json:"topP"`
-	Stop            []string       `json:"stop"`
-	ReasoningEffort *string        `json:"reasoningEffort"`
-	ResponseFormat  map[string]any `json:"responseFormat"`
-	ForcedTool      *ForcedTool    `json:"forcedTool"`
+	Model           string          `json:"model"`
+	System          *string         `json:"system"`
+	Messages        []Message       `json:"messages"`
+	MaxTokens       float64         `json:"maxTokens"`
+	Temperature     *float64        `json:"temperature"`
+	TopP            *float64        `json:"topP"`
+	Stop            []string        `json:"stop"`
+	ReasoningEffort *string         `json:"reasoningEffort"`
+	ResponseFormat  json.RawMessage `json:"responseFormat"`
+	ForcedTool      *ForcedTool     `json:"forcedTool"`
 }
 
 type ReplayFlag string

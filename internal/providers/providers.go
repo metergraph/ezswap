@@ -434,7 +434,7 @@ func (p *OpenAICompatibleProvider) complete(ctx context.Context, call types.Repl
 		// A refused request was never billed. When the refusal names the
 		// response format the call carried, try once without it.
 		var failed *CallFailed
-		if !errors.As(err, &failed) || failed.Code != CodeResponseFormatUnsupported || call.ResponseFormat == nil {
+		if !errors.As(err, &failed) || failed.Code != CodeResponseFormatUnsupported || !HasJSON(call.ResponseFormat) {
 			return failure(err, flags)
 		}
 		flags.add(types.FlagResponseFormatDropped)

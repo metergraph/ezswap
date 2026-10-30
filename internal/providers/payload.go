@@ -3,6 +3,8 @@ package providers
 // The OpenAI chat-completions request for one replay, and the reading of its reply.
 
 import (
+	"bytes"
+	"encoding/json"
 	"math"
 	"strings"
 
@@ -32,10 +34,16 @@ type ForcedToolRequestBody struct {
 // The schema goes as strict: false, since a schema one provider accepts
 // another's strict mode may reject. The key order is fixed: the upper bound
 // measures this JSON, and conformance/estimate.json pins the bytes. (A Go map
-// has no key order; the bound measures only the length, which order does not
-// change.)
+// has no key order, so the wrapper's keys come out sorted; the bound measures
+// only the length, which order does not change. The schema itself is raw JSON
+// and keeps its own order.)
 func ForcedToolRequest(tool types.ForcedTool) ForcedToolRequestBody {
-	fn := map[string]any{"name": tool.Name, "parameters": tool.Parameters, "strict": false}
+	// The parameters go verbatim, in the schema's own key order; nil is JSON null.
+	parameters := json.RawMessage("null")
+	if len(bytes.TrimSpace(tool.Parameters)) > 0 {
+		parameters = cloneJSON(tool.Parameters)
+	}
+	fn := map[string]any{"name": tool.Name, "parameters": parameters, "strict": false}
 	if tool.Description != nil {
 		fn["description"] = *tool.Description
 	}
@@ -78,8 +86,8 @@ func BuildPayload(call types.ReplayCall, options PayloadOptions) map[string]any 
 	if call.ReasoningEffort != nil && *call.ReasoningEffort != "" {
 		body["reasoning_effort"] = *call.ReasoningEffort
 	}
-	if options.ResponseFormat && call.ResponseFormat != nil {
-		body["response_format"] = deepCopy(call.ResponseFormat)
+	if options.ResponseFormat && HasJSON(call.ResponseFormat) {
+		body["response_format"] = cloneJSON(call.ResponseFormat)
 	}
 	if call.ForcedTool != nil {
 		forced := ForcedToolRequest(*call.ForcedTool)
@@ -94,30 +102,19 @@ func BuildPayload(call types.ReplayCall, options PayloadOptions) map[string]any 
 	return body
 }
 
-// deepCopy is structuredClone for decoded JSON.
-func deepCopy(value any) any {
-	switch v := value.(type) {
-	case map[string]any:
-		if v == nil {
-			return v
-		}
-		out := make(map[string]any, len(v))
-		for key, item := range v {
-			out[key] = deepCopy(item)
-		}
-		return out
-	case []any:
-		if v == nil {
-			return v
-		}
-		out := make([]any, len(v))
-		for i, item := range v {
-			out[i] = deepCopy(item)
-		}
-		return out
-	default:
-		return v
-	}
+// HasJSON says a raw JSON value is there: not nil, empty or a JSON null.
+// The TypeScript tests the decoded value's truthiness; every JSON object and
+// array is truthy.
+func HasJSON(raw json.RawMessage) bool {
+	text := bytes.TrimSpace(raw)
+	return len(text) > 0 && !bytes.Equal(text, []byte("null"))
+}
+
+// cloneJSON is structuredClone for raw JSON: a copy of the bytes, so the
+// request body never shares the case's buffer. It embeds as-is, keeping the
+// source's key order.
+func cloneJSON(raw json.RawMessage) json.RawMessage {
+	return append(json.RawMessage(nil), raw...)
 }
 
 // ---------------------------------------------------------------------------

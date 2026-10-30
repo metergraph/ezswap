@@ -1,6 +1,7 @@
 package providers
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -104,6 +105,7 @@ type script struct {
 	mu      sync.Mutex
 	answers []answer
 	sent    []sent
+	raw     []string
 }
 
 func newScript(answers ...answer) *script { return &script{answers: answers} }
@@ -114,6 +116,7 @@ func (s *script) RoundTrip(request *http.Request) (*http.Response, error) {
 	_ = json.Unmarshal(data, &body)
 	s.mu.Lock()
 	s.sent = append(s.sent, sent{url: request.URL.String(), headers: request.Header.Clone(), body: body})
+	s.raw = append(s.raw, string(data))
 	if len(s.answers) == 0 {
 		s.mu.Unlock()
 		return nil, errors.New("unexpected request")
@@ -340,8 +343,8 @@ func TestPayloadPutsSystemFirstAndCarriesEverySetField(t *testing.T) {
 		c.TopP = num(0.9)
 		c.Stop = []string{"END"}
 		c.ReasoningEffort = str("high")
-		c.ResponseFormat = map[string]any{"type": "json_object"}
-		c.ForcedTool = &types.ForcedTool{Name: "record", Description: str("Record it"), Parameters: map[string]any{"type": "object"}}
+		c.ResponseFormat = json.RawMessage(`{"type": "json_object"}`)
+		c.ForcedTool = &types.ForcedTool{Name: "record", Description: str("Record it"), Parameters: json.RawMessage(`{"type": "object"}`)}
 	}), PayloadOptions{Temperature: true, ResponseFormat: true})
 	want := map[string]any{
 		"model": "openai/gpt-6-luna",
@@ -372,7 +375,7 @@ func TestPayloadLeavesOutUnsetOrDropped(t *testing.T) {
 		c.System = nil
 		c.Temperature = num(0.3)
 		c.Stop = []string{}
-		c.ResponseFormat = map[string]any{"type": "json_object"}
+		c.ResponseFormat = json.RawMessage(`{"type": "json_object"}`)
 	}), PayloadOptions{Extra: map[string]any{"model": "ignored", "usage": map[string]any{"include": true}}})
 	keys := make([]string, 0, len(body))
 	for key := range body {
@@ -384,8 +387,55 @@ func TestPayloadLeavesOutUnsetOrDropped(t *testing.T) {
 	}
 }
 
+func TestPayloadKeepsSchemaPropertyOrder(t *testing.T) {
+	schema := `{"type": "object", "properties": {"zeta": {"type": "string"}, "alpha": {"type": "integer"}, "mid": {"type": "boolean"}}, "required": ["zeta", "alpha"]}`
+	format := `{"type": "json_schema", "json_schema": {"name": "answer", "strict": true, "schema": ` + schema + `}}`
+	c := call(func(c *types.ReplayCall) {
+		c.ResponseFormat = json.RawMessage(format)
+		c.ForcedTool = &types.ForcedTool{Name: "record", Parameters: json.RawMessage(schema)}
+	})
+	data, err := json.Marshal(BuildPayload(c, PayloadOptions{ResponseFormat: true}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	compact := func(text string) string {
+		var b bytes.Buffer
+		if err := json.Compact(&b, []byte(text)); err != nil {
+			t.Fatal(err)
+		}
+		return b.String()
+	}
+	body := string(data)
+	if !strings.Contains(body, `"response_format":`+compact(format)) {
+		t.Errorf("response_format not verbatim: %s", body)
+	}
+	if !strings.Contains(body, `"parameters":`+compact(schema)) {
+		t.Errorf("parameters not verbatim: %s", body)
+	}
+	// The body on the wire, through the provider, carries the same order.
+	s := newScript(okReply())
+	h := provider(t, s, nil)
+	complete(h, c)
+	if !strings.Contains(s.raw[0], `"properties":{"zeta":{"type":"string"},"alpha":{"type":"integer"},"mid":{"type":"boolean"}}`) {
+		t.Errorf("wire body lost the order: %s", s.raw[0])
+	}
+	// Dropping the response format leaves the case's bytes untouched.
+	if string(c.ResponseFormat) != format {
+		t.Error("the case's response format changed")
+	}
+}
+
+func TestPayloadOmitsNullResponseFormat(t *testing.T) {
+	for _, raw := range []json.RawMessage{nil, json.RawMessage(``), json.RawMessage(` null `)} {
+		body := BuildPayload(call(func(c *types.ReplayCall) { c.ResponseFormat = raw }), PayloadOptions{ResponseFormat: true})
+		if _, has := body["response_format"]; has {
+			t.Errorf("%q: response_format sent", raw)
+		}
+	}
+}
+
 func TestForcedToolWithoutDescriptionHasNone(t *testing.T) {
-	forced := ForcedToolRequest(types.ForcedTool{Name: "f", Parameters: map[string]any{}})
+	forced := ForcedToolRequest(types.ForcedTool{Name: "f", Parameters: json.RawMessage(`{}`)})
 	fn := forced.Tool["function"].(map[string]any)
 	if _, has := fn["description"]; has || len(fn) != 3 {
 		t.Errorf("function %v", fn)
@@ -738,7 +788,7 @@ func TestTemperatureRefusedTwiceFailsAsRefused(t *testing.T) {
 func TestResponseFormatRefusalDropsItOnce(t *testing.T) {
 	for _, detail := range []string{"response_format is not supported", "Invalid json_schema", "This model does not support JSON schema"} {
 		s := newScript(status(400, detail, nil), okReply())
-		outcome := complete(provider(t, s, nil), call(func(c *types.ReplayCall) { c.ResponseFormat = map[string]any{"type": "json_schema"} }))
+		outcome := complete(provider(t, s, nil), call(func(c *types.ReplayCall) { c.ResponseFormat = json.RawMessage(`{"type": "json_schema"}`) }))
 		if outcome.Status != "ok" {
 			t.Errorf("%s: %s", detail, mustJSON(outcome))
 		}
@@ -753,12 +803,12 @@ func TestResponseFormatRefusalDropsItOnce(t *testing.T) {
 
 func TestRefusalNotNamingResponseFormatKeepsItAndFails(t *testing.T) {
 	s := newScript(status(400, "context length exceeded", nil))
-	outcome := complete(provider(t, s, nil), call(func(c *types.ReplayCall) { c.ResponseFormat = map[string]any{"type": "json_schema"} }))
+	outcome := complete(provider(t, s, nil), call(func(c *types.ReplayCall) { c.ResponseFormat = json.RawMessage(`{"type": "json_schema"}`) }))
 	if errorCode(outcome) != "provider_refused" || len(s.sent) != 1 {
 		t.Errorf("outcome %s", mustJSON(outcome))
 	}
 	auth := complete(provider(t, newScript(status(401, "invalid key for response_format", nil)), nil),
-		call(func(c *types.ReplayCall) { c.ResponseFormat = map[string]any{"type": "json_object"} }))
+		call(func(c *types.ReplayCall) { c.ResponseFormat = json.RawMessage(`{"type": "json_object"}`) }))
 	if errorCode(auth) != "provider_refused" {
 		t.Errorf("auth %s", mustJSON(auth))
 	}
@@ -774,7 +824,7 @@ func TestBothFallbacksCompose(t *testing.T) {
 	s := newScript(status(400, "temperature unsupported", nil), status(400, "response_format unsupported", nil), okReply())
 	outcome := complete(provider(t, s, nil), call(func(c *types.ReplayCall) {
 		c.Temperature = num(0.5)
-		c.ResponseFormat = map[string]any{"type": "json_object"}
+		c.ResponseFormat = json.RawMessage(`{"type": "json_object"}`)
 	}))
 	flags := append([]types.ReplayFlag(nil), outcome.Flags...)
 	sort.Slice(flags, func(i, j int) bool { return flags[i] < flags[j] })
