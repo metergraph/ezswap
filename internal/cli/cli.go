@@ -17,6 +17,7 @@ import (
 	"io/fs"
 	"net/http"
 	"os"
+	"runtime/debug"
 	"slices"
 	"strconv"
 	"strings"
@@ -34,8 +35,18 @@ import (
 
 // Version is the tool's version: printed by --version, recorded in every
 // run file (so it reaches the hosted link's utm_campaign). GoReleaser sets
-// it with -X github.com/metergraph/replay/internal/cli.Version=...
+// it with -X github.com/metergraph/replay/internal/cli.Version=...; a
+// `go install ...@vX.Y.Z` build takes it from the module version instead.
 var Version = "dev"
+
+func init() {
+	if Version != "dev" {
+		return
+	}
+	if info, ok := debug.ReadBuildInfo(); ok && strings.HasPrefix(info.Main.Version, "v") {
+		Version = strings.TrimPrefix(info.Main.Version, "v")
+	}
+}
 
 // Exit codes.
 const (
