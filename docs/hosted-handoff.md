@@ -1,10 +1,11 @@
 # The Metergraph link
 
 Replay sends no telemetry. The only way a local run reaches Metergraph is a
-link the user chooses to open: the "Keep this comparison running on live
-traffic" box at the end of the terminal report (printed by `run`, `demo` and
-`report`). It is built by `hostedLink(run, "cli")` in `src/report/link.ts`.
-Metergraph's hosted product can read the setup it carries.
+link the user chooses to open: the "Keep this running on live traffic" line
+at the end of the terminal report (printed by `run`, `demo` and `report`, and
+shown in the explorer). It is built by `link.HostedLink` in
+`internal/report/link`. Metergraph's hosted product can read the setup it
+carries.
 
 ## The link
 
@@ -62,15 +63,10 @@ reach it. In particular it never carries:
 
 ## Decoding it
 
-`decodeSetup(fragment)` in `src/report/link.ts` decodes the payload:
+`link.DecodeSetup` in `internal/report/link` decodes the payload in Go. It
+accepts `#setup=...`, `setup=...` or the bare payload.
 
-```ts
-import { decodeSetup } from "./src/report/link.ts";
-
-const setup = decodeSetup(location.hash); // accepts "#setup=...", "setup=..." or the bare payload
-```
-
-A browser without `Buffer` decodes it with:
+A browser decodes it with:
 
 ```js
 const b64 = location.hash.replace(/^#setup=/, "").replace(/-/g, "+").replace(/_/g, "/");

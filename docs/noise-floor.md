@@ -30,13 +30,14 @@ The floor sits beside each treatment's figure, in the same terms:
   it, and its cost reflects its own caching. A replay is timed and priced
   the same way for every column.
 
-By default that is all: the figures are placed side by side and the reader
-compares them.
+The figures are placed side by side and the reader compares them. The
+printed report adds one mark: a `*` on a treatment's figure that is further
+from production than production is from itself (beyond noise, below).
 
 ## Within-noise labels (opt-in)
 
-With labels turned on, each statistic and tracked field also gets one of
-these labels for each treatment:
+With `--labels`, the explorer's tables also give each statistic and tracked
+field one of these labels for each treatment:
 
 | Label | Meaning |
 |---|---|

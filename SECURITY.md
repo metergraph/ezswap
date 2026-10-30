@@ -36,4 +36,7 @@ calls model endpoints with your keys. It is designed to keep these boundaries:
   costs or statistics. See [the Metergraph link](docs/hosted-handoff.md).
 - **`run.json` holds your trace content.** It contains the sampled prompts and
   every model's output, so treat it like the trace file it came from.
-- **No runtime dependencies.**
+- **Few dependencies, no install scripts.** The binary is statically built
+  Go; its only third-party code is the Charm terminal libraries. The npm
+  package is a small launcher that runs the binary from a per-platform
+  package; it has no install script and downloads nothing.

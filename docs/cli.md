@@ -1,11 +1,14 @@
 # Command line
 
 ```sh
-npx metergraph-replay demo
-npx metergraph-replay estimate traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5
-npx metergraph-replay run traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5 --budget 2.00
-npx metergraph-replay report replay-out/run.json
+metergraph-replay demo
+metergraph-replay estimate traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5
+metergraph-replay run traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5 --budget 2.00
+metergraph-replay report replay-out/run.json
 ```
+
+Installed from npm, prefix each with `npx` (`npx metergraph-replay demo`).
+The README lists every way to install it.
 
 | Command | What it does |
 |---|---|
@@ -61,7 +64,7 @@ report or the terminal. A run records an endpoint by its preset name or host.
 | `--budget USD` | 1.00 | The most the run may spend. |
 | `--monthly-calls N` | from the file | Calls a month the workload makes, for the monthly cost projection. Without it, the projection uses the file's calls a day when the file spans at least a day. |
 | `--no-noise-floor` | off | Skip the two replays of production's model. |
-| `--labels` | off | Within-noise labels in the report. |
+| `--labels` | off | Within-noise badges in the explorer's tables. The printed report marks a figure beyond the noise floor with `*` either way. |
 | `--allow-no-search` | off | Replay calls that searched the web, without search. |
 | `--allow-unpriced` | off | Run models the price catalog does not know. |
 | `--adapter NAME` | detected | `replay-jsonl`, `raw`, `langfuse` or `otel`. See [trace formats](trace-format.md). |
@@ -78,28 +81,35 @@ report or the terminal. A run records an endpoint by its preset name or host.
 ## The report
 
 `run` and `demo` print the report; `report <run.json>` explores it. The
-report fits the terminal's width (80 to 140 columns; wider terminals get the
-140-column layout) and never wraps a box. From the top:
+report fits the terminal's width (40 to 140 columns, 100 when the width is
+unknown). It answers first, from the top:
 
-1. The headline question, its one-sentence answer, and the run's sample,
-   source, production model, spend and price catalog.
-2. **Cost**: a bar per arm scaled to cost per call, the change against
-   production's model replayed, and the monthly projection when the call
-   volume is known.
-3. **Output signals**: JSON parses, same keys, empty or refused, cut off,
-   output length and errors, each with its change and production's own gap.
-4. **Tracked fields**: agreement with production per arm, with production's
-   agreement with itself ticked on the same scale (`┆`), and core's sentence.
-5. **Latency**: the median and the 10th to 90th percentile per arm on one axis.
-6. **Calls that differ**: up to five, with the changed field values.
-7. **Not replayable**: counts by reason, with how to fix each.
-8. What the noise floor means, and the link to keep the comparison running
-   on live traffic.
+1. One line: how many of production's calls were replayed, the trace file,
+   the run's date and what it spent (with the budget).
+2. One table with a column for production, `itself` (production's model
+   replayed against itself, the noise floor) and each model tried, labelled
+   `A`, `B`, ...:
+   - **COST**: per month, when the call volume is known, and per call.
+   - **QUALITY**: agreement with production on each tracked field, then
+     output signals such as JSON parses and cut off.
+   - **SPEED**: median latency.
 
-With `--labels`, figures carry badges: `(within noise)`, `[beyond noise ↑]`,
-`(too few calls)`. Colour marks which arm a figure belongs to (production,
-the treatments, production against itself); it never marks a figure as good
-or bad.
+   A `*` marks a figure further from production than production is from
+   itself.
+3. **WHAT CHANGED**: the calls whose tracked fields changed, with the old and
+   new values, up to eight, then how many more.
+4. How many calls were not replayable, and the most common reason.
+5. A footer: what `itself` means, the command to explore every call, and the
+   link to keep the comparison running on live traffic (shown as
+   `metergraph.dev/replay` where the terminal supports links).
+
+`--explain` adds NOTES after it: each model's settings and endpoint, how to
+read `itself`, what `production` stands for in cost and latency, how the
+monthly projection and cost per call were worked out, and how to fix each
+reason calls were not replayed.
+
+Colour marks which arm a figure belongs to (production, the treatments,
+production against itself); it never marks a figure as good or bad.
 
 Captured text (prompts, outputs, errors) is shown with control characters
 made visible: an escape sequence in a model's output prints as `^[[2J`
@@ -170,8 +180,10 @@ With `--json` every command prints one object with `ok`, `exitCode` and
 ## Development
 
 ```sh
-npm run dev -- demo --out /tmp/replay-demo   # runs src/ directly
-npm run build && node bin/metergraph-replay.js demo
-UPDATE_GOLDEN=1 npm test                     # accepts changed report output in test/golden/
-npm run build:demo                           # regenerates demo/traces.jsonl and demo/run.json
+go run ./cmd/metergraph-replay demo --out /tmp/replay-demo   # run from source
+go test ./...
+go test ./internal/report -update   # accepts changed report output in internal/report/testdata/golden
+go run ./cmd/build-demo             # regenerates demo/traces.jsonl and demo/run.json
 ```
+
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for the rest.
