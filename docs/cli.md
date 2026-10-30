@@ -67,7 +67,8 @@ report or the terminal. A run records an endpoint by its preset name or host.
 | `--adapter NAME` | detected | `replay-jsonl`, `raw`, `langfuse` or `otel`. See [trace formats](trace-format.md). |
 | `--out DIR` | `./replay-out` | Where `run.json` goes (`demo` and `run`). |
 | `--explore` | off | `demo`: open the explorer instead of printing the report. |
-| `--no-interactive` | off | `report`: print the report instead of opening the explorer. |
+| `--no-interactive` | off | Print instead of drawing: `report` prints the report instead of opening the explorer, and `run` shows plain progress. Also the default when `CI` is set. |
+| `--explain` | off | Print the report's notes after it: how to read the `itself` column, how cost is estimated, why calls were not replayed. `report --explain` prints rather than opening the explorer. |
 | `--ascii` | detected | Plain ASCII: no box drawing or block characters. On by default when stdout is not a terminal or `TERM` is `dumb`. |
 | `--color`, `--no-color` | detected | Colour on or off. On by default in a terminal, unless `NO_COLOR` is set. |
 | `--concurrency N` | 4 | Calls in flight at once. |
