@@ -3,7 +3,7 @@
 // could not be replayed) and the detail of one call, drawn in the terminal
 // with Bubble Tea.
 //
-// It is a port of src/report/explore. The state and its reducer (state.go),
+// The state and its reducer (state.go),
 // what each tab shows (content.go) and the frame (screen.go) are pure: the
 // same state and size always draw the same lines. program.go is the thin
 // Bubble Tea layer that owns the terminal. The Summary tab shows

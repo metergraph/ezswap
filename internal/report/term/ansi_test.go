@@ -8,8 +8,9 @@ import (
 	"github.com/charmbracelet/colorprofile"
 )
 
-// What the TypeScript paint(true, truecolor) wrote around "x", per style.
-var tsTruecolor = map[string]string{
+// What colour on a truecolor terminal writes around "x", per style (frozen
+// from the earlier TypeScript version).
+var wantTruecolor = map[string]string{
 	"bold": "\x1b[1mx\x1b[0m", "dim": "\x1b[2mx\x1b[0m", "italic": "\x1b[3mx\x1b[0m",
 	"underline": "\x1b[4mx\x1b[0m", "reverse": "\x1b[7mx\x1b[0m",
 	"prod": "\x1b[38;2;177;177;176mx\x1b[0m", "treat": "\x1b[38;2;96;172;152mx\x1b[0m",
@@ -23,7 +24,7 @@ var tsTruecolor = map[string]string{
 }
 
 // And with the 256-colour palette.
-var ts256 = map[string]string{
+var want256 = map[string]string{
 	"prod": "\x1b[38;5;249mx\x1b[0m", "treat": "\x1b[38;5;72mx\x1b[0m", "floor": "\x1b[38;5;59mx\x1b[0m",
 	"line": "\x1b[38;5;59mx\x1b[0m", "brand": "\x1b[1;38;5;72mx\x1b[0m",
 	"highlight": "\x1b[1;38;5;233;48;5;191mx\x1b[0m", "tab": "\x1b[1;38;5;231;48;5;23mx\x1b[0m",
@@ -45,15 +46,15 @@ var anyEscape = regexp.MustCompile(`\x1b[^m]*m?`)
 // underline twice, as on and as the single style.
 const lipglossUnderline = "\x1b[4;4mx\x1b[0m"
 
-func TestPaletteMatchesTheTypeScriptInTruecolorAnd256(t *testing.T) {
-	tsTruecolor["underline"] = lipglossUnderline
+func TestPaletteInTruecolorAnd256(t *testing.T) {
+	wantTruecolor["underline"] = lipglossUnderline
 	for name, fn := range styles(NewPaint(colorprofile.TrueColor)) {
-		eq(t, fn("x"), tsTruecolor[name], "truecolor", name)
+		eq(t, fn("x"), wantTruecolor[name], "truecolor", name)
 	}
 	for name, fn := range styles(NewPaint(colorprofile.ANSI256)) {
-		want, ok := ts256[name]
+		want, ok := want256[name]
 		if !ok {
-			want = tsTruecolor[name] // attribute-only styles do not change
+			want = wantTruecolor[name] // attribute-only styles do not change
 		}
 		eq(t, fn("x"), want, "256", name)
 	}
@@ -100,7 +101,6 @@ func TestColourOffIsTheIdentity(t *testing.T) {
 }
 
 func TestNestedStylesReopenTheOuterAfterAnInnerReset(t *testing.T) {
-	// As the TypeScript wrote it.
 	eq(t, p.Bold(p.Treat("a")+"b"), "\x1b[1m\x1b[38;2;96;172;152ma\x1b[0m\x1b[1mb\x1b[0m")
 	eq(t, p.Bold(""), "")
 	eq(t, RoleColor(p, RoleProduction)("x"), p.Prod("x"))
@@ -132,7 +132,7 @@ func TestHyperlinkIsOSC8WithST(t *testing.T) {
 	link := Hyperlink(url, "metergraph.dev/replay")
 	eq(t, link, "\x1b]8;;"+url+"\x1b\\metergraph.dev/replay\x1b]8;;\x1b\\")
 	eq(t, Width(link), len("metergraph.dev/replay"))
-	// As in the TypeScript, a cut stops before the closing OSC 8: the report
+	// A cut stops before the closing OSC 8: the report
 	// never cuts its link (the link line is exempt from the width limit).
 	eq(t, Truncate(link, 10), "\x1b]8;;"+url+"\x1b\\metergrap\x1b[0m…")
 	if !strings.HasPrefix(link, "\x1b]8;;") {
@@ -160,7 +160,7 @@ func TestDetectProfile(t *testing.T) {
 		{"256 from TERM", true, env("TERM=xterm-256color"), ColorAuto, colorprofile.ANSI256},
 		{"16 from TERM", true, env("TERM=xterm"), ColorAuto, colorprofile.ANSI},
 		{"--color, piped, NO_COLOR", false, env("TERM=xterm-256color", "NO_COLOR=1"), ColorAlways, colorprofile.ANSI256},
-		{"--color, no TERM: the TypeScript's 256", false, env(), ColorAlways, colorprofile.ANSI256},
+		{"--color, no TERM: 256", false, env(), ColorAlways, colorprofile.ANSI256},
 		{"--color, dumb", false, env("TERM=dumb"), ColorAlways, colorprofile.ANSI256},
 	}
 	for _, c := range cases {

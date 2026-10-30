@@ -20,6 +20,6 @@ implementation.
 | `pricing.json` | the cost of a call from the price catalog: aliases, cache-inclusive and exclusive input, long context, effective dates |
 | `estimate.json` | the run estimate and each call's upper-bound reservation |
 
-The tests that read them are `test/core-conformance.test.ts`,
-`test/core-page.test.ts`, `test/pricing-catalog.test.ts` and
-`test/pricing-estimate.test.ts`.
+The tests that read them are in `internal/core` (`conformance_test.go`,
+`page_test.go` and others) and `internal/pricing` (`catalog_test.go` and
+`estimate_test.go`).

@@ -182,7 +182,7 @@ func mostCommon(values []*string) *string {
 // BuildViewOptions are buildView's options.
 type BuildViewOptions struct {
 	// ExcludeCases leaves out `cases` and `fields`, and the floor's per-case
-	// lists (the TypeScript includeCases: false).
+	// lists.
 	ExcludeCases bool
 }
 

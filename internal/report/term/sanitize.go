@@ -98,8 +98,7 @@ func CleanLine(text string) string {
 }
 
 // ToAscii keeps printable ASCII only: the report's own glyphs mapped to
-// look-alikes, anything else "?". Like the TypeScript, which matched UTF-16
-// code units, a character outside the Basic Multilingual Plane (most emoji)
+// look-alikes, anything else "?". As when it matched UTF-16 code units, a character outside the Basic Multilingual Plane (most emoji)
 // becomes "??". ESC and newlines pass through.
 func ToAscii(text string) string {
 	var b strings.Builder
@@ -149,8 +148,7 @@ func ToAscii(text string) string {
 // CleanDeep is a copy of value with every string cleaned (and made ASCII
 // when asked). Numbers, booleans and structure are untouched, so figures
 // read the same. It walks structs (exported fields), pointers, slices,
-// arrays, interfaces and map values; map keys are left as they are, as the
-// TypeScript left object keys. Shared or cyclic pointers stay shared in the
+// arrays, interfaces and map values; map keys are left as they are. Shared or cyclic pointers stay shared in the
 // copy.
 func CleanDeep[T any](value T, ascii bool) T {
 	c := &deepCleaner{ascii: ascii, seen: map[seenKey]reflect.Value{}}

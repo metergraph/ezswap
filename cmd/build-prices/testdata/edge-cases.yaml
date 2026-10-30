@@ -1,0 +1,32 @@
+version: 2026-10-06
+currency: USD
+models:
+  - canonical_id: 123
+    publisher: "  OpenAI "
+    aliases:
+      - &base {provider: x, alias: "a\"b\\c\td", channel: c, rules: {"2": b, "10": a, z: 1e-7, y: 0x1F, w: .inf, v: ~, u: [1, 2.50, true, "é\u0001"]}}
+      - <<: [*base, {extra: 1, provider: other}]
+        alias: override
+        price_region: [eu, [us, ap], 5]
+        effective_from: 2026-01-01
+      - {provider: p, alias: q, channel: r, price_region: 0o17}
+    prices:
+      - &p1
+        channel: api
+        region: ""
+        input_per_mtok: 0.10
+        output_per_mtok: 1e21
+        cache_read_per_mtok: "0.050"
+        cache_write_5m_per_mtok: 1.5e-7
+        batch_input_per_mtok: 12345678901234567890
+        rules: {}
+        source_url: https://example.com
+      - <<: *p1
+        input_per_mtok: 3
+        region: eu
+        rules: {long_context: {threshold: 272000, input_multiplier: 2}}
+  - canonical_id: m2
+    publisher: null
+    prices:
+      - channel: api
+        effective_to: 2027-01-01

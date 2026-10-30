@@ -15,8 +15,8 @@ import (
 	"github.com/metergraph/replay/internal/types"
 )
 
-// reasonOrder is the order the TypeScript declared the reasons in, which
-// breaks ties between equal counts.
+// reasonOrder is the reasons' declared order, which breaks ties between
+// equal counts.
 var reasonOrder = []types.NotReplayableReason{
 	types.ContentUnavailable,
 	types.ContentTruncated,

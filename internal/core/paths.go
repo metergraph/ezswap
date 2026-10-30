@@ -7,8 +7,8 @@ package core
 // ParsePath/ValueAt, which the field comparisons use (JavaScript rules) and
 // which also takes `[]` for every item of a list.
 //
-// The TypeScript version reads both with sticky regular expressions that use
-// lookahead and back-references; RE2 has neither, so each is a small scanner
+// Both grammars need lookahead and back-references, which RE2 lacks, so each
+// is a small scanner
 // here that accepts exactly what its expression accepts.
 
 import (
@@ -110,8 +110,8 @@ func ParseJSONPath(path string) ([]PathToken, error) {
 	return tokens, nil
 }
 
-// mustParseJSONPath is ParseJSONPath for a path known to read, or a path the
-// TypeScript version let throw.
+// mustParseJSONPath is ParseJSONPath for a path known to read; any other
+// path panics.
 func mustParseJSONPath(path string) []PathToken {
 	tokens, err := ParseJSONPath(path)
 	if err != nil {

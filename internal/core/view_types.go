@@ -4,8 +4,8 @@ package core
 // here from a run file. Keys are snake_case because the shape is shared with
 // Metergraph's hosted product and pinned by the fixtures in conformance/.
 //
-// A nil pointer is JSON null; a field the TypeScript version leaves out when
-// it has nothing is `omitempty`.
+// A nil pointer is JSON null; a field left out when it has nothing is
+// `omitempty`.
 
 import (
 	"encoding/json"
@@ -245,7 +245,7 @@ type FloorErrors struct {
 }
 
 // NoiseFloor is production's model against itself: A2 read against A1 on
-// the same cases (the TypeScript NoiseFloorView type).
+// the same cases.
 type NoiseFloor struct {
 	Replays       *float64 `json:"replays"`
 	GatewayModels []string `json:"gateway_models"`

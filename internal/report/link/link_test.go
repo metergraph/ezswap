@@ -16,10 +16,10 @@ import (
 )
 
 // A synthetic run: 24 support-ticket calls at example.com, two treatments,
-// a noise floor (the TypeScript tests' fixture).
+// a noise floor (testdata/report-run.json in the report package).
 func fixture(t *testing.T) *types.RunFile {
 	t.Helper()
-	raw, err := os.ReadFile("../../../test/fixtures/report-run.json")
+	raw, err := os.ReadFile("../testdata/report-run.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -32,7 +32,7 @@ func fixture(t *testing.T) *types.RunFile {
 
 const hostile = `</script><script>alert("x")</script><img src=x onerror="alert('y')"> &amp; ' " <!-- ` + " "
 
-// Ported from test/report.test.ts: hostile strings in the places a run can
+// Hostile strings in the places a run can
 // carry them.
 func hostileRun(t *testing.T) *types.RunFile {
 	run := fixture(t)
@@ -126,8 +126,9 @@ func TestTheHostedLinkCarriesUTMParametersAndOnlyTheSetupInTheFragment(t *testin
 	}
 }
 
-// The links the TypeScript hostedLink wrote for the same runs.
-func TestTheHostedLinkIsByteForByteTheTypeScripts(t *testing.T) {
+// Frozen links, written by the earlier TypeScript implementation for the
+// same runs: the hosted page decodes exactly this form.
+func TestTheHostedLinkIsByteForByteStable(t *testing.T) {
 	run := fixture(t)
 	eq(t, HostedLink(run, MediumCLI), "https://www.metergraph.dev/replay?utm_source=replay&utm_medium=cli&utm_campaign=0.1.0#setup=eyJ2IjoxLCJ0cmVhdG1lbnRzIjpbeyJtb2RlbCI6Im9wZW5haS9ncHQtNS1taW5pIiwic2V0dGluZ3MiOnsidGVtcGVyYXR1cmUiOm51bGwsIm1heFRva2VucyI6bnVsbCwicmVhc29uaW5nRWZmb3J0IjpudWxsfX0seyJtb2RlbCI6Imdvb2dsZS9nZW1pbmktMy44LWZsYXNoIiwic2V0dGluZ3MiOnsidGVtcGVyYXR1cmUiOjAsIm1heFRva2VucyI6MTAyNCwicmVhc29uaW5nRWZmb3J0IjoibG93In19XSwidHJhY2tlZEZpZWxkcyI6WyIkLmNhdGVnb3J5IiwiJC5wcmlvcml0eSIsIiQudGFncyJdLCJzYW1wbGUiOjI0fQ")
 

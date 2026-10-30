@@ -12,7 +12,7 @@ import (
 )
 
 // j decodes a JSON literal into ordered values, the way a test's object
-// literal reads in the TypeScript (key order kept).
+// literal reads (key order kept).
 func j(t *testing.T, text string) any {
 	t.Helper()
 	value, err := jsval.Parse(text)
@@ -414,7 +414,7 @@ func TestProductionOutputFromASingleToolCallsArguments(t *testing.T) {
 func TestResponseFormatKeepsSourceKeyOrder(t *testing.T) {
 	chat := prepare(j(t, `{"messages": [{"role": "user", "content": "x"}], "response_format": {"type": "json_schema", "json_schema": {"strict": true, "schema": {"type": "object", "properties": {"z": {"type": "string"}, "a": {"type": "number"}}, "required": ["z", "a"]}, "name": "out"}}}`))
 	equal(t, string(chat.ResponseFormat), `{"type":"json_schema","json_schema":{"strict":true,"schema":{"type":"object","properties":{"z":{"type":"string"},"a":{"type":"number"}},"required":["z","a"]},"name":"out"}}`)
-	// Translated from text.format: the chat shape's own keys in the TypeScript's order, the schema as captured.
+	// Translated from text.format: the chat shape's own keys in a fixed order, the schema as captured.
 	responses := prepare(j(t, `{"input": "x", "text": {"format": {"strict": false, "schema": {"properties": {"z": {}, "a": {}}, "type": "object"}, "description": "d", "type": "json_schema", "name": "n"}}}`))
 	equal(t, string(responses.ResponseFormat), `{"type":"json_schema","json_schema":{"name":"n","schema":{"properties":{"z":{},"a":{}},"type":"object"},"description":"d","strict":false}}`)
 }

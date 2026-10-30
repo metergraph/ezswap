@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-// ErrConcurrency is the TypeScript's RangeError for a bad limit.
+// ErrConcurrency is the error for a limit that is not a positive integer.
 var ErrConcurrency = errors.New("concurrency must be a positive integer")
 
 type Limiter struct {

@@ -8,8 +8,9 @@
 // whole run is one RunFile (run.json); core reads a RunFile into the
 // statistics view; report renders it.
 //
-// JSON field names match run.json as the TypeScript version wrote it, so run
-// files stay readable across versions. A nil pointer is JSON null.
+// JSON field names match run.json as earlier versions (written in
+// TypeScript) wrote it, so run files stay readable across versions. A nil
+// pointer is JSON null.
 package types
 
 import (

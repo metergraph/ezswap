@@ -17,8 +17,8 @@ import (
 )
 
 // Seeded is seeded: a small deterministic generator (mulberry32), so a range
-// is the same on every render. It yields the same sequence as the
-// TypeScript version for the same seed.
+// is the same on every render. A seed always yields the same
+// sequence, so a run's ranges are reproducible.
 func Seeded(seed float64) func() float64 {
 	a := toUint32(seed)
 	return func() float64 {

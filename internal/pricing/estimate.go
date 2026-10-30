@@ -215,7 +215,7 @@ func pyNumber(value float64) string {
 }
 
 // PythonJSON is value as Python's json.dumps writes it by default. Raw JSON
-// (json.RawMessage) keeps its own key order, as the TypeScript's parsed
+// (json.RawMessage) keeps its own key order, as a parsed JavaScript
 // object does. A Go map has no key order, so its keys come out sorted; the
 // bound measures only the length, which order does not change.
 func PythonJSON(value any) string {

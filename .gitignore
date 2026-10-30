@@ -1,7 +1,16 @@
-node_modules/
+# Build output
+/metergraph-replay
+/metergraph-replay.exe
+/build-demo
+/build-prices
 dist/
+npm-out/
+*.test
+*.out
+
+# Local runs
+replay-out/
 out/
 *.tgz
 .env
 .DS_Store
-replay-out/

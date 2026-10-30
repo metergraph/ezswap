@@ -1,6 +1,6 @@
 package core
 
-// JavaScript's JSON values, as the TypeScript version read them. The view
+// JavaScript's JSON values, read with JavaScript's rules. The view
 // and every output core parses are JSON, and JavaScript objects keep their
 // keys in a defined order (array-index keys first, ascending, then the rest
 // in insertion order) that a Go map does not. Several figures depend on that
@@ -31,8 +31,8 @@ import (
 	"golang.org/x/text/language"
 )
 
-// Loose is a JSON value read the way the TypeScript version reads its
-// `Loose` (any) inputs: a view from the hosted product, one built from a run
+// Loose is a JSON value read loosely, the way JavaScript code reads an
+// untyped input: a view from the hosted product, one built from a run
 // file, and partial test inputs all fit.
 type Loose = any
 

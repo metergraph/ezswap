@@ -20,16 +20,16 @@
 // Presentation, never a verdict: nothing here says a model is good enough to
 // switch to.
 //
-// This is a port of the TypeScript src/core, and the conformance fixtures in
+// The conformance fixtures in
 // conformance/ pin its figures and sentences to Metergraph's hosted product.
-// Exported names follow the TypeScript ones, Go-cased. Where a function and a
+// Where a function and a
 // type would share a name, the function takes an "Of" or "For" suffix
 // (BoxStatsOf, CellReadingOf, GridLayoutOf, GridReadingsOf, LabelTallyOf,
 // PairedReadingOf, SameKeysCellOf, FloorStatOf, MonthlyNoteOf, StatRowsOf,
 // BranchStateOf, NoiseLabelsOf, NoiseLabelFor); fieldKind is FieldKindOf,
 // STAT_ROWS is StatRowDefs, and the NoiseFloorView type is NoiseFloor.
 //
-// The statistics read their inputs loosely, as the TypeScript version does:
+// The statistics read their inputs loosely:
 // a view from the hosted product, one built by BuildView, and partial inputs
 // all fit. Such a parameter is `any` and takes a loose JSON value (see
 // Object and ParseJSON) or any typed value with a JSON form, such as an

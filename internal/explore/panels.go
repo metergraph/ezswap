@@ -1,9 +1,8 @@
 package explore
 
 // The boxed panels the explorer's tabs are built from: the tracked fields
-// and the reasons calls were not replayed. Ported from the TypeScript
-// terminal report (src/report/terminal.ts), which the printed report no
-// longer uses.
+// and the reasons calls were not replayed. They come from an earlier
+// layout of the printed report, which it no longer uses.
 
 import (
 	"math"

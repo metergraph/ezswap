@@ -103,8 +103,7 @@ func BuildPayload(call types.ReplayCall, options PayloadOptions) map[string]any 
 }
 
 // HasJSON says a raw JSON value is there: not nil, empty or a JSON null.
-// The TypeScript tests the decoded value's truthiness; every JSON object and
-// array is truthy.
+// Any JSON object or array counts, empty or not.
 func HasJSON(raw json.RawMessage) bool {
 	text := bytes.TrimSpace(raw)
 	return len(text) > 0 && !bytes.Equal(text, []byte("null"))

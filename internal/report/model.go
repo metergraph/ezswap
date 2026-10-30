@@ -2,7 +2,7 @@
 // figure and sentence the report shows, as plain data) and the answer-first
 // text report drawn from it. The explorer reads the same model.
 //
-// The model is a port of src/report/model.ts. Every figure and sentence comes
+// Every figure and sentence comes
 // from core, read with the noise floor's first replay (A1) as the replayed
 // control. Presentation, never a verdict.
 package report
@@ -312,7 +312,7 @@ type NotReplayable struct {
 	Fix    string `json:"fix"`
 }
 
-// Model is everything the report shows (the TypeScript ReportModel).
+// Model is everything the report shows.
 type Model struct {
 	Headline        string          `json:"headline"`
 	Subhead         string          `json:"subhead"`
@@ -336,7 +336,7 @@ type Model struct {
 	// the run has no floor or the source recorded no durations (a median <= 0).
 	RecordedLatency *string `json:"recordedLatency"`
 
-	// Not in the TypeScript model. Noise holds each treatment's within-noise
+	// Not in the frozen model fixtures. Noise holds each treatment's within-noise
 	// labels whether or not Labels is on (nil without a floor), so the
 	// summary can mark figures beyond production's own variation.
 	Noise []*core.NoiseLabels `json:"-"`

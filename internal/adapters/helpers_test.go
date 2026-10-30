@@ -13,7 +13,7 @@ import (
 )
 
 func fixture(name string) string {
-	return filepath.Join("..", "..", "test", "fixtures", name)
+	return filepath.Join("testdata", name)
 }
 
 func read(t *testing.T, path string, options ...ReadTracesOptions) []types.CapturedCall {

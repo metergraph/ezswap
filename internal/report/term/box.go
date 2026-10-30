@@ -4,7 +4,7 @@ package term
 // so a box is always exactly as wide as asked and never wraps.
 //
 // Drawn by hand rather than with Lip Gloss borders so the uncoloured output
-// is byte for byte what the TypeScript drew (the golden files pin it).
+// is byte for byte stable (the golden files pin it).
 
 import "strings"
 

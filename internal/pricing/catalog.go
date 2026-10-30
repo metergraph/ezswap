@@ -735,8 +735,7 @@ func CatalogVersion(document *CatalogDocument) string {
 // CatalogPricing is types.Pricing over a catalog, plus the quote with its
 // reasons and the resolution of production's model.
 //
-// A query whose At is not an ISO date or time panics, as the TypeScript
-// throws a RangeError.
+// A query whose At is not an ISO date or time panics.
 type CatalogPricing struct {
 	// Source repository, file and commit of the catalog.
 	Source   CatalogSource

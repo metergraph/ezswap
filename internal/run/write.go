@@ -20,8 +20,8 @@ type WrittenRun struct {
 // keep their own key order; nothing is HTML-escaped; U+2028 and U+2029 are
 // written as themselves, as JSON.stringify does. Where the two still differ:
 // a Go map (the estimate's perArm and notReplayable) comes out with sorted
-// keys, and a run with no timed call leaves input.traffic out where the
-// TypeScript writes "traffic": null (types marks it omitempty). Both read
+// keys, and a run with no timed call leaves input.traffic out where earlier
+// versions wrote "traffic": null (types marks it omitempty). Both read
 // back the same.
 func EncodeRun(run *types.RunFile) ([]byte, error) {
 	var out bytes.Buffer

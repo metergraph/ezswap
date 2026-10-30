@@ -20,8 +20,7 @@ package run
 // Concurrency: one goroutine per call in flight runs only the provider call
 // and hands its outcome back. Everything else (admission, reservations,
 // settling, recording, progress and events) happens on the goroutine that
-// called ExecuteRun, one outcome at a time, as the TypeScript's single thread
-// does it. So the callbacks are never called concurrently.
+// called ExecuteRun, one outcome at a time. So the callbacks are never called concurrently.
 
 import (
 	"context"
@@ -119,8 +118,7 @@ type ExecuteOptions struct {
 	// context passed to ExecuteRun does. Nil: calls in flight always finish.
 	Hard        context.Context
 	Concurrency int
-	// Called after each settled call and once at the end, as the
-	// TypeScript's onProgress.
+	// Called after each settled call and once at the end.
 	OnProgress func(Progress)
 	// Called for every event, in order, on the goroutine running ExecuteRun.
 	// It holds up the run while it runs: hand the event off rather than

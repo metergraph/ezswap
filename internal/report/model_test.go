@@ -15,7 +15,7 @@ import (
 )
 
 // The fixtures: the demo's recorded run (synthetic support tickets) and
-// test/fixtures/report-run.json, a synthetic run of 24 support-ticket calls
+// testdata/report-run.json, a synthetic run of 24 support-ticket calls
 // at example.com with two treatments, a noise floor, a failure and hostile
 // strings.
 
@@ -30,7 +30,7 @@ func demoRun(t testing.TB) *types.RunFile {
 
 func fixtureRun(t testing.TB) *types.RunFile {
 	t.Helper()
-	data, err := os.ReadFile("../../test/fixtures/report-run.json")
+	data, err := os.ReadFile("testdata/report-run.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -77,10 +77,11 @@ func mustModel(t testing.TB, run *types.RunFile, options Options) *Model {
 	return m
 }
 
-// TestModelMatchesTypeScript compares the model, field by field, with what
-// src/report/model.ts builds from the same runs (testdata/model, written by
-// scripts/report-model-fixtures.ts).
-func TestModelMatchesTypeScript(t *testing.T) {
+// TestModelMatchesFrozenFixtures compares the model, field by field, with
+// testdata/model: frozen test data, written by the earlier TypeScript
+// implementation's report model for the same runs. Do not regenerate them
+// from this code; a difference is a change in what the report says.
+func TestModelMatchesFrozenFixtures(t *testing.T) {
 	thousand := 1000.0
 	cases := []struct {
 		name    string
@@ -173,7 +174,7 @@ func diff(t *testing.T, path string, want, got any) {
 	}
 }
 
-// Ported from test/report.test.ts.
+// Report model behaviour.
 
 func TestLatencyReadAgainstFloorAndNoVerdict(t *testing.T) {
 	m := mustModel(t, fixtureRun(t), Options{Labels: true})

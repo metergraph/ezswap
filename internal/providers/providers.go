@@ -33,10 +33,10 @@ const (
 	PresetOllama     PresetName = "ollama"
 )
 
-// PresetNames is the presets in the order the TypeScript lists them.
+// PresetNames is the presets in the order help and errors list them.
 var PresetNames = []PresetName{PresetOpenAI, PresetOpenRouter, PresetVercel, PresetLiteLLM, PresetOllama}
 
-// Preset is a known endpoint. An empty string stands for the TypeScript's null.
+// Preset is a known endpoint. An empty string means not set.
 type Preset struct {
 	// Base URL, or the environment variable that holds it.
 	BaseURL    string

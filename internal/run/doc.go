@@ -8,9 +8,8 @@
 //	ParseTemperature / ParseMaxTokens / ParseEffort
 //	BuildTreatments / SampleCases / TrafficOf / SettleCost
 //
-// This is a port of the TypeScript src/run. Exported names follow the
-// TypeScript ones, Go-cased. ExecuteRun reports progress through
-// ExecuteOptions.OnProgress (as the TypeScript's onProgress) and, for a live
+// ExecuteRun reports progress through
+// ExecuteOptions.OnProgress and, for a live
 // view, ExecuteOptions.OnEvent: every case admitted, call sent and replay
 // recorded, and the stop, in order and never concurrently.
 package run

@@ -1,7 +1,7 @@
 package run
 
 // Shared test helpers for the runner: synthetic trace files and fake
-// providers (test/run-helpers.ts).
+// providers.
 
 import (
 	"context"
@@ -157,7 +157,7 @@ func (p *fakeProvider) Complete(_ context.Context, call types.ReplayCall) types.
 	p.calls = append(p.calls, call)
 	index := len(p.calls) - 1
 	p.mu.Unlock()
-	// As the TypeScript's setImmediate: let other work run before answering.
+	// Let other work run before answering.
 	runtime.Gosched()
 	return p.respond(call, index)
 }

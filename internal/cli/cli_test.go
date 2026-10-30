@@ -27,7 +27,7 @@ const (
 var now = func() time.Time { return time.Date(2026, 10, 28, 12, 0, 0, 0, time.UTC) }
 
 // ---------------------------------------------------------------------------
-// Trace files (test/run-helpers.ts)
+// Trace files
 
 type traceOptions struct{ truncated bool }
 

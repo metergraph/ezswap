@@ -236,7 +236,7 @@ func TestParseModelsReadsEndpointPrefixesAndPerModelSettings(t *testing.T) {
 	errorMatches(t, err, "environment variable")
 }
 
-// Beyond the TypeScript tests: the URL normalization WHATWG does and net/url
+// The URL normalization WHATWG does and net/url
 // does not, and the spec errors.
 func TestParseEndpointNormalizesLikeWHATWG(t *testing.T) {
 	for _, c := range []struct{ spec, key, base string }{

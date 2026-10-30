@@ -4,16 +4,14 @@
 // (bars.go), boxes and rules (box.go) and column layout (layout.go).
 //
 // With colour off every primitive writes plain text, byte for byte what the
-// TypeScript version wrote, so the golden files under test/golden/ hold for
-// both. With colour on the only escape sequences are SGR (ESC [ ... m) and,
+// golden files under internal/report/testdata/golden pin. With colour on the only escape sequences are SGR (ESC [ ... m) and,
 // from Hyperlink, the one OSC 8 link the report writes itself; captured text
 // must go through Clean (or CleanDeep / CleanLine) before it is drawn, so it
 // can never carry escapes of its own.
 //
 // # Making a styled context
 //
-// The renderer keeps what every panel needs in one context (Ctx in
-// terminal.ts). Build its parts like this:
+// The renderer keeps what every panel needs in one context. Build its parts like this:
 //
 //	// Colour: decide the profile once, from the --color / --no-color flag,
 //	// whether stdout is a terminal, and the environment.
@@ -37,6 +35,6 @@
 //		text = term.Hyperlink(url, text)
 //	}
 //
-// In tests, term.NewPaint(colorprofile.TrueColor) is the TypeScript's
-// paint(true) on a truecolor terminal, and term.PlainPaint() its paint(false).
+// In tests, term.NewPaint(colorprofile.TrueColor) is colour on a truecolor
+// terminal, and term.PlainPaint() colour off.
 package term

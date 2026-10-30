@@ -1,12 +1,12 @@
 package term
 
 // Widths, cuts and wraps for the characters the report draws or may be
-// handed, with the values the TypeScript (Intl.Segmenter and its width
-// table) computed for the same input.
+// handed, with the values JavaScript's Intl.Segmenter and the earlier
+// TypeScript version's width table computed for the same input.
 
 import "testing"
 
-func TestWidthMatchesTheTypeScript(t *testing.T) {
+func TestWidthMatchesFrozenValues(t *testing.T) {
 	cases := []struct {
 		text string
 		want int
@@ -39,7 +39,7 @@ func TestWidthMatchesTheTypeScript(t *testing.T) {
 	eq(t, CodePointWidth(0xe0100), 0)
 }
 
-func TestTruncateNeverSplitsAClusterAndMatchesTheTypeScript(t *testing.T) {
+func TestTruncateNeverSplitsACluster(t *testing.T) {
 	emoji := "🙂 👩‍💻 ❤️ 🇯🇵 👍🏽"
 	eq(t, Truncate(emoji, 2), "…")
 	eq(t, Truncate(emoji, 2, ""), "🙂")
@@ -51,7 +51,7 @@ func TestTruncateNeverSplitsAClusterAndMatchesTheTypeScript(t *testing.T) {
 	eq(t, Truncate("abc", 1, "……"), "", "an ellipsis wider than the room is dropped")
 }
 
-func TestWrapMatchesTheTypeScript(t *testing.T) {
+func TestWrapKeepsClustersWhole(t *testing.T) {
 	cjk := "日本語のテキスト"
 	eq(t, Wrap(cjk, 2), []string{"日", "本", "語", "の", "テ", "キ", "ス", "ト"})
 	eq(t, Wrap(cjk, 5), []string{"日本", "語の", "テキ", "スト"})
@@ -63,11 +63,11 @@ func TestWrapMatchesTheTypeScript(t *testing.T) {
 }
 
 func TestWrapOfAWideCharacterInOneColumnEnds(t *testing.T) {
-	// The TypeScript loops forever here; the port takes the cluster alone.
+	// A cluster wider than the column takes a line of its own.
 	eq(t, Wrap("日本", 1), []string{"日", "本"})
 }
 
-func TestToAsciiAndCleanLineMatchTheTypeScript(t *testing.T) {
+func TestToAsciiAndCleanLine(t *testing.T) {
 	eq(t, ToAscii("−5 × 2 → … ‘q’ “d” ← ↑ ↓ ≈ · › ✓ 😀 é"), `-5 x 2 -> ... 'q' "d" <- ^ v ~ - > ? ?? ?`)
 	eq(t, ToAscii("🙂 👩‍💻"), "?? ?????", "astral characters are two UTF-16 units, so two marks")
 	eq(t, ToAscii("█─│╭·"), "????-")

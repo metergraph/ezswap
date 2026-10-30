@@ -9,6 +9,7 @@ require (
 	github.com/charmbracelet/colorprofile v0.4.3
 	github.com/charmbracelet/x/ansi v0.11.9
 	github.com/charmbracelet/x/term v0.2.2
+	go.yaml.in/yaml/v3 v3.0.5
 	golang.org/x/text v0.43.0
 )
 

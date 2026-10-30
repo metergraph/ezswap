@@ -1,0 +1,113 @@
+{
+ "source": {
+  "repository": "https://github.com/PioneerSquareLabs/metergraph",
+  "path": "core/src/metergraph_core/data/prices.yaml",
+  "commit": "0000000000000000000000000000000000000000",
+  "license": "Apache-2.0"
+ },
+ "version": "2026-10-06",
+ "currency": "USD",
+ "pricing_verified_at": null,
+ "models": [
+  {
+   "canonical_id": "123",
+   "publisher": "openai",
+   "aliases": [
+    {
+     "provider": "x",
+     "alias": "a\"b\\c\td",
+     "channel": "c",
+     "rules": {
+      "2": "b",
+      "10": "a",
+      "z": 1e-7,
+      "y": 31,
+      "w": null,
+      "v": null,
+      "u": [
+       1,
+       2.5,
+       true,
+       "é\u0001"
+      ]
+     }
+    },
+    {
+     "provider": "x",
+     "alias": "override",
+     "channel": "c",
+     "rules": {
+      "2": "b",
+      "10": "a",
+      "z": 1e-7,
+      "y": 31,
+      "w": null,
+      "v": null,
+      "u": [
+       1,
+       2.5,
+       true,
+       "é\u0001"
+      ]
+     },
+     "effective_from": "2026-01-01",
+     "price_region": [
+      "eu",
+      "us,ap",
+      "5"
+     ]
+    },
+    {
+     "provider": "p",
+     "alias": "q",
+     "channel": "r",
+     "price_region": [
+      "15"
+     ]
+    }
+   ],
+   "prices": [
+    {
+     "channel": "api",
+     "region": "global",
+     "input_per_mtok": "0.1",
+     "output_per_mtok": "1e+21",
+     "cache_read_per_mtok": "0.050",
+     "cache_write_5m_per_mtok": "1.5e-7",
+     "batch_input_per_mtok": "12345678901234567000",
+     "rules": {},
+     "source_url": "https://example.com"
+    },
+    {
+     "channel": "api",
+     "region": "eu",
+     "input_per_mtok": "3",
+     "output_per_mtok": "1e+21",
+     "cache_read_per_mtok": "0.050",
+     "cache_write_5m_per_mtok": "1.5e-7",
+     "batch_input_per_mtok": "12345678901234567000",
+     "rules": {
+      "long_context": {
+       "threshold": 272000,
+       "input_multiplier": 2
+      }
+     },
+     "source_url": "https://example.com"
+    }
+   ]
+  },
+  {
+   "canonical_id": "m2",
+   "publisher": null,
+   "aliases": [],
+   "prices": [
+    {
+     "channel": "api",
+     "region": "global",
+     "effective_to": "2027-01-01",
+     "source_url": "undefined"
+    }
+   ]
+  }
+ ]
+}

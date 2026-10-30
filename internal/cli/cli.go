@@ -3,7 +3,7 @@
 // Exit codes are stable (see the exit constants and docs/cli.md). With
 // --json, stdout is one JSON object and nothing else.
 //
-// A port of src/cli/main.ts and src/cli/explain.ts. On an interactive
+// On an interactive
 // terminal the spend confirmation, a run's progress and the report's
 // explorer are drawn with Bubble Tea; otherwise the CLI prints plain text.
 package cli

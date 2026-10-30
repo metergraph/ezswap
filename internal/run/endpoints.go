@@ -50,8 +50,7 @@ func presetList() string {
 
 // ParseEndpoint reads a preset name or an http(s) base URL.
 //
-// The TypeScript reads the URL with WHATWG `new URL`; this reads it with
-// net/url and applies the parts of WHATWG's normalization that change the
+// This reads the URL with net/url and applies the parts of WHATWG's normalization that change the
 // result here: a lower-case host and no default port.
 func ParseEndpoint(spec string) (EndpointSpec, error) {
 	text := jsval.Trim(spec)

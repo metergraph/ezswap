@@ -66,7 +66,7 @@ func LayoutColumns(specs []ColumnSpec, rows []map[string]string, available int, 
 		}
 		return 4
 	}
-	// Indices into specs, so a column is removed by identity as the TypeScript did.
+	// Indices into specs, so a column is removed by identity.
 	var active []int
 	for i, s := range specs {
 		keep := s.Flex

@@ -12,8 +12,7 @@ import (
 	"github.com/metergraph/replay/internal/jsnum"
 )
 
-// Decimal is n / 10^s. The TypeScript names this type Dec; Go keeps Dec for
-// the parser.
+// Decimal is n / 10^s; Dec parses one.
 type Decimal struct {
 	N *big.Int
 	S int

@@ -1,8 +1,8 @@
 package core
 
 // Shared test helpers: fixtures read with JavaScript's JSON.parse rules, and
-// a deep comparison of JSON forms (what the TypeScript tests' deepEqual on
-// `JSON.parse(JSON.stringify(x))` compares).
+// a deep comparison of JSON forms (a value compared as
+// `JSON.parse(JSON.stringify(x))` would be).
 
 import (
 	"encoding/json"

@@ -124,7 +124,7 @@ const (
 // then a terminal that is not TERM=dumb and has no (non-empty) NO_COLOR. How
 // many colours: 24-bit when COLORTERM says truecolor or 24bit; otherwise what
 // colorprofile reads from TERM and friends (256 or 16); when nothing in the
-// environment says, the 256-colour palette, as the TypeScript CLI did.
+// environment says, the 256-colour palette.
 // NoTTY means no styling at all.
 func DetectProfile(isTTY bool, env []string, mode ColorMode) colorprofile.Profile {
 	switch mode {
@@ -197,7 +197,6 @@ func NewPaint(profile colorprofile.Profile) Paint {
 		case profile >= colorprofile.TrueColor:
 			return lipgloss.Color(hex)
 		case profile == colorprofile.ANSI256:
-			// The same palette index the TypeScript picked.
 			return lipgloss.ANSIColor(Nearest256(hex))
 		case profile == colorprofile.ANSI:
 			return profile.Convert(lipgloss.Color(hex))
@@ -336,8 +335,7 @@ func RoleColor(p Paint, role Role) func(string) string {
 }
 
 // Hyperlink is text that opens url when clicked, in terminals that support
-// OSC 8 (others show the text). Terminated with ST (ESC \), as the
-// TypeScript wrote it. Emit it only when colour is on and not in ASCII mode,
+// OSC 8 (others show the text). Terminated with ST (ESC \). Emit it only when colour is on and not in ASCII mode,
 // and only for a URL the report built itself (the hosted link): never for
 // captured text.
 func Hyperlink(url, text string) string {

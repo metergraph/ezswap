@@ -146,7 +146,7 @@ func productionOutput(call types.CapturedCall) types.CaseOutput {
 }
 
 // requestMessagesSafe is RequestMessages with a panic read as an unparseable
-// request, as the TypeScript caught any error the parser threw.
+// request: a parser failure of any kind marks the call not replayable.
 func requestMessagesSafe(payload any) (parsed ParsedMessages, err error) {
 	defer func() {
 		if r := recover(); r != nil {

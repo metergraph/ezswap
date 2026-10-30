@@ -1,6 +1,6 @@
 package term
 
-// Ported from test/term.test.ts.
+// Drawing primitives: bars, boxes, layout, sanitizing and widths.
 
 import (
 	"reflect"

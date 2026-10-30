@@ -9,7 +9,8 @@ package term
 // extended grapheme cluster rules as Intl.Segmenter, including Indic
 // conjuncts, which uniseg 0.4 splits). A cluster's width is computed here
 // rather than taken from a width library, from the same table the
-// TypeScript used, so every layout comes out column for column the same.
+// earlier TypeScript version used, so layouts stay column for column the
+// same.
 
 import (
 	"regexp"

@@ -1,10 +1,10 @@
 package cli
 
-// The option parser: node:util parseArgs in strict mode with positionals,
-// which the TypeScript CLI used, down to its error messages. Long options
-// take --name value or --name=value; booleans take no value; -y, -h and -v
-// are short for --yes, --help and --version and may be grouped; everything
-// after "--" is positional.
+// The option parser behaves like node:util parseArgs in strict mode with
+// positionals (what earlier, TypeScript versions used), down to its error
+// messages. Long options take --name value or --name=value; booleans take
+// no value; -y, -h and -v are short for --yes, --help and --version and
+// may be grouped; everything after "--" is positional.
 
 import (
 	"fmt"

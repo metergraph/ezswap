@@ -220,8 +220,8 @@ func records(path string, onSkip func(int, string), yield func(sourceRecord) boo
 	return scanner.Err()
 }
 
-// readSafely is adapter.Read with a panic reported as an error, as the
-// TypeScript caught whatever an adapter threw.
+// readSafely is adapter.Read with a panic reported as an error, so one bad
+// record cannot take down the read.
 func readSafely(a Adapter, record any, context RecordContext) (calls []types.CapturedCall, err error) {
 	defer func() {
 		if r := recover(); r != nil {
