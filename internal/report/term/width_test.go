@@ -15,11 +15,11 @@ func TestWidthMatchesFrozenValues(t *testing.T) {
 		{"한국어 문장입니다", 17},
 		{"ｆｕｌｌｗｉｄｔｈ", 18},
 		{"é ä ñ", 5},
-		{"🙂 👩‍💻 ❤️ 🇯🇵 👍🏽", 13},
+		{"🙂 👩\u200d💻 ❤️ 🇯🇵 👍🏽", 13},
 		{"█▏▎▍▌▋▊▉ ─│╭╮╰╯├┤ ━┃┆●·", 23},
 		{"┏━┓┃ ┃┗━┛╺┓╹╻╱═║╔╗╚╝╟╢", 22},
 		{"▁▂▃▄▅▆▇█", 8},
-		{"​‍zero️", 5},
+		{"\u200b\u200dzero️", 5},
 		{"a\u00a0b\u3000c\ufeffd  e", 10},
 		{"ⅰⅱ ¼ ☃ ⌚ ⏰ ♈ ⚡ ✅ ⭐ 〜 ㄱ ꀀ 가 豈 ︐ ﹰ ｡ ￠ 𠀀 𖿠", 55},
 		// An Indic conjunct is one cluster (Unicode 15.1, GB9c), as in Intl.Segmenter.
@@ -40,12 +40,12 @@ func TestWidthMatchesFrozenValues(t *testing.T) {
 }
 
 func TestTruncateNeverSplitsACluster(t *testing.T) {
-	emoji := "🙂 👩‍💻 ❤️ 🇯🇵 👍🏽"
+	emoji := "🙂 👩\u200d💻 ❤️ 🇯🇵 👍🏽"
 	eq(t, Truncate(emoji, 2), "…")
 	eq(t, Truncate(emoji, 2, ""), "🙂")
 	eq(t, Truncate(emoji, 3), "🙂…")
-	eq(t, Truncate(emoji, 5, ""), "🙂 👩‍💻")
-	eq(t, Truncate(emoji, 8, "~"), "🙂 👩‍💻 ~")
+	eq(t, Truncate(emoji, 5, ""), "🙂 👩\u200d💻")
+	eq(t, Truncate(emoji, 8, "~"), "🙂 👩\u200d💻 ~")
 	eq(t, Truncate("ééé", 2), "é…")
 	eq(t, Truncate("\x1b[1mbold\x1b[0m plain", 6), "\x1b[1mbold\x1b[0m \x1b[0m…")
 	eq(t, Truncate("abc", 1, "……"), "", "an ellipsis wider than the room is dropped")
@@ -56,8 +56,8 @@ func TestWrapKeepsClustersWhole(t *testing.T) {
 	eq(t, Wrap(cjk, 2), []string{"日", "本", "語", "の", "テ", "キ", "ス", "ト"})
 	eq(t, Wrap(cjk, 5), []string{"日本", "語の", "テキ", "スト"})
 	eq(t, Wrap(cjk, 10), []string{"日本語のテ", "キスト"})
-	emoji := "🙂 👩‍💻 ❤️ 🇯🇵 👍🏽"
-	eq(t, Wrap(emoji, 5), []string{"🙂 👩‍💻", "❤️ 🇯🇵", "👍🏽"})
+	emoji := "🙂 👩\u200d💻 ❤️ 🇯🇵 👍🏽"
+	eq(t, Wrap(emoji, 5), []string{"🙂 👩\u200d💻", "❤️ 🇯🇵", "👍🏽"})
 	eq(t, Wrap("", 10), []string{""})
 	eq(t, Wrap("a  b", 10), []string{"a b"})
 }
@@ -69,13 +69,13 @@ func TestWrapOfAWideCharacterInOneColumnEnds(t *testing.T) {
 
 func TestToAsciiAndCleanLine(t *testing.T) {
 	eq(t, ToAscii("−5 × 2 → … ‘q’ “d” ← ↑ ↓ ≈ · › ✓ 😀 é"), `-5 x 2 -> ... 'q' "d" <- ^ v ~ - > ? ?? ?`)
-	eq(t, ToAscii("🙂 👩‍💻"), "?? ?????", "astral characters are two UTF-16 units, so two marks")
+	eq(t, ToAscii("🙂 👩\u200d💻"), "?? ?????", "astral characters are two UTF-16 units, so two marks")
 	eq(t, ToAscii("█─│╭·"), "????-")
 	eq(t, ToAscii("a\x1b[1mb\nc\td\u00a0e"), "a\x1b[1mb\nc?d e")
 	eq(t, CleanLine("a\u00a0b\u3000c\ufeffd  e"), "a b c d e")
 	eq(t, CleanLine("  \n  "), "")
-	eq(t, Clean("tab\there\r\nline\x00\x7f\u009b‮⁦x y"), "tab  here\nline^@^?<9B><U+202E><U+2066>x\ny")
-	eq(t, Clean("a\rb\r\n\r\nc "), "a\nb\n\nc\n")
+	eq(t, Clean("tab\there\r\nline\x00\x7f\u009b\u202e\u2066x\u2028y"), "tab  here\nline^@^?<9B><U+202E><U+2066>x\ny")
+	eq(t, Clean("a\rb\r\n\r\nc\u2029"), "a\nb\n\nc\n")
 }
 
 func TestCleanDeepWalksMapsPointersAndInterfaces(t *testing.T) {

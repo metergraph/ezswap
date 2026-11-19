@@ -268,6 +268,9 @@ func TestParseEndpointNormalizesLikeWHATWG(t *testing.T) {
 	_, err = ParseMaxTokens("1.5")
 	errorMatches(t, err, "Max tokens must be a whole number")
 	effort, err := ParseEffort(" HIGH ")
+	if err != nil {
+		t.Fatal(err)
+	}
 	equal(t, effort, "high")
 	_, err = ParseEffort("max")
 	errorMatches(t, err, "Reasoning effort must be one of none, minimal, low, medium, high, xhigh.")

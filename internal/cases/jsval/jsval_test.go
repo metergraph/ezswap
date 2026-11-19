@@ -36,7 +36,7 @@ func TestParseRejectsTrailingData(t *testing.T) {
 	if v, err := Parse("1e400"); err != nil || !math.IsInf(v.(float64), 1) {
 		t.Errorf("1e400 reads as Infinity: %v %v", v, err)
 	}
-	if got := Stringify([]any{math.Inf(1), 1e21, 1e-7, -0.0, 0.1}); got != "[null,1e+21,1e-7,0,0.1]" {
+	if got := Stringify([]any{math.Inf(1), 1e21, 1e-7, math.Copysign(0, -1), 0.1}); got != "[null,1e+21,1e-7,0,0.1]" {
 		t.Errorf("numbers: %s", got)
 	}
 }

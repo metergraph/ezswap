@@ -31,7 +31,7 @@ func TestWidthIgnoresAnsiAndCountsWideAndCombining(t *testing.T) {
 	eq(t, Width("ｈｉ"), 4)
 	eq(t, Width("é"), 1, "combining acute")
 	eq(t, Width("🙂"), 2)
-	eq(t, Width("👩‍💻"), 2, "a ZWJ sequence is one cluster")
+	eq(t, Width("👩\u200d💻"), 2, "a ZWJ sequence is one cluster")
 	eq(t, Width("❤️"), 2, "emoji presentation selector")
 	eq(t, Width("█▏─│╭"), 5)
 	eq(t, Width(""), 0)
@@ -176,7 +176,7 @@ func TestLayoutDropsOptionalColumnsFirstAndGivesTheRestToTheFlexibleOne(t *testi
 var controls = regexp.MustCompile("[\x00-\x08\x0b-\x1f\x7f]|[\u0080-\u009f]")
 
 func TestCapturedControlsAreNeutralized(t *testing.T) {
-	hostile := "a\x1b[2Jb\x1b]0;pwned\x07c\u009b31md\re\r\nf‮g\x00h\x7fi\tj k"
+	hostile := "a\x1b[2Jb\x1b]0;pwned\x07c\u009b31md\re\r\nf\u202eg\x00h\x7fi\tj\u2028k"
 	out := Clean(hostile)
 	if controls.MatchString(out) {
 		t.Errorf("a control survived: %q", out)
