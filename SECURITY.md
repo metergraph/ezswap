@@ -66,7 +66,9 @@ calls model endpoints with your keys. It is designed to keep these boundaries:
   `record` reads no key at all: your app's key passes through it in a header.
 - **Spend is bounded.** `run` and `map` price the run first, ask before
   spending, and reserve each call's maximum cost before sending it, so they
-  stop at `--budget`. `record` spends nothing of its own; the calls it
+  stop at `--budget`. A call billed above the catalog's price can take a
+  run past the budget by its overrun; the run then reserves more for that
+  model, and stops if the overrun is large or repeats. `record` spends nothing of its own; the calls it
   forwards are your app's.
 - **Captured text cannot drive the terminal.** Prompts and outputs are cleaned
   before they are drawn: control characters, escape sequences and

@@ -326,7 +326,8 @@ func ReservationInputTokens(call types.ReplayCall, productionInputTokens *float6
 }
 
 // UpperBoundUSD is what one call reserves before it is sent: the input bound
-// and the full max_tokens, priced. Nil when the catalog cannot price the
+// and the full max_tokens, priced at the full rate (no off-peak discount).
+// Nil when the catalog cannot price the
 // model; such a call cannot be budgeted. An empty at means now.
 func UpperBoundUSD(call types.ReplayCall, pricing types.Pricing, productionInputTokens *float64, at string) *float64 {
 	return pricing.Price(types.PriceQuery{
@@ -334,6 +335,8 @@ func UpperBoundUSD(call types.ReplayCall, pricing types.Pricing, productionInput
 		InputTokens:  ReservationInputTokens(call, productionInputTokens),
 		OutputTokens: call.MaxTokens,
 		At:           at,
+		// A discount for the hour may not apply when the call is billed.
+		FullRate: true,
 	})
 }
 

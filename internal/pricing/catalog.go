@@ -385,6 +385,7 @@ type usage struct {
 	outputTokens           *float64
 	cachedInputTokens      float64
 	inputIncludesCacheRead *bool
+	fullRate               bool
 }
 
 type snapshot struct {
@@ -650,9 +651,11 @@ func priceTokens(a *alias, p *price, rules map[string]any, at int64, u usage) Qu
 		inputMultiplier = nonZero(Dec(longContext["input_multiplier"]))
 		outputMultiplier = nonZero(Dec(longContext["output_multiplier"]))
 	}
-	offPeak := offPeakMultiplier(rules, at)
-	inputMultiplier = Mul(inputMultiplier, offPeak)
-	outputMultiplier = Mul(outputMultiplier, offPeak)
+	if !u.fullRate {
+		offPeak := offPeakMultiplier(rules, at)
+		inputMultiplier = Mul(inputMultiplier, offPeak)
+		outputMultiplier = Mul(outputMultiplier, offPeak)
+	}
 
 	total := Zero
 	if p.input == nil {
@@ -838,6 +841,7 @@ func (c *CatalogPricing) Quote(query types.PriceQuery) Quote {
 		outputTokens:           ptr(query.OutputTokens),
 		cachedInputTokens:      cached,
 		inputIncludesCacheRead: query.InputIncludesCacheRead,
+		fullRate:               query.FullRate,
 	})
 }
 

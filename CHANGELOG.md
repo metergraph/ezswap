@@ -48,7 +48,9 @@ The first public release.
 ### Spend and pricing
 
 - Every run is priced before it starts, asks before spending, reserves each
-  call's maximum cost and stops at `--budget`.
+  call's maximum cost at the full rate and stops at `--budget`. A model
+  billed above its catalog price gets larger reservations for the rest of
+  the run instead of stopping it.
 - A bundled price catalog covers several hundred models. Models it lacks are
   priced through Metergraph's free Pricing API, which receives model names
   only. `--no-price-lookup` turns it off.

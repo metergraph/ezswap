@@ -479,6 +479,80 @@ func TestACallThatCostsMoreThanItsReservationStopsTheRun(t *testing.T) {
 	equal(t, ok, 1)
 }
 
+// billedAt reports each call's cost as factor times what it reserved, as an
+// endpoint does when the catalog lists a lower price than it charges.
+func billedAt(factor func(call int) float64) (*fakeProvider, func(Event)) {
+	var reserve float64
+	provider := newFakeProvider(func(_ types.ReplayCall, i int) types.ReplyOutcome {
+		return okOutcome(outcomeOverrides{reportedCostUSD: num(reserve * factor(i))})
+	})
+	return provider, func(e Event) {
+		if e.Kind == EventCallStarted && e.ReserveUSD != nil {
+			reserve = *e.ReserveUSD
+		}
+	}
+}
+
+func TestAModelBilledAboveTheCatalogRaisesItsReservations(t *testing.T) {
+	prices := loadTestPricing(t)
+	p := plan(t, 3, nil)
+	// The treatment's first call is billed at twice its reservation; every
+	// later call costs what the raised reservation expects.
+	provider, onEvent := billedAt(func(i int) float64 {
+		if i == 0 {
+			return 2
+		}
+		return 0.5
+	})
+	budget := 100.0
+	run := execute(t, p, ExecuteOptions{Providers: map[string]types.Provider{"openrouter": provider}, Pricing: prices, BudgetUSD: &budget, Concurrency: 1, OnEvent: onEvent})
+	if run.Stopped != nil {
+		t.Fatalf("stopped: %s", *run.Stopped)
+	}
+	for _, r := range run.Replays {
+		equal(t, r.Status, "ok")
+	}
+	if len(run.Repriced) != 1 || run.Repriced[0].Model != p.Treatments[0].Model || run.Repriced[0].Factor != 2.5 {
+		t.Fatalf("repriced %+v", run.Repriced)
+	}
+}
+
+func TestAModelThatKeepsOverrunningStopsTheRun(t *testing.T) {
+	prices := loadTestPricing(t)
+	p := plan(t, 6, nil)
+	provider, onEvent := billedAt(func(int) float64 { return 3 })
+	budget := 100.0
+	run := execute(t, p, ExecuteOptions{Providers: map[string]types.Provider{"openrouter": provider}, Pricing: prices, BudgetUSD: &budget, Concurrency: 1, OnEvent: onEvent})
+	if run.Stopped == nil || *run.Stopped != "reservation_exceeded" {
+		t.Fatalf("stopped %v", run.Stopped)
+	}
+	// Raised twice (3 x 1.25 each time), then stopped on the third overrun.
+	if len(run.Repriced) == 0 || run.Repriced[0].Factor != 14.06 {
+		t.Fatalf("repriced %+v", run.Repriced)
+	}
+}
+
+func TestAnUpperBoundIgnoresOffPeakDiscounts(t *testing.T) {
+	prices, err := pricing.LoadPricing(pricing.LoadPricingOptions{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	// DeepSeek's gateway row halves its price outside peak hours: a Saturday
+	// is off-peak all day.
+	query := types.PriceQuery{Model: "deepseek/deepseek-v4.1-flash", InputTokens: 100, OutputTokens: 400, At: "2026-11-21T12:00:00Z"}
+	discounted := prices.Price(query)
+	query.FullRate = true
+	full := prices.Price(query)
+	if discounted == nil || full == nil || *full != *discounted*2 {
+		t.Fatalf("discounted %v, full %v", discounted, full)
+	}
+	call := types.ReplayCall{Model: "deepseek/deepseek-v4.1-flash", MaxTokens: 400}
+	bound := pricing.UpperBoundUSD(call, prices, num(100), "2026-11-21T12:00:00Z")
+	if bound == nil || *bound < *full {
+		t.Fatalf("bound %v below the full rate %v", bound, *full)
+	}
+}
+
 func TestAnInterruptLetsCallsInFlightFinishAndRecordsWhatExists(t *testing.T) {
 	prices := loadTestPricing(t)
 	p := plan(t, 4, nil)

@@ -224,6 +224,9 @@ type PriceQuery struct {
 	InputIncludesCacheRead *bool
 	// ISO date the price applies at; empty means now.
 	At string
+	// Price at the full rate, ignoring off-peak discounts: for an upper
+	// bound, which must hold whenever the call is billed.
+	FullRate bool
 }
 
 type Pricing interface {
@@ -352,6 +355,17 @@ type RunFile struct {
 	Stopped *string `json:"stopped"`
 	// What a judge said about free-text replies, when the map asked one.
 	Judge *JudgeRecord `json:"judge,omitempty"`
+	// Models whose calls cost more than the price catalog said, so the run
+	// raised their later reservations.
+	Repriced []Repricing `json:"repriced,omitempty"`
+}
+
+// Repricing is a model whose billed cost exceeded its reservation.
+type Repricing struct {
+	Model    string `json:"model"`
+	Endpoint string `json:"endpoint"`
+	// What its later reservations were multiplied by.
+	Factor float64 `json:"factor"`
 }
 
 // JudgeRecord is a judge's verdicts on the free-text replies of a map run.

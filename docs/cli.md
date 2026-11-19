@@ -250,7 +250,8 @@ The estimate prices each case at production's token counts (2000 input tokens
 when they are not recorded) and an assumed output (the larger of production's
 output and half the token cap, never above the cap), with a 25% margin. The
 most a run can spend is every call using its full `max_tokens` on an input
-bounded at one token per byte.
+bounded at one token per byte, priced at the full rate: an off-peak discount
+in the catalog is not counted, since the call may be billed at peak.
 
 `run` and `map` refuse when the expected spend is over `--budget`, or when a
 model has no price and `--allow-unpriced` is not set. While one runs:
@@ -264,8 +265,16 @@ model has no price and `--allow-unpriced` is not set. While one runs:
   usage it returned, else its reservation (a reply with no usage, or a failure
   that may have reached the model). `costSource` in `run.json` says which. A
   local endpoint costs nothing (`"free"`).
-- A call that cost more than it reserved stops the run at once
-  (`"stopped": "reservation_exceeded"`).
+- A call that cost more than it reserved means the price catalog is wrong
+  for that model on that endpoint, such as a gateway routing to a provider
+  that charges more than the listed price. The run multiplies that model's
+  later reservations by the overrun, with 25% headroom, and goes on within
+  the budget. `run.json` lists the model under `repriced` with the factor,
+  and the run's summary says so. The costs recorded are what the endpoint
+  billed.
+- The run stops at once (`"stopped": "reservation_exceeded"`) when a call
+  costs more than 4 times its reservation, or when a model overruns again
+  after its reservations were raised twice.
 - Ctrl-C stops sending, waits for the calls in flight, and writes what exists
   (`"stopped": "interrupted"`). A second Ctrl-C cancels the calls in flight.
 

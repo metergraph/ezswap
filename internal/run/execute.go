@@ -9,9 +9,14 @@ package run
 // So a budget that runs out drops whole cases, never one column. A case that
 // does not fit waits for calls in flight to settle; when nothing is in flight
 // and it still does not fit, the run stops ("budget"). A call that cost more
-// than it reserved stops the run at once ("reservation_exceeded"): a bound
-// that was wrong once may be wrong again. A stop signal ends it the same way
-// ("interrupted"), after the calls in flight finish.
+// than it reserved means the price catalog is wrong for that model on that
+// endpoint (a provider charging more than its listed price, say): the run
+// multiplies the model's later reservations by what the overrun shows, with
+// headroom, and records it in Repriced. If the model overruns again after
+// maxRaises raises, or a call costs more than maxOverrun times its
+// reservation, the run stops at once ("reservation_exceeded"). A stop
+// signal ends it the same way ("interrupted"), after the calls in flight
+// finish.
 //
 // Cost of a call: what the endpoint reported, else the catalog price of the
 // usage it returned, else its reservation (a reply with no usable count, or a
@@ -45,6 +50,15 @@ const (
 	StopBudget              = "budget"
 	StopInterrupted         = "interrupted"
 	StopReservationExceeded = "reservation_exceeded"
+)
+
+// How often a model's reservations may be raised before an overrun stops the
+// run, the headroom each raise adds, and the overrun past which the run stops
+// at once.
+const (
+	maxRaises       = 2
+	reserveHeadroom = 1.25
+	maxOverrun      = 4.0
 )
 
 // Where a replay's cost came from (Replay.CostSource).
@@ -142,7 +156,9 @@ type item struct {
 	call     *types.ReplayCall
 	// Nil when the call cannot be priced (allowed unpriced) or never runs.
 	reserve *float64
-	free    bool
+	// The model's reservation multiplier when this call was admitted.
+	scale float64
+	free  bool
 	// Set when the replay is known before any call: why it is skipped.
 	skip string
 }
@@ -299,6 +315,26 @@ func ExecuteRun(ctx context.Context, plan *RunPlan, options ExecuteOptions) (*ty
 		}
 	}
 
+	// A model's reservations are multiplied by its scale once it has cost
+	// more than the catalog said: by endpoint and model.
+	scales := map[string]float64{}
+	raises := map[string]int{}
+	var repriced []string
+	scaleKey := func(endpoint, model string) string { return endpoint + "\x00" + model }
+	scaleOf := func(endpoint, model string) float64 {
+		if s, ok := scales[scaleKey(endpoint, model)]; ok {
+			return s
+		}
+		return 1
+	}
+	scaled := func(reserve *float64, endpoint, model string) (*float64, float64) {
+		s := scaleOf(endpoint, model)
+		if reserve == nil {
+			return nil, s
+		}
+		return ptr(*reserve * s), s
+	}
+
 	productionInput := func(c *types.Case) *float64 {
 		if c.Production.Usage == nil {
 			return nil
@@ -310,11 +346,11 @@ func ExecuteRun(ctx context.Context, plan *RunPlan, options ExecuteOptions) (*ty
 		for _, t := range plan.Treatments {
 			call := pricing.TreatmentCall(*c, t)
 			isFree := free[t.Endpoint]
-			reserve := ptr(0.0)
+			reserve, scale := ptr(0.0), 1.0
 			if !isFree {
-				reserve = pricing.UpperBoundUSD(call, prices, productionInput(c), at)
+				reserve, scale = scaled(pricing.UpperBoundUSD(call, prices, productionInput(c), at), t.Endpoint, call.Model)
 			}
-			items = append(items, &item{item: c, arm: t.ID, endpoint: t.Endpoint, call: &call, reserve: reserve, free: isFree})
+			items = append(items, &item{item: c, arm: t.ID, endpoint: t.Endpoint, call: &call, reserve: reserve, scale: scale, free: isFree})
 		}
 		if plan.FloorEndpoint != "" {
 			endpoint := plan.FloorEndpoint
@@ -332,11 +368,11 @@ func ExecuteRun(ctx context.Context, plan *RunPlan, options ExecuteOptions) (*ty
 					continue
 				}
 				call := pricing.FloorCall(*c, *model)
-				reserve := ptr(0.0)
+				reserve, scale := ptr(0.0), 1.0
 				if !isFree {
-					reserve = pricing.UpperBoundUSD(call, prices, productionInput(c), at)
+					reserve, scale = scaled(pricing.UpperBoundUSD(call, prices, productionInput(c), at), endpoint, call.Model)
 				}
-				items = append(items, &item{item: c, arm: arm, endpoint: endpoint, call: &call, reserve: reserve, free: isFree})
+				items = append(items, &item{item: c, arm: arm, endpoint: endpoint, call: &call, reserve: reserve, scale: scale, free: isFree})
 			}
 		}
 		return items
@@ -459,7 +495,26 @@ func ExecuteRun(ctx context.Context, plan *RunPlan, options ExecuteOptions) (*ty
 			Error:        outcome.Error,
 		}, entry.call.Model, entry.endpoint)
 		if entry.reserve != nil && cost.CostUSD != nil && *cost.CostUSD > *entry.reserve+epsilon {
-			stop(StopReservationExceeded)
+			k := scaleKey(entry.endpoint, entry.call.Model)
+			current := scaleOf(entry.endpoint, entry.call.Model)
+			switch {
+			case *entry.reserve <= 0 || *cost.CostUSD > *entry.reserve*maxOverrun:
+				// Far beyond the catalog: something other than a price is wrong.
+				stop(StopReservationExceeded)
+			case entry.scale < current:
+				// Admitted before the last raise, which already covers it.
+			case raises[k] >= maxRaises:
+				stop(StopReservationExceeded)
+			default:
+				next := entry.scale * (*cost.CostUSD / *entry.reserve) * reserveHeadroom
+				if next > current {
+					if raises[k] == 0 {
+						repriced = append(repriced, k)
+					}
+					scales[k] = next
+					raises[k]++
+				}
+			}
 		}
 		reportProgress()
 	}
@@ -573,6 +628,10 @@ func ExecuteRun(ctx context.Context, plan *RunPlan, options ExecuteOptions) (*ty
 		Estimate:   plan.Estimate,
 		SpentUSD:   round8(spent),
 		Stopped:    stopped,
+	}
+	for _, k := range repriced {
+		endpoint, model, _ := strings.Cut(k, "\x00")
+		run.Repriced = append(run.Repriced, types.Repricing{Model: model, Endpoint: endpoint, Factor: jsnum.Round(scales[k]*100) / 100})
 	}
 	emit(Event{Kind: EventFinished})
 	return run, nil

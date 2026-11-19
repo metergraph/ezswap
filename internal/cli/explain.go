@@ -205,6 +205,9 @@ func explainOutcome(r *types.RunFile) string {
 		}
 		lines = append(lines, "Failures: "+strings.Join(parts, ", ")+".")
 	}
+	for _, rp := range r.Repriced {
+		lines = append(lines, fmt.Sprintf("%s cost more on %s than the price catalog says, so its later calls reserved %gx as much. The costs shown are what the endpoint billed.", rp.Model, rp.Endpoint, rp.Factor))
+	}
 	if r.Stopped != nil {
 		lines = append(lines, "Stopped early: "+tui.StopReasons[*r.Stopped]+".")
 	}
