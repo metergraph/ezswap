@@ -255,3 +255,32 @@ func TestDeeplyNestedEventIsRefused(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+// An upstream may start its answer before it has read the whole request.
+// The proxy must keep sending the request body and keep streaming the
+// answer: an HTTP/1 server that closed the request body once the answer
+// began would fail the upload and cut the stream.
+func TestStreamSurvivesAnswerBeforeRequestIsRead(t *testing.T) {
+	stream := fixture(t, "chat.stream.sse")
+	first, rest, _ := strings.Cut(string(stream), "\n\n")
+	first += "\n\n"
+	upstream := fakeUpstream(t, func(w http.ResponseWriter, r *http.Request) {
+		http.NewResponseController(w).EnableFullDuplex()
+		w.Header().Set("Content-Type", "text/event-stream")
+		io.WriteString(w, first)
+		w.(http.Flusher).Flush()
+		io.Copy(io.Discard, r.Body) // the upload finishes only now
+		io.WriteString(w, rest)
+	})
+	rec := startRecorder(t, upstream.URL)
+	// A request large enough that it is still being sent when the answer starts.
+	padding := strings.Repeat("x", 4<<20)
+	request := `{"model":"gpt-4o-mini","stream":true,"messages":[{"role":"user","content":"` + padding + `"}]}`
+	response, body := post(t, rec.url(chatPath), request, map[string]string{"X-Replay-Part": "streamed"})
+	if response.StatusCode != http.StatusOK || string(body) != string(stream) {
+		t.Fatalf("the app got %d and %d bytes of %d", response.StatusCode, len(body), len(stream))
+	}
+	if summary := rec.stop(); summary.Recorded != 1 {
+		t.Errorf("summary %+v", summary)
+	}
+}

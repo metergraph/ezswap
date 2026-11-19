@@ -320,10 +320,18 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer h.active.Done()
+	// The transport may still read the request body (to confirm it ended)
+	// after the upstream's answer starts flowing back. An HTTP/1 server can
+	// close the request body once a response is written, which fails that
+	// read, and the transport then closes the upstream connection part way
+	// through a stream. Full duplex keeps the body readable. HTTP/2 needs
+	// nothing, so its error is ignored.
+	_ = http.NewResponseController(w).EnableFullDuplex()
 
 	kind := classify(r.Method, r.URL.Path)
 	if kind == shapeNone {
 		h.results <- result{forwarded: true}
+		defer drainBody(r)
 		h.proxy.ServeHTTP(w, r)
 		return
 	}
@@ -336,7 +344,22 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// ReverseProxy aborts the handler with a panic when the response is cut
 	// part way, so the call is finished in a defer.
 	defer func() { h.results <- c.finish() }()
+	defer drainBody(r) // before finish, so the call holds the whole request
 	h.proxy.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), callKey{}, c)))
+}
+
+// maxDrain is the most drainBody reads.
+const maxDrain = 64 << 20
+
+// drainBody reads what the app still sends of its request body, up to
+// maxDrain. With full duplex the server no longer does this itself, and a
+// reply written before the body was read (a 502 when the upstream cannot be
+// reached, or an upstream that answers early) would otherwise reach the app
+// as a connection reset.
+func drainBody(r *http.Request) {
+	if r.Body != nil {
+		io.Copy(io.Discard, io.LimitReader(r.Body, maxDrain))
+	}
 }
 
 // capture is the proxy's ModifyResponse: it tees a model call's response
