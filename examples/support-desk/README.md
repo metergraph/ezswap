@@ -41,7 +41,20 @@ go run ./examples/support-desk --model gpt-4.1-mini
 metergraph-replay map replay-out/traces.jsonl --models openai/gpt-5-mini --endpoint openai
 ```
 
-`map` prints an estimate and asks before it spends anything.
+To go through [Vercel AI Gateway](https://vercel.com/docs/ai-gateway)
+instead, forward the recorder there and give the app your gateway key:
+
+```sh
+metergraph-replay record --upstream https://ai-gateway.vercel.sh
+OPENAI_API_KEY="$AI_GATEWAY_API_KEY" go run ./examples/support-desk --model openai/gpt-4.1-mini --calls 20
+metergraph-replay map replay-out/traces.jsonl --models openai/gpt-4.1-nano --endpoint vercel
+```
+
+With 20 calls per part this made 180 replay calls and cost about one cent.
+
+`map` prints an estimate and asks before it spends anything. With 12 calls a
+part, a change in a few cases can fall short of the test; 20 is the default
+sample per part.
 
 ## What the app sends
 

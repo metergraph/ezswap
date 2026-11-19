@@ -249,9 +249,11 @@ func (c *call) line() ([]byte, string) {
 			return nil, reason
 		}
 		response = []byte(jsval.Stringify(body))
-	} else if !c.ended {
+	} else if !c.ended && !json.Valid(response) {
 		// The body stopped before its end: the upstream or the app went
-		// away, or the recorder was stopped.
+		// away, or the recorder was stopped. A body that is already one
+		// whole JSON value is kept: an app may stop reading once it has
+		// decoded the reply, before the upstream's last bytes arrive.
 		return nil, skipStreamCut
 	}
 

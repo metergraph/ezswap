@@ -950,3 +950,34 @@ func TestErrorKindNamesNoDetail(t *testing.T) {
 		}
 	}
 }
+
+// An app that decodes the reply and closes the body before the upstream's
+// last bytes arrive still has a whole reply, and the call is recorded.
+func TestWholeReplyReadEarlyIsRecorded(t *testing.T) {
+	release := make(chan struct{})
+	upstream := fakeUpstream(t, func(w http.ResponseWriter, r *http.Request) {
+		io.Copy(io.Discard, r.Body)
+		w.Header().Set("Content-Type", "application/json")
+		io.WriteString(w, chatResponse)
+		w.(http.Flusher).Flush()
+		<-release
+		io.WriteString(w, "\n")
+	})
+	rec := startRecorder(t, upstream.URL)
+	request, _ := http.NewRequest(http.MethodPost, rec.url(chatPath), strings.NewReader(chatRequest))
+	request.Header.Set("X-Replay-Part", "early")
+	response, err := http.DefaultClient.Do(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var decoded map[string]any
+	if err := json.NewDecoder(response.Body).Decode(&decoded); err != nil {
+		t.Fatal(err)
+	}
+	response.Body.Close()
+	close(release)
+	summary := rec.stop()
+	if summary.Recorded != 1 || len(summary.Skipped) != 0 {
+		t.Errorf("summary: %+v", summary)
+	}
+}
