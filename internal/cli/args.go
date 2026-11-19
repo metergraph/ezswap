@@ -36,6 +36,7 @@ var options = map[string]optionKind{
 	"allow-no-search":  boolOption,
 	"allow-unpriced":   boolOption,
 	"no-price-lookup":  boolOption,
+	"judge":            boolOption,
 	"adapter":          stringOption,
 	"out":              stringOption,
 	"html":             stringOption,

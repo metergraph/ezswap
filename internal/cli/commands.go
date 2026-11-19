@@ -499,6 +499,14 @@ func (s *session) run(file string, mapMode bool) (outcome, error) {
 	if err := s.checkOptions(command, mapMode); err != nil {
 		return outcome{}, err
 	}
+	judgeKey := ""
+	if s.v.bool("judge") {
+		key, err := s.judgeKey("map")
+		if err != nil {
+			return outcome{}, err
+		}
+		judgeKey = key
+	}
 	setup, err := s.setup(file, mapMode)
 	if err != nil {
 		return outcome{}, err
@@ -588,6 +596,18 @@ func (s *session) run(file string, mapMode bool) (outcome, error) {
 			io.WriteString(s.io.Stderr, "\n")
 		}
 	}
+	var judgeFields object
+	if err == nil && judgeKey != "" && result.Stopped != nil {
+		s.say("The run stopped early, so nothing was judged. Judge what finished with: metergraph-replay judge <run.json>")
+	}
+	if err == nil && judgeKey != "" && result.Stopped == nil {
+		s.say("")
+		judgedPairs, jerr := s.judgeRun(interrupt.soft, result, judgeKey)
+		if jerr != nil {
+			err = jerr
+		}
+		judgeFields = object{{"judge", judgedPairs.fields()}}
+	}
 	interrupt.dispose()
 	interrupt.stopSoft()
 	interrupt.stopHard()
@@ -661,7 +681,7 @@ func (s *session) run(file string, mapMode bool) (outcome, error) {
 		{"spentUsd", result.SpentUSD},
 		{"budgetUsd", result.Settings.BudgetUSD},
 		{"replays", object{{"ok", counts.ok}, {"failed", counts.failed}, {"skipped", counts.skipped}}},
-	}, mapFields...)}, nil
+	}, append(judgeFields, mapFields...)...)}, nil
 }
 
 // printReport prints the report (and, with --explain, its notes). help is

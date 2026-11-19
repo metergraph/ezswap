@@ -96,6 +96,8 @@ type IO struct {
 	PricingURL string
 	// Where the Pricing API's answers are cached. "" caches nothing.
 	CacheDir string
+	// Where --judge asks its judge. "" is the AI Gateway.
+	JudgeURL string
 }
 
 // ExploreOptions are what the explorer is opened with.
@@ -345,6 +347,12 @@ func Main(args []string, o IO) int {
 				return outcome{}, err
 			}
 			return s.report(file)
+		case "judge":
+			file, err := needFile("run.json")
+			if err != nil {
+				return outcome{}, err
+			}
+			return s.judgeCommand(file)
 		}
 		return outcome{}, usagef(`Unknown command "` + command + `". Run metergraph-replay --help.`)
 	}()

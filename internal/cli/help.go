@@ -19,6 +19,7 @@ Usage
   metergraph-replay map <traces> --models LIST [options]
   metergraph-replay run <traces> --models LIST [options]
   metergraph-replay report <run.json> [--no-interactive] [--explain]
+  metergraph-replay judge <run.json>
 
 Commands
   demo       Print the report of bundled synthetic traces. No keys, no network.
@@ -33,6 +34,8 @@ Commands
   report     Explore a run.json in the terminal: tabs for fields, the noise
              floor and every call. Prints the report when not interactive.
              Prints the map for a run that map made.
+  judge      Judge the free-text parts of a map run (see --judge), write the
+             verdicts into run.json and print the map.
 
 The map (map, estimate --map)
   A part is a place in your app that calls a model. It is named by a "part"
@@ -49,6 +52,10 @@ The map (map, estimate --map)
                            span.name.
   --ignore PATH            Leave a field out of the comparison, such as a
                            generated id: $.request_id
+  --judge                  map: compare free-text parts with a judge model
+                           (typesafe-ai/jev, through the AI Gateway; needs
+                           AI_GATEWAY_API_KEY). Each request and its replies are
+                           sent to it. Costs about a cent per 200 pairs.
   Names are kept in replay-parts.json beside the trace file. Edit a name
   there to rename a part; give two parts one name to merge them.
 
@@ -126,8 +133,10 @@ Exit codes
   5  endpoint configuration, such as a missing key
   6  interrupted, or stopped early (budget or a call above its reservation)
 
-Nothing leaves this machine except the provider calls a run makes, and the
-calls record forwards for your app. record listens on 127.0.0.1 only.
+Nothing leaves this machine except the provider calls a run makes, the
+calls record forwards for your app, model names sent for prices, and with
+--judge the free-text replies sent to the judge. record listens on
+127.0.0.1 only.
 
 Metergraph runs this comparison continuously on live traffic: https://www.metergraph.dev
 `

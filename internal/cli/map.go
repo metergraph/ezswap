@@ -50,6 +50,11 @@ func (s *session) checkOptions(command string, mapMode bool) error {
 		}
 		return nil
 	}
+	if command != "map" {
+		if err := refuse([]string{"judge"}, "is for map. To judge a map run already made: metergraph-replay judge <run.json>"); err != nil {
+			return err
+		}
+	}
 	if command != "record" {
 		if err := refuse(recordOptions, "is for record."); err != nil {
 			return err

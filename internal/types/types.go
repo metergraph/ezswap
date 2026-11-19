@@ -350,4 +350,31 @@ type RunFile struct {
 	// Why the run ended early ("budget" | "interrupted" |
 	// "reservation_exceeded"), or nil when it finished.
 	Stopped *string `json:"stopped"`
+	// What a judge said about free-text replies, when the map asked one.
+	Judge *JudgeRecord `json:"judge,omitempty"`
 }
+
+// JudgeRecord is a judge's verdicts on the free-text replies of a map run.
+type JudgeRecord struct {
+	Model    string  `json:"model"`
+	Question string  `json:"question"`
+	CostUSD  float64 `json:"costUsd"`
+	// One per pair judged: a reply against the one it is compared with.
+	Judgements []Judgement `json:"judgements"`
+}
+
+// Judgement is the verdict on one reply against another.
+type Judgement struct {
+	CaseID string `json:"caseId"`
+	// The reply judged: a treatment id, ArmFloorA1 or ArmFloorA2.
+	Arm string `json:"arm"`
+	// What it is compared with: JudgedAgainstRecording or ArmFloorA1.
+	Against string `json:"against"`
+	// The mean probability, over both orders, that the two differ.
+	PDifferent float64 `json:"pDifferent"`
+	// The two orders fell on different sides of one half.
+	Unsure bool `json:"unsure"`
+}
+
+// JudgedAgainstRecording is a Judgement against the recorded answer.
+const JudgedAgainstRecording = "recording"

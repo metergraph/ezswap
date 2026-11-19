@@ -194,7 +194,7 @@
 
     var detail = el("section", { class: "card", id: "detail" });
     app.appendChild(detail);
-    app.appendChild(el("div", { class: "foot" }, [el("p", { text: DATA.rule }), el("p", { text: DATA.footer }),
+    app.appendChild(el("div", { class: "foot" }, [DATA.judgedNote ? el("p", { text: DATA.judgedNote }) : null, el("p", { text: DATA.rule }), el("p", { text: DATA.footer }),
       el("p", { class: "faint", text: "Prices: " + DATA.catalog + ". Made " + DATA.created + " by metergraph-replay." })]));
 
     function rerunSentence() {
@@ -235,6 +235,7 @@
       figures.push(["Cost per call", pct(mt.costPerCallChange)]);
       figures.push(["Latency", pct(mt.latencyChange)]);
       if (mt.cutOff) figures.push(["Cut off", mt.cutOff + " of " + mt.paired]);
+      if (mt.judged) figures.push(["Judge unsure", (mt.unsure || 0) + " of " + mt.paired]);
       if (mt.failed) figures.push(["Failed calls", String(mt.failed)]);
       detail.appendChild(el("div", { class: "figures" }, figures.map(function (f) {
         return el("div", { class: "figure" }, [el("div", { class: "k", text: f[0] }), el("div", { class: "v", text: f[1] })]);
@@ -263,7 +264,14 @@
         var rerun = c.arms.floor_a1;
         var status, kind;
         var problem = unreadable(reply);
-        if (!part.paths || !part.paths.length) { status = problem || "reply"; kind = problem ? "other" : "same"; }
+        var verdict = (c.judged || {})[t.id];
+        if (mt.judged) {
+          if (!reply || reply.status !== "ok") { status = problem || "no reply"; kind = "other"; }
+          else if (!verdict) { status = "not judged"; kind = "other"; }
+          else if (verdict.pDifferent > 0.5) { status = "changed"; kind = "changed"; }
+          else { status = "same"; kind = "same"; }
+        }
+        else if (!part.paths || !part.paths.length) { status = problem || "reply"; kind = problem ? "other" : "same"; }
         else if (reply && reply.status !== "ok") { status = problem; kind = "other"; }
         else if (!rerun || rerun.status !== "ok") { status = "not paired"; kind = "other"; }
         else if (changed[c.id]) { status = "changed"; kind = "changed"; }
@@ -275,12 +283,14 @@
       rows.forEach(function (r) { counts[r.kind]++; });
       var filter = counts.changed ? "changed" : "all";
       detail.appendChild(el("h3", { text: "Cases" }));
-      if (!part.paths || !part.paths.length) {
+      if (mt.judged) {
+        detail.appendChild(el("p", { class: "muted", text: "This part is free text. " + DATA.judge + " judged each reply against the recorded one, asked in both orders: changed means it found different facts, commitments or next steps." }));
+      } else if (!part.paths || !part.paths.length) {
         detail.appendChild(el("p", { class: "muted", text: "This part is free text, so Replay does not compare it. The replies are side by side to read." }));
       }
       var bar = el("div", { class: "filters", role: "group", "aria-label": "Show cases" });
       var list = el("div");
-      [["changed", "Changed"], ["same", part.paths && part.paths.length ? "Same" : "Replied"], ["other", "Other"], ["all", "All"]].forEach(function (f) {
+      [["changed", "Changed"], ["same", (part.paths && part.paths.length) || mt.judged ? "Same" : "Replied"], ["other", "Other"], ["all", "All"]].forEach(function (f) {
         if (f[0] !== "all" && !counts[f[0]]) return;
         var b = el("button", { type: "button", "aria-pressed": String(f[0] === filter), text: f[1] + " (" + counts[f[0]] + ")" });
         b.addEventListener("click", function () {
@@ -307,7 +317,7 @@
       var last = c.messages && c.messages.length ? c.messages[c.messages.length - 1].content : "";
       var summary = el("summary", null, [
         el("span", { class: "status " + r.kind, text: r.status }),
-        change ? el("span", { class: "mono", text: change.path.replace(/^\$\./, "") + ": " + change.from + " → " + change.to }) : null,
+        change ? el("span", { class: "mono", text: change.path === "meaning" ? change.to : change.path.replace(/^\$\./, "") + ": " + change.from + " → " + change.to }) : null,
         el("span", { class: "preview", text: last }),
         el("span", { class: "faint mono", text: c.id })
       ]);

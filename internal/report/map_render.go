@@ -158,6 +158,11 @@ func RenderMap(m *Map, o RenderOptions) string {
 		}
 	}
 	lines = append(lines, "")
+	if note := JudgedNote(m); note != "" {
+		for _, line := range term.Wrap(c.clean(note), c.w) {
+			lines = append(lines, p.Muted(line))
+		}
+	}
 	for _, line := range term.Wrap(MapRule, c.w) {
 		lines = append(lines, p.Muted(line))
 	}
@@ -205,11 +210,34 @@ func changeBlock(c ctx, part MapPart, t MapTreatment) []string {
 			lines = append(lines, p.Muted(fmt.Sprintf("  and %d more", len(t.Changes)-limit)))
 			break
 		}
+		if t.Judged {
+			lines = append(lines, "  "+p.Muted(term.PadEnd(c.cut(change.CaseID, 18), ids))+"  "+c.cut(change.To, 40))
+			continue
+		}
 		lines = append(lines, "  "+p.Muted(term.PadEnd(c.cut(change.CaseID, 18), ids))+"  "+
 			term.PadEnd(c.cut(ShortPath(change.Path), mapValueWidth), width)+"  "+
 			c.cut(change.From, mapValueWidth)+" -> "+c.cut(change.To, mapValueWidth))
 	}
 	return lines
+}
+
+// JudgedNote names the free-text parts a judge compared, and what its
+// CHANGED means, or "" when no part was judged.
+func JudgedNote(m *Map) string {
+	var names []string
+	for _, part := range m.Parts {
+		for _, t := range part.Treatments {
+			if t.Judged {
+				names = append(names, part.Name)
+				break
+			}
+		}
+	}
+	if len(names) == 0 {
+		return ""
+	}
+	return fmt.Sprintf("JUDGED: %s %s free text, compared by %s. CHANGED counts replies it judged to give different facts, commitments or next steps from the recorded one, asked in both orders; RERUN is judged the same way.",
+		strings.Join(names, ", "), plural(len(names), "is", "are"), m.JudgeModel)
 }
 
 // MapJSON is the map as --json prints it.

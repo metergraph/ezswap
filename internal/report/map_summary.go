@@ -124,6 +124,9 @@ func summaryBlock(c ctx, m *Map) []string {
 	if anyCut {
 		key += " *: replies cut off at the output cap (see the notes below)."
 	}
+	if JudgedNote(m) != "" {
+		key += " Free-text parts were compared by " + m.JudgeModel + " (see JUDGED below)."
+	}
 	lines = append(lines, term.Wrap(p.Muted(key), c.w)...)
 	return lines
 }

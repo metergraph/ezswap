@@ -256,7 +256,9 @@ spending and does not depend on what a treatment returns.
 
 A part with no field to compare is `not comparable`:
 
-- `free text`: fewer than half of its recorded outputs parse as JSON.
+- `free text`: fewer than half of its recorded outputs parse as JSON. With
+  `--judge`, these parts are compared by a judge model instead; see
+  [judged free-text parts](#judged-free-text-parts).
 - `no comparable field`: the outputs are JSON, and no field qualifies.
 
 ### How two answers are compared
@@ -296,7 +298,7 @@ wins.
 
 | Label | When |
 |---|---|
-| `not comparable` | No field to compare (`free text`, `no comparable field`), or the run had no noise floor. |
+| `not comparable` | No field to compare (`free text` without `--judge`, `no comparable field`), or the run had no noise floor. |
 | `too few calls` | Fewer than 10 paired cases. |
 | `beyond noise` | The paired test below passes. |
 | `within noise` | Anything else. |
@@ -353,6 +355,54 @@ A treatment's block ends with notes when they apply:
   cap, and how many of those spent most of it reasoning. A reasoning model
   given the app's cap can use all of it thinking and return nothing. Rerun
   with `--max-tokens` or `--reasoning-effort` to see the model with room.
+
+## Judged free-text parts
+
+`map --judge` compares free-text parts with a judge model,
+`typesafe-ai/jev`, through the Vercel AI Gateway. It needs
+`AI_GATEWAY_API_KEY`. `metergraph-replay judge replay-out/run.json` does the
+same for a map already made, and writes the verdicts into that file.
+
+For each case the judge reads the request and two replies, and chooses
+whether they give the customer the same facts, commitments and next steps.
+Wording, tone, greetings, sign-offs and length do not matter. It judges:
+
+- each treatment's reply against the recorded one (`CHANGED`),
+- production's first rerun against the recorded one (`RERUN`),
+- production's second rerun against its first (`itself`).
+
+The label then follows the same rule as for JSON parts: a paired sign test
+of `CHANGED` against `RERUN`. A judge that leans one way leans the same way
+on both, so the test reads the difference.
+
+To limit the judge's own biases:
+
+- **Both orders.** Each pair is asked twice, with the replies swapped. The
+  verdict is the mean probability of the two; above one half is changed. A
+  case where the two orders disagree is counted and named in a note.
+- **Opaque choices.** The choices are named `L1` and `L2`, with what each
+  means in its description. Decision models have been reported to follow a
+  choice's name over its description.
+- **Empty replies are not sent.** A reply with no text against one with text
+  counts as changed without asking.
+
+What is sent: the system prompt, the messages and the two replies, each cut
+to 12,000 characters, go to the AI Gateway with zero data retention asked
+for. Nothing is sent without `--judge` or `judge`. A judged pair costs about
+$0.00004 (two calls); judging is not counted in `--budget`. Verdicts are
+stored in `run.json` under `judge`, so printing the map again asks nothing.
+A pair the judge could not answer is left out, and its case drops out of the
+part; run `judge` again to retry it.
+
+In the printed map, a `JUDGED` line names the judged parts, and `WHAT
+CHANGED` lists each changed case with the judge's probability. The HTML page
+shows the replies side by side with the verdict.
+
+In a pilot on synthetic support replies the judge called every reworded
+reply the same and every reply with one changed fact different. It also
+called production's own reruns different in up to 8 of 20 cases, when one
+promised tracking details and the other did not. That is the variation the
+`RERUN` count is there to absorb.
 
 ## Reading the map
 
@@ -437,6 +487,7 @@ treatment:
 | `result` | `within_noise`, `beyond_noise`, `too_few_calls` or `not_comparable`. |
 | `reason` | Why, for `too_few_calls` and `not_comparable`. Otherwise `null`. |
 | `costPerCallChange`, `latencyChange` | Relative changes (`-0.35` is 35% lower), or `null`. |
+| `judged`, `unsure` | A free-text part compared by the judge, and the cases where its verdict changed with the order of the replies. Absent when not judged. |
 | `cutOff`, `cutOffReasoning` | Paired replies cut off at the output cap, and those where reasoning took at least half the output. |
 | `pathCounts` | `changed` and `rerun` for each compared field. |
 | `changes` | Each changed case: `caseId`, `path`, `from`, `to`. |
@@ -461,7 +512,8 @@ treatment:
   or the Responses API `text.format`). A part recorded from another provider
   with a schema is replayed without the schema. That raises `CHANGED` and
   `RERUN` together.
-- **Free-text parts are not compared.** The map compares JSON fields.
+- **Free-text parts are compared only with `--judge`,** and then by a model
+  whose accuracy on this task has not been published. Read the cases.
 - **Calls that offered tools are left out**, unless the call forced its one
   tool. A part made mostly of such calls can end up with too few cases.
 - **A label is read from a sample.** Ten paired cases is the minimum for a

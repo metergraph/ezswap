@@ -9,6 +9,7 @@ metergraph-replay map traces.jsonl --models openai/gpt-5-mini
 metergraph-replay estimate traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5
 metergraph-replay run traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5 --budget 2.00
 metergraph-replay report replay-out/run.json
+metergraph-replay judge replay-out/run.json
 ```
 
 Installed from npm, prefix each with `npx` (`npx metergraph-replay demo`).
@@ -23,6 +24,7 @@ The README lists every way to install it.
 | `estimate <traces> --map` | Lists the parts of the app (name, how it was named, cases, compared fields, expected cost) and prices a map. Makes no provider call. Writes the names file. |
 | `map <traces>` | Estimates, asks before spending, replays a sample of every part on every model and twice on production's model, then writes `run.json` and prints the map. See [the sensitivity map](sensitivity-map.md). |
 | `run <traces>` | Estimates, asks before spending, replays every case on every model plus the noise floor, then writes `run.json` and prints the report. |
+| `judge <run.json>` | Judges the free-text parts of a run that `map` made, writes the verdicts into the same `run.json` and prints the map. Pairs already judged are not asked again. See [judged parts](sensitivity-map.md#judged-free-text-parts). |
 | `report <run.json>` | Opens the interactive explorer on an existing run. Without an interactive terminal, or with `--no-interactive`, it prints the report instead. On a run that `map` made it prints the map, never the explorer. |
 
 The report and the map live in the terminal. Replay writes three files and
@@ -30,7 +32,7 @@ nothing else:
 
 | File | Written by | Holds |
 |---|---|---|
-| `<out>/run.json` | `run`, `map`, `demo` (not `demo --map`) | The sampled prompts and every model's output. |
+| `<out>/run.json` | `run`, `map`, `demo` (not `demo --map`), `judge` (rewrites it) | The sampled prompts and every model's output, and the judge's verdicts. |
 | `<out>/traces.jsonl` | `record` | Each captured call's request and response bodies. Appended to. |
 | `replay-parts.json`, beside the trace file | `estimate --map`, `map` | Part keys and names. |
 
@@ -105,6 +107,7 @@ display options:
 
 | Option | Default | |
 |---|---|---|
+| `--judge` | off | `map`: compare free-text parts with a judge model. See [judged parts](sensitivity-map.md#judged-free-text-parts). |
 | `--map` | off | `estimate`: list the parts and price a map. `demo`: print the bundled map. `report`: accepted on a run that `map` made (which prints the map either way), a usage error on any other run. |
 | `--per-part N` | 20 | The latest N replayable cases of each part, one per trace id (10 to 200). |
 | `--part-key KEY` | none | The key that holds the part name in your records. See [trace formats](trace-format.md#parts). |
@@ -129,6 +132,7 @@ An option given to a command that does not take it is a usage error (exit
 | `--map` | yes | no (always a map) | yes | yes | `estimate` only | no |
 | `--per-part`, `--part-key`, `--ignore` | yes | yes | no | no | no | no |
 | `--only`, `--name` | yes | yes | yes | no | no | no |
+| `--judge` | no | yes | no (use `judge`) | no | no | no |
 | `--sample` | no | no | not used | not used | yes | no |
 | `--upstream`, `--port` | no | no | no | no | no | yes |
 | `--models`, `--budget` and the other replay options | yes | yes | not used | not used | yes | no |

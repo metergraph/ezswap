@@ -19,7 +19,8 @@ Metergraph's free [Pricing API](https://metergraph.dev/docs/reference/pricing-ap
 when a model you name is not in Replay's bundled price catalog. That request
 carries the model names only, never a trace, prompt or key. The answer is
 cached for a day. Turn it off with `--no-price-lookup` or
-`METERGRAPH_REPLAY_NO_PRICE_LOOKUP=1`.
+`METERGRAPH_REPLAY_NO_PRICE_LOOKUP=1`. With `--judge`, free-text replies
+also go to a judge model; see below.
 
 Replay writes three files, all on your machine: `run.json` (a finished run
 or map), `traces.jsonl` (what `record` captured) and `replay-parts.json`
@@ -175,7 +176,10 @@ again with `metergraph-replay report replay-out/run.json`.
 
 Calls with no part name are grouped by a fingerprint of their system prompt,
 forced tool and response schema. Parts whose outputs are free text are
-priced and timed but not compared: the map compares JSON fields.
+priced and timed but not compared: the map compares JSON fields. Add
+`--judge` to have a judge model (`typesafe-ai/jev` through the Vercel AI
+Gateway) compare them by meaning; the replies are then sent to it. See
+[judged free-text parts](docs/sensitivity-map.md#judged-free-text-parts).
 
 ## Compare models over a whole trace file
 

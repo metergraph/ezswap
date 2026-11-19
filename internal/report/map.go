@@ -28,6 +28,10 @@ const (
 	ResultNotComparable = "not_comparable"
 
 	ReasonNoFloor = "no noise floor"
+
+	// JudgedPath stands for the path in a judged free-text part's changes:
+	// the judge compares the whole reply.
+	JudgedPath = "meaning"
 )
 
 // ErrNotMapRun is report --map on a run that `map` did not make.
@@ -94,6 +98,11 @@ type MapTreatment struct {
 	CutOff          int `json:"cutOff"`
 	CutOffReasoning int `json:"cutOffReasoning"`
 
+	// A free-text part compared by a judge, and the cases where its
+	// verdict changed with the order of the two replies.
+	Judged bool `json:"judged,omitempty"`
+	Unsure int  `json:"unsure,omitempty"`
+
 	Paths   []MapPathCount `json:"pathCounts"`
 	Changes []MapChange    `json:"changes"`
 	Notes   []string       `json:"notes"`
@@ -121,7 +130,9 @@ type Map struct {
 	BudgetUSD  float64           `json:"-"`
 	Stopped    *string           `json:"-"`
 	Treatments []types.Treatment `json:"-"`
-	Parts      []MapPart         `json:"parts"`
+	// The judge of free-text parts, or "".
+	JudgeModel string    `json:"-"`
+	Parts      []MapPart `json:"parts"`
 }
 
 // reading is one output read as JSON.
@@ -233,6 +244,42 @@ func showAt(r reading, path string) string {
 		return "(no value)"
 	}
 	return core.Stringify(value, "")
+}
+
+func judgeKey(caseID, arm, against string) string {
+	return caseID + "\x00" + arm + "\x00" + against
+}
+
+// judgedText is a judged change as WHAT CHANGED shows it.
+func judgedText(j *types.Judgement) string {
+	text := fmt.Sprintf("judged different (%.0f%%)", j.PDifferent*100)
+	if j.Unsure {
+		text += ", unsure"
+	}
+	return text
+}
+
+// FreeTextCases is the cases of a map run's free-text parts: those a judge
+// can compare. Parts are grouped as the map prints them with no options.
+func FreeTextCases(run *types.RunFile) ([]types.Case, error) {
+	if !IsMapRun(run) {
+		return nil, ErrNotMapRun
+	}
+	groups, err := groupCases(run, MapOptions{})
+	if err != nil {
+		return nil, err
+	}
+	var out []types.Case
+	for _, group := range groups {
+		outputs := make([]*string, len(group.cases))
+		for i, kase := range group.cases {
+			outputs[i] = kase.Production.Output
+		}
+		if _, reason := parts.ComparedPaths(outputs, run.Settings.TrackedFields, run.Settings.IgnoredFields); reason == parts.ReasonFreeText {
+			out = append(out, group.cases...)
+		}
+	}
+	return out, nil
 }
 
 // ShortPath is a path as the map prints it: without the leading "$.".
@@ -391,6 +438,15 @@ func BuildMap(run *types.RunFile, options MapOptions) (*Map, error) {
 		Stopped:    run.Stopped,
 		Treatments: run.Treatments,
 	}
+	var verdicts map[string]*types.Judgement
+	if run.Judge != nil {
+		m.JudgeModel = run.Judge.Model
+		verdicts = map[string]*types.Judgement{}
+		for i := range run.Judge.Judgements {
+			j := &run.Judge.Judgements[i]
+			verdicts[judgeKey(j.CaseID, j.Arm, j.Against)] = j
+		}
+	}
 	for _, kase := range run.Cases {
 		if kase.PartKey == "" || kase.TS == nil || len(*kase.TS) < 10 || !dayPattern.MatchString((*kase.TS)[:10]) {
 			continue
@@ -431,7 +487,7 @@ func BuildMap(run *types.RunFile, options MapOptions) (*Map, error) {
 		}
 		for ti, treatment := range run.Treatments {
 			part.Treatments = append(part.Treatments,
-				mapTreatment(run, group, treatment, Letter(ti), paths, reason, counted, controls, replays))
+				mapTreatment(run, group, treatment, Letter(ti), paths, reason, counted, controls, replays, verdicts))
 		}
 		m.Parts = append(m.Parts, part)
 	}
@@ -441,9 +497,12 @@ func BuildMap(run *types.RunFile, options MapOptions) (*Map, error) {
 func mapTreatment(
 	run *types.RunFile, group mapGroup, treatment types.Treatment, letter string,
 	paths []string, reason string, counted [][]string, controls []reading,
-	replays map[string]map[string]*types.Replay,
+	replays map[string]map[string]*types.Replay, verdicts map[string]*types.Judgement,
 ) MapTreatment {
 	out := MapTreatment{Label: letter, Model: treatment.Model, Paths: []MapPathCount{}, Changes: []MapChange{}, Notes: []string{}}
+	// A free-text part is compared by the judge's verdicts, when there are any.
+	judged := reason == parts.ReasonFreeText && verdicts != nil
+	out.Judged = judged
 	pathChanged, pathRerun := map[string]int{}, map[string]int{}
 	pathOnlyT, pathOnlyR := map[string]int{}, map[string]int{}
 	var costT, costA, latT, latA []float64
@@ -460,6 +519,19 @@ func mapTreatment(
 		if len(paths) > 0 && len(counted[i]) == 0 {
 			continue // left out: the recording has nothing to compare
 		}
+		var jt, jr, ji *types.Judgement
+		if judged {
+			jt = verdicts[judgeKey(kase.ID, treatment.ID, types.JudgedAgainstRecording)]
+			if ok(a1) {
+				jr = verdicts[judgeKey(kase.ID, types.ArmFloorA1, types.JudgedAgainstRecording)]
+				if ok(a2) {
+					ji = verdicts[judgeKey(kase.ID, types.ArmFloorA2, types.ArmFloorA1)]
+				}
+			}
+			if jt == nil || (ok(a1) && jr == nil) {
+				continue // not judged: the judge failed or was not asked
+			}
+		}
 		if ok(a1) {
 			if t.CostUSD != nil && a1.CostUSD != nil {
 				costT, costA = append(costT, *t.CostUSD), append(costA, *a1.CostUSD)
@@ -474,6 +546,38 @@ func mapTreatment(
 			if mostlyReasoning(t.Usage) {
 				out.CutOffReasoning++
 			}
+		}
+		tally := func(changed, rerun, itself bool) {
+			if rerun {
+				out.Rerun++
+			}
+			if itself {
+				out.Itself++
+			}
+			switch {
+			case changed && !rerun:
+				out.OnlyTreatment++
+			case rerun && !changed:
+				out.OnlyRerun++
+			}
+			switch {
+			case rerun && !itself:
+				staleOnly++
+			case itself && !rerun:
+				itselfOnly++
+			}
+		}
+		if judged {
+			changed := jt.PDifferent > 0.5
+			if jt.Unsure {
+				out.Unsure++
+			}
+			if changed {
+				out.Changed++
+				out.Changes = append(out.Changes, MapChange{CaseID: kase.ID, Path: JudgedPath, From: "", To: judgedText(jt)})
+			}
+			tally(changed, jr != nil && jr.PDifferent > 0.5, ji != nil && ji.PDifferent > 0.5)
+			continue
 		}
 		if len(paths) == 0 {
 			continue
@@ -517,24 +621,7 @@ func mapTreatment(
 			}
 			out.Changes = append(out.Changes, MapChange{CaseID: kase.ID, Path: firstPath, From: showAt(controls[i], firstPath), To: to})
 		}
-		if rerun {
-			out.Rerun++
-		}
-		if itself {
-			out.Itself++
-		}
-		switch {
-		case changed && !rerun:
-			out.OnlyTreatment++
-		case rerun && !changed:
-			out.OnlyRerun++
-		}
-		switch {
-		case rerun && !itself:
-			staleOnly++
-		case itself && !rerun:
-			itselfOnly++
-		}
+		tally(changed, rerun, itself)
 	}
 	for _, path := range paths {
 		out.Paths = append(out.Paths, MapPathCount{Path: path, Changed: pathChanged[path], Rerun: pathRerun[path]})
@@ -549,7 +636,7 @@ func mapTreatment(
 		}
 	}
 	switch {
-	case reason != "" && reason != parts.ReasonTooFew:
+	case reason != "" && reason != parts.ReasonTooFew && !judged:
 		set(ResultNotComparable, reason)
 	case !run.Settings.NoiseFloor:
 		set(ResultNotComparable, ReasonNoFloor)
@@ -564,7 +651,17 @@ func mapTreatment(
 		out.Changes = []MapChange{}
 		return out
 	}
-	if out.Rerun*2 > out.Paired {
+	if judged && out.Rerun*2 > out.Paired {
+		out.Notes = append(out.Notes, fmt.Sprintf(
+			"%s: the judge found a rerun of production's own model saying something different from its recording in %d of %d cases. A treatment can hardly exceed that.",
+			group.name, out.Rerun, out.Paired))
+	}
+	if judged && out.Unsure > 0 {
+		out.Notes = append(out.Notes, fmt.Sprintf(
+			"%s: the judge's verdict changed with the order of the two replies in %d of %d cases; each counts by the mean of both orders.",
+			group.name, out.Unsure, out.Paired))
+	}
+	if !judged && out.Rerun*2 > out.Paired {
 		worst := out.Paths[0]
 		for _, p := range out.Paths {
 			if p.Rerun > worst.Rerun {

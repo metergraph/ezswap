@@ -51,6 +51,13 @@ type pageCase struct {
 	Messages []types.Message  `json:"messages"`
 	Recorded reply            `json:"recorded"`
 	Arms     map[string]reply `json:"arms"`
+	// The judge's verdicts against the recording, by arm, in a judged part.
+	Judged map[string]judged `json:"judged,omitempty"`
+}
+
+type judged struct {
+	PDifferent float64 `json:"pDifferent"`
+	Unsure     bool    `json:"unsure"`
 }
 
 type summary struct {
@@ -70,6 +77,8 @@ type mapData struct {
 	Catalog    string           `json:"catalog"`
 	Created    string           `json:"created"`
 	Rule       string           `json:"rule"`
+	Judge      string           `json:"judge,omitempty"`
+	JudgedNote string           `json:"judgedNote,omitempty"`
 	Footer     string           `json:"footer"`
 	Treatments []treatment      `json:"treatments"`
 	Parts      []report.MapPart `json:"parts"`
@@ -90,6 +99,19 @@ func MapPage(run *types.RunFile, m *report.Map) ([]byte, error) {
 		SpentUSD: m.SpentUSD, BudgetUSD: m.BudgetUSD, Stopped: m.Stopped,
 		Catalog: run.Catalog.Version, Created: run.CreatedAt,
 		Rule: report.MapRule, Footer: report.MapFooter, Parts: withNotes(m.Parts),
+		Judge: m.JudgeModel, JudgedNote: report.JudgedNote(m),
+	}
+	verdicts := map[string]map[string]judged{}
+	if run.Judge != nil {
+		for _, j := range run.Judge.Judgements {
+			if j.Against != types.JudgedAgainstRecording {
+				continue
+			}
+			if verdicts[j.CaseID] == nil {
+				verdicts[j.CaseID] = map[string]judged{}
+			}
+			verdicts[j.CaseID][j.Arm] = judged{PDifferent: j.PDifferent, Unsure: j.Unsure}
+		}
 	}
 	sameEndpoint := true
 	for _, t := range m.Treatments {
@@ -130,6 +152,7 @@ func MapPage(run *types.RunFile, m *report.Map) ([]byte, error) {
 			ID: c.ID, Part: name, TS: c.TS, System: c.System, Messages: c.Messages,
 			Recorded: reply{Status: "ok", Output: c.Production.Output, FinishReason: c.Production.FinishReason, Refusal: c.Production.Refusal},
 			Arms:     map[string]reply{},
+			Judged:   verdicts[c.ID],
 		}
 		for arm, r := range replays[c.ID] {
 			out := reply{Status: r.Status, Output: r.Output, FinishReason: r.FinishReason, Refusal: r.Refusal, CostUSD: r.CostUSD, LatencyMs: r.LatencyMs}

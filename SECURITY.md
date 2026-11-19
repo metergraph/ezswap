@@ -19,8 +19,9 @@ calls model endpoints with your keys. It is designed to keep these boundaries:
 
 - **No telemetry.** Replay makes no network request except the model calls a
   `run` or `map` sends to the endpoints you name, the calls `record`
-  forwards for your app to the one upstream you name, and one price lookup.
-  `demo` and `report` make none.
+  forwards for your app to the one upstream you name, one price lookup, and
+  with `map --judge` or `judge` the judge's calls. `demo` and `report` make
+  none.
 - **The price lookup sends model names only.** When `estimate`, `run` or
   `map` is given a `creator/model` id that the bundled price catalog cannot
   price, Replay asks Metergraph's Pricing API
@@ -31,6 +32,11 @@ calls model endpoints with your keys. It is designed to keep these boundaries:
   mode 0600). `--no-price-lookup` or `METERGRAPH_REPLAY_NO_PRICE_LOOKUP=1`
   turns it off; `METERGRAPH_PRICING_URL` points it elsewhere. A failed lookup
   leaves the models unpriced and the run goes on.
+- **The judge sees free-text replies, only when asked.** `map --judge` and
+  `judge` send each judged case's system prompt, messages and two replies to
+  the Vercel AI Gateway (`POST https://ai-gateway.vercel.sh/v1/decisions`)
+  for `typesafe-ai/jev`, with zero data retention requested, using
+  `AI_GATEWAY_API_KEY`. Without either, nothing is sent to a judge.
 - **`record` listens on this machine only.** It binds `127.0.0.1` on one
   port (default 8787). It answers a request only when the request names
   `127.0.0.1:<port>` or `localhost:<port>` as its host and carries no
