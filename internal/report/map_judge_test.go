@@ -80,6 +80,23 @@ func TestJudgedFreeTextPartIsLabelled(t *testing.T) {
 	}
 }
 
+// A crafted run file cannot put terminal escapes into the printed map.
+func TestJudgeModelIsCleaned(t *testing.T) {
+	run := judgedDemo(t, 12, 2, 20)
+	run.Judge.Model = "evil\x1b]0;pwned\x07/judge"
+	// Two treatments, so the summary block (which names the judge) prints.
+	second := run.Treatments[0]
+	second.ID, second.Label = "t-second", "examplelab/second"
+	run.Treatments = append(run.Treatments, second)
+	m, _ := BuildMap(run, MapOptions{})
+	if JudgedNote(m) == "" {
+		t.Fatal("no judged part")
+	}
+	if text := RenderMap(m, RenderOptions{Width: 100}); strings.Contains(text, "\x1b]") || strings.Contains(text, "\x07") {
+		t.Fatalf("an escape reached the map:\n%q", text)
+	}
+}
+
 func TestUnjudgedCasesDropOut(t *testing.T) {
 	m, _ := BuildMap(judgedDemo(t, 3, 0, 8), MapOptions{})
 	got := partNamed(t, m, "draft-reply").Treatments[0]
