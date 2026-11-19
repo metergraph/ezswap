@@ -1,6 +1,6 @@
 {
  "source": {
-  "repository": "https://github.com/PioneerSquareLabs/metergraph",
+  "repository": "https://github.com/metergraph/metergraph",
   "path": "core/src/metergraph_core/data/prices.yaml",
   "commit": "0000000000000000000000000000000000000000",
   "license": "Apache-2.0"

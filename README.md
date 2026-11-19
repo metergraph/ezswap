@@ -1,30 +1,52 @@
 # Metergraph Replay
 
-Which parts of my app change when I change the model?
+[![CI](https://github.com/metergraph/replay/actions/workflows/ci.yml/badge.svg)](https://github.com/metergraph/replay/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/metergraph/replay?sort=semver)](https://github.com/metergraph/replay/releases)
+[![Go](https://img.shields.io/github/go-mod/go-version/metergraph/replay)](https://github.com/metergraph/replay/blob/main/go.mod)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/metergraph/replay/blob/main/LICENSE)
 
-Metergraph Replay replays your recorded LLM calls on other models and shows
-what changes. Its **sensitivity map** answers the question part by part: for
-each place in your app that calls a model, how many answers change on the
-new model, set against how many change when production's own model is simply
-run again. That second figure is the **noise floor**. A part is flagged only
-when the new model changes more than a rerun does.
+**Find out which of your app's LLM calls can move to a cheaper model, from
+your own production traffic.**
 
-Replay prices every run before it spends anything, and can also compare
-models over a whole trace file for cost, latency and output differences.
+Replay takes the model calls your app already makes, replays them on the
+models you are considering, and shows for each place in your app how many
+answers change. It sets that against how many change when production's own
+model is simply run again, so a part is flagged only when a new model
+changes more than chance does.
 
-Local, no account, your own keys. Replay sends no telemetry. The network
-traffic is the provider calls you ask for (the calls a `run` or `map` sends,
-and the calls `record` forwards for your app), plus one request to
-Metergraph's free [Pricing API](https://metergraph.dev/docs/reference/pricing-api)
-when a model you name is not in Replay's bundled price catalog. That request
-carries the model names only, never a trace, prompt or key. The answer is
-cached for a day. Turn it off with `--no-price-lookup` or
-`METERGRAPH_REPLAY_NO_PRICE_LOOKUP=1`. With `--judge`, free-text replies
-also go to a judge model; see below.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/metergraph/replay/main/docs/images/map-dark.png">
+  <img alt="The sensitivity map of a support desk recorded on Claude Sonnet 5.5: Claude Haiku 5.5 stays within noise on all four parts for 93% less per call, while GPT-5.4 nano changes 15 of 20 ticket classifications." src="https://raw.githubusercontent.com/metergraph/replay/main/docs/images/map-light.png">
+</picture>
 
-Replay writes three files, all on your machine: `run.json` (a finished run
-or map), `traces.jsonl` (what `record` captured) and `replay-parts.json`
-(part names, beside the trace file).
+<sub>A support desk recorded on Claude Sonnet 5.5, mapped against three
+cheaper models with the
+[example app](https://github.com/metergraph/replay/tree/main/examples/support-desk).
+Haiku 5.5 stays within noise everywhere for 93% less per call. GPT-5.4 nano
+changes 15 of 20 ticket classifications, against none when Sonnet runs
+again.</sub>
+
+## Features
+
+- **A map of your app, part by part.** Each place that calls a model is
+  compared on its own: classification can move to a small model while refund
+  decisions stay where they are.
+- **A noise floor, not a guess.** Production's model is replayed twice, so
+  every figure is read against how much production disagrees with itself.
+  Labels come from a paired sign test, not a threshold you tune.
+- **JSON fields and free text.** Structured answers are compared field by
+  field. Free-text replies can be compared by meaning with a judge model
+  (`--judge`), asked in both orders.
+- **Priced before it spends.** Every run is estimated first, asks before
+  spending, reserves each call's maximum cost and stops at your budget.
+- **Bring your traces, or record them.** Reads Replay JSONL, raw provider
+  logs (including Helicone and LiteLLM), Langfuse exports and OpenTelemetry
+  GenAI spans. `record` captures new ones through a local proxy.
+- **Any OpenAI-compatible endpoint.** OpenRouter, OpenAI, Vercel AI Gateway,
+  LiteLLM, Ollama, or your own base URL, with your own keys.
+- **Local and private.** One binary, no account, no telemetry. Results stay
+  on your machine, as a terminal report, an interactive explorer, or one
+  self-contained HTML page.
 
 ## Install
 
@@ -48,15 +70,25 @@ npm install -g metergraph-replay
 Prebuilt archives for macOS, Linux and Windows (amd64 and arm64) are on the
 [releases page](https://github.com/metergraph/replay/releases).
 
-## Try it
+## Quick start
+
+```sh
+metergraph-replay demo --map    # a bundled map: no keys, no network
+metergraph-replay record        # capture your app's calls, see "Map your own app"
+metergraph-replay estimate replay-out/traces.jsonl --map --models openai/gpt-5-mini
+metergraph-replay map replay-out/traces.jsonl --models openai/gpt-5-mini --html map.html
+```
+
+## Reading the map
 
 ```sh
 metergraph-replay demo --map
 ```
 
 `demo --map` prints the map of a bundled synthetic support desk with five
-parts. It needs no keys, makes no network request and writes no file. This
-is its output with `COLUMNS=80` and stdout not a terminal (so plain ASCII):
+parts and one candidate model. It needs no keys, makes no network request
+and writes no file. This is its output with `COLUMNS=80` and stdout not a
+terminal (so plain ASCII):
 
 ```text
 A map of a synthetic support desk with five parts, recorded so it needs no keys and no network.
@@ -179,7 +211,7 @@ forced tool and response schema. Parts whose outputs are free text are
 priced and timed but not compared: the map compares JSON fields. Add
 `--judge` to have a judge model (`typesafe-ai/jev` through the Vercel AI
 Gateway) compare them by meaning; the replies are then sent to it. See
-[judged free-text parts](docs/sensitivity-map.md#judged-free-text-parts).
+[judged free-text parts](https://github.com/metergraph/replay/blob/main/docs/sensitivity-map.md#judged-free-text-parts).
 
 ## Compare models over a whole trace file
 
@@ -262,6 +294,29 @@ map says a model is good enough to switch to.
 
 Metergraph runs this comparison continuously on live traffic: https://www.metergraph.dev
 
+## Privacy and network
+
+Local, no account, your own keys. Replay sends no telemetry. Its network
+traffic is:
+
+- the provider calls you ask for: the calls a `run` or `map` sends, and the
+  calls `record` forwards for your app;
+- one request to Metergraph's free
+  [Pricing API](https://metergraph.dev/docs/reference/pricing-api) when a
+  model you name is not in Replay's bundled price catalog. It carries model
+  names only, never a trace, prompt or key, and the answer is cached for a
+  day. Turn it off with `--no-price-lookup` or
+  `METERGRAPH_REPLAY_NO_PRICE_LOOKUP=1`;
+- with `--judge` only, the judged requests and free-text replies, sent to
+  the judge model through the Vercel AI Gateway.
+
+Replay writes three files, all on your machine: `run.json` (a finished run
+or map), `traces.jsonl` (what `record` captured) and `replay-parts.json`
+(part names, beside the trace file). Trace files and `run.json` hold your
+prompts and replies, so keep them out of Git.
+[SECURITY.md](https://github.com/metergraph/replay/blob/main/SECURITY.md)
+lists every boundary Replay keeps.
+
 ## Documentation
 
 - [The sensitivity map](https://github.com/metergraph/replay/blob/main/docs/sensitivity-map.md): parts, what is compared, the label's rule and its limits.
@@ -270,12 +325,17 @@ Metergraph runs this comparison continuously on live traffic: https://www.meterg
 - [Trace formats](https://github.com/metergraph/replay/blob/main/docs/trace-format.md): what each input format must carry, and how parts are named.
 - [The noise floor](https://github.com/metergraph/replay/blob/main/docs/noise-floor.md): what it measures in the whole-file report and how to read it.
 
-## Contributing and security
+## Contributing
 
-See
-[CONTRIBUTING.md](https://github.com/metergraph/replay/blob/main/CONTRIBUTING.md).
-Report vulnerabilities privately as described in
-[SECURITY.md](https://github.com/metergraph/replay/blob/main/SECURITY.md).
+Issues and pull requests are welcome. See
+[CONTRIBUTING.md](https://github.com/metergraph/replay/blob/main/CONTRIBUTING.md)
+for setup and conventions, and the
+[changelog](https://github.com/metergraph/replay/blob/main/CHANGELOG.md) for
+what changed in each release. Report vulnerabilities privately as described
+in [SECURITY.md](https://github.com/metergraph/replay/blob/main/SECURITY.md).
+Everyone taking part follows the
+[code of conduct](https://github.com/metergraph/replay/blob/main/CODE_OF_CONDUCT.md).
 
-Licensed under
+## License
+
 [Apache-2.0](https://github.com/metergraph/replay/blob/main/LICENSE).

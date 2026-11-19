@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a vulnerability
+    url: https://github.com/metergraph/replay/security/advisories/new
+    about: Report security problems privately, not in a public issue.
+  - name: Metergraph
+    url: https://www.metergraph.dev
+    about: The hosted product that runs this comparison continuously on live traffic.

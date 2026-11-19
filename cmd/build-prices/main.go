@@ -36,7 +36,7 @@ import (
 )
 
 const (
-	sourceRepo = "https://github.com/PioneerSquareLabs/metergraph"
+	sourceRepo = "https://github.com/metergraph/metergraph"
 	sourcePath = "core/src/metergraph_core/data/prices.yaml"
 )
 
