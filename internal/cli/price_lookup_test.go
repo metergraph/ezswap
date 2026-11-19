@@ -4,6 +4,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -74,4 +75,23 @@ func TestPriceLookupFailureIsANote(t *testing.T) {
 	}
 	match(t, `Could not look up prices for examplelab/model-9: the Pricing API did not answer\.`, out.stdout)
 	match(t, `No price for: examplelab/model-9`, out.stdout)
+}
+
+func TestHTMLPage(t *testing.T) {
+	dir := t.TempDir()
+	path := dir + "/map.html"
+	out := cli(t, args("demo", "--map", "--html", path), nil, nil)
+	if out.code != ExitOK || !strings.Contains(out.stdout, "share it only where the traces may go") {
+		t.Fatalf("%d %s %s", out.code, out.stdout, out.stderr)
+	}
+	info, err := os.Stat(path)
+	if err != nil || info.Mode().Perm() != 0o600 || info.Size() < 1000 {
+		t.Fatalf("%v %v", info, err)
+	}
+	if out := cli(t, args("estimate", writeTraces(t, 1, nil), models, "--html", path), nil, nil); out.code != ExitUsage {
+		t.Errorf("estimate took --html: %d", out.code)
+	}
+	if out := cli(t, args("demo", "--map", "--html", ""), nil, nil); out.code != ExitUsage {
+		t.Errorf("an empty --html passed: %d", out.code)
+	}
 }

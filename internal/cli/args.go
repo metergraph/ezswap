@@ -38,6 +38,7 @@ var options = map[string]optionKind{
 	"no-price-lookup":  boolOption,
 	"adapter":          stringOption,
 	"out":              stringOption,
+	"html":             stringOption,
 	"json":             boolOption,
 	"explore":          boolOption,
 	"explain":          boolOption,

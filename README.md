@@ -193,7 +193,9 @@ metergraph-replay report replay-out/run.json
 - `run` estimates, asks before spending, replays every call on every model
   plus the noise floor, and stops at `--budget` (default $1.00).
 - `report` opens the explorer on a finished run. On a run that `map` made,
-  it prints the map instead.
+  it prints the map instead. Add `--html report.html` to any of `run`, `map`,
+  `report` or `demo` to write the result as one self-contained page to open
+  in a browser.
 
 Models go to an OpenAI-compatible endpoint you bring: OpenRouter (the
 default), OpenAI, Vercel AI Gateway, a LiteLLM proxy, Ollama, or any base

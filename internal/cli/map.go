@@ -55,6 +55,11 @@ func (s *session) checkOptions(command string, mapMode bool) error {
 			return err
 		}
 	}
+	if command == "estimate" || command == "record" {
+		if err := refuse([]string{"html"}, "is for run, map, report and demo, which have a result to draw."); err != nil {
+			return err
+		}
+	}
 	switch command {
 	case "record":
 		if err := refuse(runOnlyOptions, "is not for record: it forwards calls and replays nothing."); err != nil {
@@ -339,7 +344,11 @@ func (s *session) demoMap() (outcome, error) {
 	s.say("  metergraph-replay map traces.jsonl --models openai/gpt-5-mini")
 	s.say("")
 	s.printMap(m)
-	return outcome{ExitOK, object{{"command", "demo"}, {"parts", m.Parts}}}, nil
+	pageField, err := s.writePage(r, m, nil)
+	if err != nil {
+		return outcome{}, err
+	}
+	return outcome{ExitOK, append(object{{"command", "demo"}, {"parts", m.Parts}}, pageField...)}, nil
 }
 
 // commaList splits repeated, comma-separated option values.

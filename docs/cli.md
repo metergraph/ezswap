@@ -90,6 +90,7 @@ display options:
 | `--allow-unpriced` | off | Run models the price catalog does not know. |
 | `--no-price-lookup` | off | Do not ask Metergraph's Pricing API for models the bundled catalog cannot price. See [prices](#prices). |
 | `--adapter NAME` | detected | `replay-jsonl`, `raw`, `langfuse` or `otel`. See [trace formats](trace-format.md). |
+| `--html FILE` | none | `run`, `map`, `report` and `demo`: also write the result as one self-contained HTML page. See [the HTML page](#the-html-page). |
 | `--out DIR` | `./replay-out` | Where `run.json` goes (`demo`, `run` and `map`), and `record`'s `traces.jsonl`. Not for `report` or `demo --map`, which write nothing. |
 | `--explore` | off | `demo`: open the explorer instead of printing the report. Not for `demo --map`. |
 | `--no-interactive` | off | Print instead of drawing: `report` prints the report instead of opening the explorer, and `run` shows plain progress. Also the default when `CI` is set. |
@@ -292,6 +293,24 @@ models stay unpriced and Replay says so.
 | `--no-price-lookup` | No lookup for this command. |
 | `METERGRAPH_REPLAY_NO_PRICE_LOOKUP=1` | No lookup, ever. |
 | `METERGRAPH_PRICING_URL` | Another Pricing API base URL, such as a self-hosted Metergraph. |
+
+## The HTML page
+
+`--html FILE` writes the result as one HTML file with its data, styles and
+script inline. It opens from disk, works offline and makes no network
+request (a content security policy refuses any), so it can be attached to a
+pull request or sent as it is.
+
+- For a map: a table of every model on every part, then, for the cell you
+  choose, its counts, the fields compared, the notes, and each case with the
+  request, the recorded reply, the model's reply and production's rerun side
+  by side. Free-text parts show the replies side by side to read.
+- For a plain run: the report's table, cost, latency, production against
+  itself, and each case's replies.
+
+The page holds the prompts and replies from the trace file, so it is written
+readable by you only (mode 0600) and should go only where the traces may go.
+With `report`, `--html` writes the page instead of opening the explorer.
 
 ## Exit codes
 

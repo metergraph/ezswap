@@ -449,11 +449,11 @@ func TestCutOffNoteSaysWhenReasoningTookTheCap(t *testing.T) {
 		t.Fatalf("cut off %d, reasoning %d", got.CutOff, got.CutOffReasoning)
 	}
 	want := "part: 4 of 20 replies cut off at the output cap, 3 of them mostly reasoning. Try --max-tokens or --reasoning-effort."
-	if note := cutOffNote(part.Name, got); note != want {
+	if note := CutOffNote(part.Name, got); note != want {
 		t.Errorf("note %q", note)
 	}
 	got.CutOffReasoning = 0
-	if note := cutOffNote(part.Name, got); !strings.HasSuffix(note, "cap. Try --max-tokens.") {
+	if note := CutOffNote(part.Name, got); !strings.HasSuffix(note, "cap. Try --max-tokens.") {
 		t.Errorf("note without reasoning %q", note)
 	}
 }

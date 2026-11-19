@@ -625,8 +625,20 @@ func (s *session) run(file string, mapMode bool) (outcome, error) {
 		s.say("")
 		s.say("Print it again: metergraph-replay report " + shown)
 		mapFields = object{{"parts", m.Parts}}
-	} else if err := s.printReport(result, setup.tracked, shown, "add --explain to the report command below"); err != nil {
-		return outcome{}, err
+		pageField, err := s.writePage(result, m, nil)
+		if err != nil {
+			return outcome{}, err
+		}
+		mapFields = append(mapFields, pageField...)
+	} else {
+		if err := s.printReport(result, setup.tracked, shown, "add --explain to the report command below"); err != nil {
+			return outcome{}, err
+		}
+		pageField, err := s.writePage(result, nil, setup.tracked)
+		if err != nil {
+			return outcome{}, err
+		}
+		mapFields = pageField
 	}
 
 	counts := countReplays(result)
@@ -764,7 +776,7 @@ func (s *session) defaultExplore(r *types.RunFile, o ExploreOptions) (string, er
 
 func (s *session) report(file string) (outcome, error) {
 	if _, given := s.v.str("out"); given {
-		return outcome{}, usagef("report draws in the terminal and writes no file, so it takes no --out.")
+		return outcome{}, usagef("report reads a run file and writes none, so it takes no --out. To save a page, use --html.")
 	}
 	r, err := readRunFile(file)
 	if err != nil {
@@ -794,7 +806,21 @@ func (s *session) report(file string) (outcome, error) {
 			return outcome{}, err
 		}
 		s.printMap(m)
-		return outcome{ExitOK, append(fields, field{"parts", m.Parts})}, nil
+		pageField, err := s.writePage(r, m, nil)
+		if err != nil {
+			return outcome{}, err
+		}
+		return outcome{ExitOK, append(append(fields, field{"parts", m.Parts}), pageField...)}, nil
+	}
+	if path, err := s.htmlPath(); err != nil {
+		return outcome{}, err
+	} else if path != "" {
+		// Writing the page replaces opening the explorer.
+		pageField, err := s.writePage(r, nil, tracked)
+		if err != nil {
+			return outcome{}, err
+		}
+		return outcome{ExitOK, append(fields, pageField...)}, nil
 	}
 	if !s.asJSON && !s.v.bool("explain") && s.interactive() {
 		code, err := s.explore(r, tracked, s.shownPath(abs))
@@ -858,5 +884,9 @@ func (s *session) demo() (outcome, error) {
 	if err := s.printReport(r, tracked, s.shownPath(runPath), ""); err != nil {
 		return outcome{}, err
 	}
-	return outcome{ExitOK, fields}, nil
+	pageField, err := s.writePage(r, nil, tracked)
+	if err != nil {
+		return outcome{}, err
+	}
+	return outcome{ExitOK, append(fields, pageField...)}, nil
 }

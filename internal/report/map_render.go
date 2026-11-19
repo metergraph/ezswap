@@ -77,6 +77,9 @@ func RenderMap(m *Map, o RenderOptions) string {
 		lines = append(lines, "The run stopped early ("+c.clean(strings.ReplaceAll(*m.Stopped, "_", " "))+"). Parts are labelled from the cases that finished.")
 	}
 
+	if len(m.Treatments) >= 2 {
+		lines = append(lines, summaryBlock(c, m)...)
+	}
 	for ti, treatment := range m.Treatments {
 		lines = append(lines, "")
 		lines = append(lines, c.hue(ti, "treatment "+Letter(ti)+" "+c.clean(treatment.Label)))
@@ -134,7 +137,7 @@ func RenderMap(m *Map, o RenderOptions) string {
 				notes = append(notes, fmt.Sprintf("%s: %d treatment %s failed.", c.clean(part.Name), t.Failed, plural(t.Failed, "call", "calls")))
 			}
 			if t.CutOff > 0 {
-				notes = append(notes, cutOffNote(c.clean(part.Name), t))
+				notes = append(notes, CutOffNote(c.clean(part.Name), t))
 			}
 			if (t.Result == ResultBeyondNoise || t.Result == ResultWithinNoise) && t.Changed > 0 &&
 				(t.Result == ResultBeyondNoise || t.Changed > t.Rerun) {
@@ -214,9 +217,9 @@ func MapJSON(m *Map) ([]byte, error) {
 	return json.Marshal(m)
 }
 
-// cutOffNote says how many replies hit the output cap and, when reasoning
+// CutOffNote says how many replies hit the output cap and, when reasoning
 // took most of it, which options give the model room.
-func cutOffNote(name string, t MapTreatment) string {
+func CutOffNote(name string, t MapTreatment) string {
 	note := fmt.Sprintf("%s: %d of %d replies cut off at the output cap", name, t.CutOff, t.Paired)
 	if t.CutOffReasoning == 0 {
 		return note + ". Try --max-tokens."

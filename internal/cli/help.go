@@ -104,6 +104,8 @@ Spend
 Output
   --out DIR                Where run.json goes, and record's traces.jsonl
                            (default ./replay-out).
+  --html FILE              run, map, report, demo: also write the result as one
+                           self-contained HTML page (it holds the replies).
   --explore                demo: open the explorer instead of printing the report.
   --no-interactive         Print instead of drawing: no explorer for report, and
                            plain progress for run. Also the default when CI is set.
