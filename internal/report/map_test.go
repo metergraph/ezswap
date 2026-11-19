@@ -425,3 +425,35 @@ func TestObjectsCompareWithoutKeyOrderAndDatesAreChecked(t *testing.T) {
 		t.Fatalf("a timestamp that is not a date reached the header: %q", m.From)
 	}
 }
+
+func TestCutOffNoteSaysWhenReasoningTookTheCap(t *testing.T) {
+	run := runOf(same(20, `{"label":"a"}`), nil)
+	length := "length"
+	thought, plain, out := 190.0, 20.0, 200.0
+	for i := range run.Replays {
+		r := &run.Replays[i]
+		if r.Arm != "t1" {
+			continue
+		}
+		switch r.CaseID {
+		case "case-00", "case-01", "case-02":
+			r.FinishReason, r.Output = &length, str("")
+			r.Usage = &types.Usage{OutputTokens: &out, ReasoningTokens: &thought}
+		case "case-03":
+			r.FinishReason, r.Output = &length, str(`{"label":`)
+			r.Usage = &types.Usage{OutputTokens: &out, ReasoningTokens: &plain}
+		}
+	}
+	part, got := only(t, run)
+	if got.CutOff != 4 || got.CutOffReasoning != 3 {
+		t.Fatalf("cut off %d, reasoning %d", got.CutOff, got.CutOffReasoning)
+	}
+	want := "part: 4 of 20 replies cut off at the output cap, 3 of them mostly reasoning. Try --max-tokens or --reasoning-effort."
+	if note := cutOffNote(part.Name, got); note != want {
+		t.Errorf("note %q", note)
+	}
+	got.CutOffReasoning = 0
+	if note := cutOffNote(part.Name, got); !strings.HasSuffix(note, "cap. Try --max-tokens.") {
+		t.Errorf("note without reasoning %q", note)
+	}
+}

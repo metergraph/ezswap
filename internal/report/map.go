@@ -89,6 +89,11 @@ type MapTreatment struct {
 	CostPerCallChange *float64 `json:"costPerCallChange"`
 	LatencyChange     *float64 `json:"latencyChange"`
 
+	// Paired cases the treatment's reply was cut off at the output cap,
+	// and of those, the ones where reasoning took most of the output.
+	CutOff          int `json:"cutOff"`
+	CutOffReasoning int `json:"cutOffReasoning"`
+
 	Paths   []MapPathCount `json:"pathCounts"`
 	Changes []MapChange    `json:"changes"`
 	Notes   []string       `json:"notes"`
@@ -197,6 +202,14 @@ func differs(a, b reading, path string) bool {
 		return true
 	}
 	return !sameValue(x, y)
+}
+
+// mostlyReasoning says reasoning took at least half of a reply's output.
+func mostlyReasoning(u *types.Usage) bool {
+	if u == nil || u.ReasoningTokens == nil || u.OutputTokens == nil || *u.OutputTokens <= 0 {
+		return false
+	}
+	return *u.ReasoningTokens*2 >= *u.OutputTokens
 }
 
 func ok(r *types.Replay) bool { return r != nil && r.Status == "ok" }
@@ -456,6 +469,12 @@ func mapTreatment(
 			}
 		}
 		out.Paired++
+		if unreadable(t) == "cut off" {
+			out.CutOff++
+			if mostlyReasoning(t.Usage) {
+				out.CutOffReasoning++
+			}
+		}
 		if len(paths) == 0 {
 			continue
 		}

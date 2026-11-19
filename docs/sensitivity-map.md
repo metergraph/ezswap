@@ -349,6 +349,10 @@ A treatment's block ends with notes when they apply:
   the test alone while other fields raise the part's baseline.
 - **Left-out cases.** How many cases had no value at any compared field.
 - **Failed calls.** How many treatment calls failed.
+- **Cut-off replies.** How many of the treatment's replies hit the output
+  cap, and how many of those spent most of it reasoning. A reasoning model
+  given the app's cap can use all of it thinking and return nothing. Rerun
+  with `--max-tokens` or `--reasoning-effort` to see the model with room.
 
 ## Reading the map
 
@@ -433,6 +437,7 @@ treatment:
 | `result` | `within_noise`, `beyond_noise`, `too_few_calls` or `not_comparable`. |
 | `reason` | Why, for `too_few_calls` and `not_comparable`. Otherwise `null`. |
 | `costPerCallChange`, `latencyChange` | Relative changes (`-0.35` is 35% lower), or `null`. |
+| `cutOff`, `cutOffReasoning` | Paired replies cut off at the output cap, and those where reasoning took at least half the output. |
 | `pathCounts` | `changed` and `rerun` for each compared field. |
 | `changes` | Each changed case: `caseId`, `path`, `from`, `to`. |
 | `notes` | The notes, as sentences. |

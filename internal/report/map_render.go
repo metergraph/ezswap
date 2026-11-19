@@ -133,6 +133,9 @@ func RenderMap(m *Map, o RenderOptions) string {
 			if t.Failed > 0 {
 				notes = append(notes, fmt.Sprintf("%s: %d treatment %s failed.", c.clean(part.Name), t.Failed, plural(t.Failed, "call", "calls")))
 			}
+			if t.CutOff > 0 {
+				notes = append(notes, cutOffNote(c.clean(part.Name), t))
+			}
 			if (t.Result == ResultBeyondNoise || t.Result == ResultWithinNoise) && t.Changed > 0 &&
 				(t.Result == ResultBeyondNoise || t.Changed > t.Rerun) {
 				blocks = append(blocks, changeBlock(c, part, t))
@@ -209,4 +212,14 @@ func changeBlock(c ctx, part MapPart, t MapTreatment) []string {
 // MapJSON is the map as --json prints it.
 func MapJSON(m *Map) ([]byte, error) {
 	return json.Marshal(m)
+}
+
+// cutOffNote says how many replies hit the output cap and, when reasoning
+// took most of it, which options give the model room.
+func cutOffNote(name string, t MapTreatment) string {
+	note := fmt.Sprintf("%s: %d of %d replies cut off at the output cap", name, t.CutOff, t.Paired)
+	if t.CutOffReasoning == 0 {
+		return note + ". Try --max-tokens."
+	}
+	return note + fmt.Sprintf(", %d of them mostly reasoning. Try --max-tokens or --reasoning-effort.", t.CutOffReasoning)
 }
