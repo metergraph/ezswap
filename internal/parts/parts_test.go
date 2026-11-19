@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"strings"
 	"testing"
 
@@ -279,5 +280,30 @@ func TestComparedPaths(t *testing.T) {
 	wide := `{"a":1,"b":2,"c":3,"d":4,"e":5,"f":6,"g":7,"h":8,"i":9,"j":10,"k":11,"l":12}`
 	if paths, _ := ComparedPaths(out(wide, wide), []string{"$.z"}, nil); len(paths) != MaxPaths || paths[0] != "$.z" {
 		t.Fatalf("cap of %d with tracked first: %v", MaxPaths, paths)
+	}
+}
+
+func TestFieldsAnsweredWithNullAreCompared(t *testing.T) {
+	outputs := out(
+		`{"account_id":"ACC-1","invoice_id":null,"error_code":null,"meta":{"a":1}}`,
+		`{"account_id":"ACC-2","invoice_id":"INV-7","error_code":null,"meta":null}`,
+		`{"account_id":"ACC-3","invoice_id":null,"error_code":null,"meta":{"a":2}}`,
+	)
+	paths, reason := ComparedPaths(outputs, nil, nil)
+	if reason != "" {
+		t.Fatal(reason)
+	}
+	for _, want := range []string{"$.account_id", "$.invoice_id", "$.error_code"} {
+		if !slices.Contains(paths, want) {
+			t.Errorf("%v lacks %s", paths, want)
+		}
+	}
+	// An object is not a short answer, null or not.
+	if slices.Contains(paths, "$.meta") {
+		t.Errorf("%v holds $.meta", paths)
+	}
+	// Ignored paths stay out.
+	if paths, _ := ComparedPaths(outputs, nil, []string{"$.error_code"}); slices.Contains(paths, "$.error_code") {
+		t.Errorf("ignored path compared: %v", paths)
 	}
 }

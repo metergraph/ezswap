@@ -102,7 +102,9 @@
       current = next;
     });
     if (many) return current.length ? { present: true, value: current } : { present: false };
-    if (!current.length || current[0] === null) return { present: false };
+    if (!current.length) return { present: false };
+    // A key held as null is the answer "none": compared, but no value.
+    if (current[0] === null) return { present: false, answered: true };
     return { present: true, value: current[0] };
   }
 
@@ -275,7 +277,7 @@
         else if (reply && reply.status !== "ok") { status = problem; kind = "other"; }
         else if (!rerun || rerun.status !== "ok") { status = "not paired"; kind = "other"; }
         else if (changed[c.id]) { status = "changed"; kind = "changed"; }
-        else if (part.paths.every(function (p) { var r = parse(c.recorded.output); return !r.ok || !at(r.value, p).present; })) { status = "left out"; kind = "other"; }
+        else if (part.paths.every(function (p) { var r = parse(c.recorded.output); if (!r.ok) return true; var got = at(r.value, p); return !got.present && !got.answered; })) { status = "left out"; kind = "other"; }
         else { status = "same"; kind = "same"; }
         return { c: c, status: status, kind: kind };
       });

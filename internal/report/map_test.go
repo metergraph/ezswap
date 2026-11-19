@@ -3,6 +3,7 @@ package report
 import (
 	"encoding/json"
 	"fmt"
+	"slices"
 	"strings"
 	"testing"
 
@@ -455,5 +456,26 @@ func TestCutOffNoteSaysWhenReasoningTookTheCap(t *testing.T) {
 	got.CutOffReasoning = 0
 	if note := CutOffNote(part.Name, got); !strings.HasSuffix(note, "cap. Try --max-tokens.") {
 		t.Errorf("note without reasoning %q", note)
+	}
+}
+
+// A field production answers with an explicit null is compared: a model that
+// fills it in (an id it guessed) has changed the answer.
+func TestAnExplicitNullIsAnAnswer(t *testing.T) {
+	recorded := `{"account_id":"ACC-1","invoice_id":null}`
+	rows := same(20, recorded)
+	for i := 0; i < 6; i++ {
+		rows[i].treatment = `{"account_id":"ACC-1","invoice_id":"INV-9"}`
+	}
+	rows[6].treatment = `{"account_id":"ACC-1"}` // the key left out: still "none"
+	part, got := only(t, runOf(rows, nil))
+	if !slices.Contains(part.Paths, "$.invoice_id") {
+		t.Fatalf("paths %v", part.Paths)
+	}
+	if got.Result != ResultBeyondNoise || got.Changed != 6 || got.Rerun != 0 || part.LeftOut != 0 {
+		t.Fatalf("%+v, left out %d", got, part.LeftOut)
+	}
+	if got.Changes[0].Path != "$.invoice_id" || got.Changes[0].From != "(no value)" || got.Changes[0].To != `"INV-9"` {
+		t.Fatalf("change %+v", got.Changes[0])
 	}
 }

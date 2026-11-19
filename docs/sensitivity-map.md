@@ -250,7 +250,11 @@ spending and does not depend on what a treatment returns.
 2. Then the fields Replay suggests: labels, numbers, lists, and short text
    of at most 120 characters. A field qualifies when it has a value in at
    least half of the part's recorded outputs.
-3. `--ignore PATH` removes a field, such as a generated id or a timestamp
+3. Then top-level fields that production's answers hold as an explicit
+   `null` in some outputs, when at least half of the outputs hold the key at
+   all: an extracted id that is usually absent, say. "None" is an answer,
+   and a model that fills one in has changed it.
+4. `--ignore PATH` removes a field, such as a generated id or a timestamp
    that differs on every call: `--ignore '$.request_id'`. Repeat it or
    separate paths with commas.
 
@@ -263,8 +267,8 @@ A part with no field to compare is `not comparable`:
 
 ### How two answers are compared
 
-Each case is compared at the compared fields where its recorded answer has a
-value. At one field:
+Each case is compared at the compared fields its recorded answer holds,
+with a value or as an explicit `null`. At one field:
 
 - Types must match. The text `"5"` is not the number `5`.
 - Text is compared after trimming spaces at either end.
@@ -277,7 +281,7 @@ value. At one field:
 A reply that is not JSON has no value at any field, so it counts as changed.
 So does a refusal, and a reply cut off at the token limit.
 
-A case whose recorded answer has no value at any compared field is left out,
+A case whose recorded answer holds none of the compared fields is left out,
 with a note.
 
 ### The counts

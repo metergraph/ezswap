@@ -162,6 +162,16 @@ func (r reading) at(path string) (any, bool) {
 	return value, true
 }
 
+// answers is whether the output holds the path at all, as a value or as an
+// explicit JSON null: a recorded null is the answer "none".
+func (r reading) answers(path string) bool {
+	if !r.ok {
+		return false
+	}
+	_, ok := core.ValueAt(r.value, path)
+	return ok
+}
+
 // sameValue is whether two values at one path are the same answer. Types
 // must match: the text "5" is not the number 5. Text is compared after
 // trimming spaces; lists in order, item by item.
@@ -477,7 +487,7 @@ func BuildMap(run *types.RunFile, options MapOptions) (*Map, error) {
 		for i, kase := range group.cases {
 			controls[i] = read(kase.Production.Output)
 			for _, path := range paths {
-				if _, present := controls[i].at(path); present {
+				if controls[i].answers(path) {
 					counted[i] = append(counted[i], path)
 				}
 			}
