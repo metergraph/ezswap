@@ -45,6 +45,9 @@ type CapturedCall struct {
 	Truncated bool `json:"truncated"`
 	// Field names the source did not carry, e.g. ["tools", "response_format"].
 	Missing []string `json:"missing"`
+	// The name the developer gave the place in the app that made this call,
+	// when the source carries one. Never guessed.
+	Part *string `json:"part,omitempty"`
 }
 
 type CapturedResponse struct {
@@ -137,6 +140,12 @@ type Case struct {
 	Missing      []string `json:"missing"`
 	// Nil when replayable.
 	NotReplayable *NotReplayableReason `json:"notReplayable"`
+	// The explicit part name, copied from the call.
+	Part *string `json:"part,omitempty"`
+	// Set by a map run on each replayable case: the part's key ("name:..." or
+	// "fp1:...") and the name it had when the run was made.
+	PartKey  string `json:"partKey,omitempty"`
+	PartName string `json:"partName,omitempty"`
 }
 
 type CaseOutput struct {
@@ -307,6 +316,11 @@ type RunSettings struct {
 	// Calls a month the user said the workload makes, for the monthly cost
 	// projection.
 	MonthlyCalls *float64 `json:"monthlyCalls,omitempty"`
+	// Set for a map run: cases sampled per part. Sample then holds the same
+	// value.
+	PerPart *int `json:"perPart,omitempty"`
+	// Paths left out of a map's comparison.
+	IgnoredFields []string `json:"ignoredFields,omitempty"`
 }
 
 type Tool struct {

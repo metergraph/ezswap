@@ -336,8 +336,7 @@ func RoleColor(p Paint, role Role) func(string) string {
 
 // Hyperlink is text that opens url when clicked, in terminals that support
 // OSC 8 (others show the text). Terminated with ST (ESC \). Emit it only when colour is on and not in ASCII mode,
-// and only for a URL the report built itself (the hosted link): never for
-// captured text.
+// and only for a URL the report built itself: never for captured text.
 func Hyperlink(url, text string) string {
 	return "\x1b]8;;" + url + "\x1b\\" + text + "\x1b]8;;\x1b\\"
 }

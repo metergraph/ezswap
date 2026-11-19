@@ -51,17 +51,7 @@ func summaryTab(c ctx, d *Data) []string {
 			return "+" + core.FormatCount(more) + " more on the Calls tab (press 4)"
 		},
 	})
-	lines := strings.Split(text, "\n")
-	lines = append(lines, "", c.p.Muted("Keep this running on live traffic:"))
-	if c.p.Color && !c.ascii {
-		lines = append(lines, c.p.Underline(term.Hyperlink(d.Link, report.HostedLabel)))
-	} else {
-		// Whole, over as many lines as it takes, so it can still be copied.
-		for _, l := range term.Wrap(d.Link, c.w) {
-			lines = append(lines, c.p.Underline(l))
-		}
-	}
-	return lines
+	return strings.Split(text, "\n")
 }
 
 func fieldsTab(c ctx, d *Data) []string {

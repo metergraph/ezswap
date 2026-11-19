@@ -1,0 +1,27 @@
+{
+  "id": "msg_synthetic001",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-haiku-4-5",
+  "content": [
+    {
+      "type": "text",
+      "text": "Let me look up the weather in Paris."
+    },
+    {
+      "type": "tool_use",
+      "id": "toolu_synthetic001",
+      "name": "get_weather",
+      "input": {
+        "city": "Paris",
+        "unit": "celsius"
+      }
+    }
+  ],
+  "stop_reason": "tool_use",
+  "stop_sequence": null,
+  "usage": {
+    "input_tokens": 25,
+    "output_tokens": 42
+  }
+}

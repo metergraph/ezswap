@@ -174,6 +174,7 @@ func PrepareCase(call types.CapturedCall, options PrepareCaseOptions) types.Case
 		WebSearch:  webSearch,
 		Production: productionOutput(call),
 		Fidelity:   "full",
+		Part:       call.Part,
 	}
 	finish := func(reason types.NotReplayableReason) types.Case {
 		if reason != "" {

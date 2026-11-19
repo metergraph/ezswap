@@ -1,0 +1,33 @@
+{
+  "id": "resp_synthetic001",
+  "object": "response",
+  "created_at": 1772442060,
+  "status": "completed",
+  "model": "gpt-5-mini",
+  "output": [
+    {
+      "id": "msg_synthetic001",
+      "type": "message",
+      "status": "completed",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "output_text",
+          "text": "The capital of France is Paris.",
+          "annotations": []
+        }
+      ]
+    }
+  ],
+  "usage": {
+    "input_tokens": 14,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 8,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 22
+  }
+}

@@ -15,8 +15,16 @@ go build ./cmd/metergraph-replay        # or build the binary
 
 - `go test ./internal/report -update` rewrites the report's golden files in
   `internal/report/testdata/golden`. Review the diff before committing it.
-- `go run ./cmd/build-demo` regenerates `demo/traces.jsonl` and
-  `demo/run.json`, which the binary embeds.
+- `go run ./cmd/build-demo` regenerates the four files the binary embeds:
+  `demo/traces.jsonl` and `demo/run.json` for `demo`, and
+  `demo/map-traces.jsonl` and `demo/map-run.json` for `demo --map`. Run it
+  after a change to the map's rules, so the bundled map still matches them.
+- `estimate --map` and `map` write `replay-parts.json` beside the trace
+  file. To try them on the demo traces, copy `demo/map-traces.jsonl` to a
+  temporary directory first, and do not commit a `replay-parts.json`.
+- `go run ./examples/support-desk --base-url http://127.0.0.1:8787/v1 --model MODEL`
+  is a sample app for trying `record` and `map` end to end. Start
+  `metergraph-replay record` first.
 - `go run ./cmd/build-prices <clone of metergraph>` regenerates
   `internal/pricing/prices.json` from metergraph-core's `prices.yaml` at the
   clone's last commit to that file.
@@ -31,12 +39,28 @@ The files in `conformance/` pin numbers and sentences that must match
 Metergraph's hosted product. Do not edit their expected values. If a change
 needs one to move, open an issue first, and a maintainer will regenerate it.
 
+## The map and the recorder
+
+- `internal/parts/` owns parts: the fingerprint, part keys, the names file
+  and the choice of compared fields. The fingerprint's recipe is versioned
+  in the key prefix (`fp1:`). Change the prefix when the recipe changes, or
+  existing names files will name the wrong parts.
+- The map's counts, labels and notes are in `internal/report/map.go` and the
+  paired test in `internal/report/paired.go`. A change to any rule must also
+  change [docs/sensitivity-map.md](docs/sensitivity-map.md).
+- `internal/record/` is the recording proxy. It must never write or print a
+  request header (other than the two cleaned `X-Replay-*` values) or a query
+  string: providers carry API keys in both. Tests there use a local fake
+  upstream and synthetic bodies.
+
 ## Trace formats
 
 New input formats are welcome. Each adapter in `internal/adapters/` reads one
 format into the shared call shape and must say what it could not read
 (`truncated`, `missing`), so a call is declined rather than replayed from a
-guess. Fixtures go in `internal/adapters/testdata/` and must be synthetic:
+guess. An adapter reads a part name only from a `part` field or from the key
+the developer names with `--part-key`, never from a default such as a span
+name. Fixtures go in `internal/adapters/testdata/` and must be synthetic:
 use made-up content and `example.com`.
 
 ## Releases

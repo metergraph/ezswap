@@ -1,5 +1,10 @@
 # The noise floor
 
+This page describes the noise floor in the whole-file report that `run`
+prints. The [sensitivity map](sensitivity-map.md) (`map`) uses the same two
+reruns of production's model with a different rule, set out under
+[The map's rule](#the-maps-rule) below.
+
 A model asked the same question twice does not always give the same answer.
 Before reading what a different model changed, it helps to know how much
 production's own model changes when nothing else does. That is the noise
@@ -72,6 +77,27 @@ inputs.
 
 A treatment is beyond noise only when its gap is strictly larger than the
 floor's. A floor gap of zero means any disagreement at all is beyond noise.
+
+## The map's rule
+
+`metergraph-replay map` also prints "within noise" and "beyond noise", one
+label for each part of an app. It does not use the rule above.
+
+| | The report (`run`, `--labels`) | The map (`map`) |
+|---|---|---|
+| What gets a label | One statistic or one tracked field. | A whole part. |
+| What is measured | The size of a gap: a median difference, or a share of cases that disagree. | A count of cases whose answer changed at any compared field. |
+| The treatment's side | The treatment against production's recorded output (against A1 for cost and latency). | `CHANGED`: the treatment against production's recorded output. |
+| The floor's side | A2 against A1. | `RERUN`: A1 against production's recorded output. |
+| Beyond noise when | The treatment's gap is strictly larger than the floor's. No test. | A one-sided paired sign test at 5% passes, on the cases where the two counts disagree. |
+
+Two consequences. A single extra changed case can make a field beyond noise
+in the report, while the map needs, for example, 5 cases changed against 0.
+And because the map measures both sides against the same recording, an old
+recording raises both counts together and is not blamed on the treatment.
+
+[The sensitivity map](sensitivity-map.md#the-label) has the full rule and
+its limits.
 
 ## What a label does and does not mean
 

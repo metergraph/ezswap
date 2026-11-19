@@ -68,6 +68,7 @@ that has `messages`, `raw` or `params`.
 | `schema` | string | Optional. `"metergraph.replay-trace/v1"`. |
 | `id` | string | Stable id for the call. When absent, a hash of the line is used. |
 | `trace_id` | string | Optional. Groups calls from one request or session. |
+| `part` | string | Optional. The place in your app that made the call. See [Parts](#parts). |
 | `provider` | string | Provider that served the call: `openai`, `anthropic`, `google`, ... |
 | `request` | object | The request. Null or absent: the call is reported as content unavailable. |
 | `response` | object | What production returned. |
@@ -120,9 +121,13 @@ One record per call holding the provider's own request and response bodies:
 
 Requests may be OpenAI Chat Completions, OpenAI Responses, Anthropic Messages
 or Gemini `generateContent` bodies; responses are read in the same four shapes.
-Optional beside them: `id`, `trace_id`, `ts`, `provider`, `latency_ms`,
-`cost_usd`, `truncated`. The provider is inferred from the body shape when not
-given.
+Optional beside them: `id`, `trace_id`, `part`, `ts`, `provider`, `model`,
+`latency_ms`, `cost_usd`, `truncated`. The provider is inferred from the body
+shape when not given. `part` names the place in your app that made the call
+(see [Parts](#parts)).
+
+`metergraph-replay record` writes this format, one line for each call it
+captures. See [Recording](record.md).
 
 Two logging tools reduce to this shape and are read directly:
 
@@ -186,6 +191,39 @@ Read from each span:
   attribute length limit; the call is marked truncated.
 - Spans carry no cost.
 
+## Parts
+
+`map` and `estimate --map` group calls by **part**: the place in your app
+that made the call. An ordinary `run` does not use parts.
+
+A part name comes from one of these, and from nowhere else:
+
+- A top-level `part` string in a Replay JSONL record or a raw-pair record.
+  `record` writes it from the `X-Replay-Part` header.
+- The key you name with `--part-key KEY`:
+
+  | Format | Where `KEY` is read |
+  |---|---|
+  | Replay JSONL | Top-level `KEY`, then `KEY` in `meta`. Without either, `part`. |
+  | Raw pairs | Top-level `KEY`. Without it, `part`. |
+  | Helicone | `KEY` in `request_properties`, then in `properties`. |
+  | LiteLLM | `KEY` in `metadata`. |
+  | OpenTelemetry | The span or resource attribute `KEY`. With `--part-key span.name`, the span name. |
+  | Langfuse | `KEY` in the observation's `metadata`. With `--part-key name`, the observation name. |
+
+Span names and observation names are read only when you ask for them. Unless
+you set them yourself they are instrumentation defaults, such as
+`chat gpt-4o-mini`, and say nothing about the place in your app.
+
+A name must be a string. Control characters are removed, spaces at either
+end are trimmed, and a name longer than 64 characters is cut. A value of
+another type is ignored.
+
+A replayable call with no name is grouped by a fingerprint of its system
+prompt, forced tool and response schema.
+[The sensitivity map](sensitivity-map.md#parts) describes the fingerprint,
+part keys and the names file.
+
 ## Not replayable
 
 | Reason | When |
@@ -202,6 +240,7 @@ Read from each span:
 | `unparseable_request` | The request is in a shape replay cannot read. |
 
 A request that offered tools but left the model free to answer in text is
-replayed without them and graded `partial`. A request that offered exactly one
+replayed without them and graded `partial`. A map leaves such a call out
+instead, and counts it in the estimate. A request that offered exactly one
 tool and forced it is replayed with that tool forced, and production's output
 is that call's JSON arguments.

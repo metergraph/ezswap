@@ -8,9 +8,11 @@ import (
 	"math"
 	"regexp"
 	"slices"
+	"strings"
 
 	"github.com/metergraph/replay/internal/cases/jsval"
 	"github.com/metergraph/replay/internal/jsnum"
+	"github.com/metergraph/replay/internal/report/term"
 	"github.com/metergraph/replay/internal/types"
 )
 
@@ -224,6 +226,50 @@ type RecordContext struct {
 	Line int
 	// The record's source text, for hashing an id.
 	Raw string
+	// The key the developer said holds the part name, or empty.
+	PartKey string
+}
+
+// MaxPartName is the longest part name kept, in characters.
+const MaxPartName = 64
+
+var partSeparators = strings.NewReplacer(",", "-", "=", "-")
+
+// CleanPart is a part name as read from a source: control characters
+// removed, trimmed and cut to MaxPartName. Nil when the value is not a
+// string or nothing is left.
+func CleanPart(value any) *string {
+	text, ok := value.(string)
+	if !ok {
+		return nil
+	}
+	// A comma or an equals sign would make the name impossible to give to
+	// --only and --name, which use them as separators.
+	cleaned := strings.TrimSpace(partSeparators.Replace(term.CleanLine(text)))
+	if runes := []rune(cleaned); len(runes) > MaxPartName {
+		cleaned = strings.TrimSpace(string(runes[:MaxPartName]))
+	}
+	if cleaned == "" {
+		return nil
+	}
+	return &cleaned
+}
+
+// partFrom is the first part name found: the developer's key in each of the
+// given containers, in order. Without a part key it is nil.
+func partFrom(context RecordContext, containers ...any) *string {
+	if context.PartKey == "" {
+		return nil
+	}
+	for _, container := range containers {
+		if !IsObject(container) {
+			continue
+		}
+		if part := CleanPart(get(container, context.PartKey)); part != nil {
+			return part
+		}
+	}
+	return nil
 }
 
 // Adapter reads one trace format.

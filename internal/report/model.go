@@ -22,9 +22,6 @@ import (
 // NoiseFloorDoc explains the noise floor.
 const NoiseFloorDoc = "https://github.com/metergraph/replay/blob/main/docs/noise-floor.md"
 
-// SetupCommand sets up the hosted comparison.
-const SetupCommand = "npx --yes metergraph-cli@latest setup"
-
 // SummaryStats are the built-in statistics the summary shows, in order.
 var SummaryStats = []string{
 	"monthly_cost_usd",
@@ -340,7 +337,7 @@ type Model struct {
 	// labels whether or not Labels is on (nil without a floor), so the
 	// summary can mark figures beyond production's own variation.
 	Noise []*core.NoiseLabels `json:"-"`
-	// The run and its view, for the header, the hosted link and the explorer.
+	// The run and its view, for the header and the explorer.
 	Run  *types.RunFile       `json:"-"`
 	View *core.ExperimentView `json:"-"`
 }

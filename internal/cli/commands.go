@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"math"
@@ -19,10 +20,10 @@ import (
 	"github.com/metergraph/replay/demo"
 	"github.com/metergraph/replay/internal/core"
 	"github.com/metergraph/replay/internal/explore"
+	"github.com/metergraph/replay/internal/parts"
 	"github.com/metergraph/replay/internal/pricing"
 	"github.com/metergraph/replay/internal/providers"
 	"github.com/metergraph/replay/internal/report"
-	"github.com/metergraph/replay/internal/report/link"
 	"github.com/metergraph/replay/internal/report/term"
 	"github.com/metergraph/replay/internal/run"
 	"github.com/metergraph/replay/internal/tui"
@@ -47,9 +48,9 @@ func intOption(value string, given bool, name string, lo, hi, fallback int) (int
 
 var dollars = regexp.MustCompile(`^\d+(\.\d+)?$`)
 
-func budgetOption(value string, given bool) (float64, error) {
+func budgetOption(value string, given bool, fallback float64) (float64, error) {
 	if !given {
-		return run.DefaultBudgetUSD, nil
+		return fallback, nil
 	}
 	text := strings.TrimPrefix(strings.TrimSpace(value), "$")
 	n, err := strconv.ParseFloat(text, 64)
@@ -136,9 +137,13 @@ type setupResult struct {
 	endpoints []run.EndpointSpec
 	plan      *run.RunPlan
 	tracked   []string
+	// Map plans: the names file, what it held, and what happened to it.
+	namesPath  string
+	names      map[string]string
+	namesState string
 }
 
-func (s *session) setup(file string) (*setupResult, error) {
+func (s *session) setup(file string, mapMode bool) (*setupResult, error) {
 	models, _ := s.v.str("models")
 	if models == "" {
 		return nil, usagef("Name the models to replay on with --models.")
@@ -217,7 +222,12 @@ func (s *session) setup(file string) (*setupResult, error) {
 	if err != nil {
 		return nil, err
 	}
-	budget, err := budgetOption(s.v.str("budget"))
+	defaultBudget := run.DefaultBudgetUSD
+	if mapMode {
+		defaultBudget = run.DefaultMapBudgetUSD
+	}
+	budgetText, budgetGiven := s.v.str("budget")
+	budget, err := budgetOption(budgetText, budgetGiven, defaultBudget)
 	if err != nil {
 		return nil, err
 	}
@@ -257,11 +267,28 @@ func (s *session) setup(file string) (*setupResult, error) {
 	if s.io.Now != nil {
 		options.At = isoTime(s.io.Now())
 	}
+	result := &setupResult{pricing: prices, endpoints: endpoints, tracked: tracked}
+	if mapMode {
+		if err := s.mapPlanOptions(file, &options, result); err != nil {
+			return nil, err
+		}
+	}
 	plan, err := run.PlanRun(options)
 	if err != nil {
+		var usage *parts.UsageError
+		if errors.As(err, &usage) {
+			return nil, usagef(usage.Message)
+		}
+		if errors.Is(err, parts.ErrPartsNotFound) {
+			return nil, &cliError{ExitUsage, "parts_not_found", err.Error()}
+		}
 		return nil, err
 	}
-	return &setupResult{pricing: prices, endpoints: endpoints, plan: plan, tracked: tracked}, nil
+	result.plan = plan
+	if mapMode {
+		s.writeNames(result)
+	}
+	return result, nil
 }
 
 func (s *session) concurrency() (int, error) {
@@ -318,11 +345,18 @@ func (s *session) missingKeys(endpoints []run.EndpointSpec) ([]string, error) {
 // estimate
 
 func (s *session) estimate(file string) (outcome, error) {
-	setup, err := s.setup(file)
+	mapMode := s.v.bool("map")
+	if err := s.checkOptions("estimate", mapMode); err != nil {
+		return outcome{}, err
+	}
+	setup, err := s.setup(file, mapMode)
 	if err != nil {
 		return outcome{}, err
 	}
 	plan := setup.plan
+	if mapMode {
+		return s.estimateMap(setup)
+	}
 	s.say(explainEstimate(plan, explainOptions{pricingHelpURL: pricingHelpURL(setup.pricing), allowUnpriced: s.v.bool("allow-unpriced")}))
 	notes, err := s.missingKeys(setup.endpoints)
 	if err != nil {
@@ -426,22 +460,38 @@ func (s *session) installInterrupt(view bool) *interrupts {
 	return in
 }
 
-func (s *session) run(file string) (outcome, error) {
-	setup, err := s.setup(file)
+// run is `run`, and `map` when mapMode: the same estimate, confirmation,
+// replay and run.json, planned part by part and printed as the map.
+func (s *session) run(file string, mapMode bool) (outcome, error) {
+	command := "run"
+	if mapMode {
+		command = "map"
+	}
+	if err := s.checkOptions(command, mapMode); err != nil {
+		return outcome{}, err
+	}
+	setup, err := s.setup(file, mapMode)
 	if err != nil {
 		return outcome{}, err
 	}
 	plan := setup.plan
 	help := pricingHelpURL(setup.pricing)
-	s.say(explainEstimate(plan, explainOptions{pricingHelpURL: help, allowUnpriced: s.v.bool("allow-unpriced")}))
+	if mapMode {
+		s.say(s.explainMapEstimate(setup))
+	} else {
+		s.say(explainEstimate(plan, explainOptions{pricingHelpURL: help, allowUnpriced: s.v.bool("allow-unpriced")}))
+	}
 	if plan.Estimate.Replayable == 0 {
+		if mapMode {
+			return outcome{}, &cliError{ExitNoReplayableCases, "no_replayable_cases", "No case in any part can be replayed."}
+		}
 		return outcome{}, &cliError{ExitNoReplayableCases, "no_replayable_cases", "No case in the sample can be replayed."}
 	}
 	if len(plan.Estimate.Unpriced) > 0 && !s.v.bool("allow-unpriced") {
 		return outcome{}, &cliError{ExitRefused, "unpriced_models", "The catalog has no price for " + strings.Join(plan.Estimate.Unpriced, ", ") + ", so the run cannot be budgeted. Pass --allow-unpriced to run anyway, or add the price: " + help}
 	}
 	if plan.Estimate.ExpectedUSD > plan.Settings.BudgetUSD {
-		return outcome{}, &cliError{ExitRefused, "over_budget", "The expected spend (" + usd(plan.Estimate.ExpectedUSD) + ") is over the budget (" + usd(plan.Settings.BudgetUSD) + "). Raise --budget or lower --sample."}
+		return outcome{}, &cliError{ExitRefused, "over_budget", "The expected spend (" + usd(plan.Estimate.ExpectedUSD) + ") is over the budget (" + usd(plan.Settings.BudgetUSD) + "). " + overBudgetHint(mapMode)}
 	}
 	providerMap, err := s.createProviders(setup.endpoints)
 	if err != nil {
@@ -531,13 +581,22 @@ func (s *session) run(file string) (outcome, error) {
 	if err != nil {
 		return outcome{}, err
 	}
-	hosted := link.HostedLink(result, link.MediumCLI)
 	s.say("")
 	s.say(explainOutcome(result))
 	s.say("Wrote " + written.RunPath)
 	s.say("")
 	shown := s.shownPath(written.RunPath)
-	if err := s.printReport(result, setup.tracked, shown, "add --explain to the report command below"); err != nil {
+	var mapFields object
+	if mapMode {
+		m, err := report.BuildMap(result, report.MapOptions{})
+		if err != nil {
+			return outcome{}, err
+		}
+		s.printMap(m)
+		s.say("")
+		s.say("Print it again: metergraph-replay report " + shown)
+		mapFields = object{{"parts", m.Parts}}
+	} else if err := s.printReport(result, setup.tracked, shown, "add --explain to the report command below"); err != nil {
 		return outcome{}, err
 	}
 
@@ -552,8 +611,8 @@ func (s *session) run(file string) (outcome, error) {
 	if result.Stopped != nil {
 		stopped = *result.Stopped
 	}
-	return outcome{exitCode, object{
-		{"command", "run"},
+	return outcome{exitCode, append(object{
+		{"command", command},
 		{"input", plan.Input},
 		{"estimate", plan.Estimate},
 		{"runFile", written.RunPath},
@@ -561,8 +620,7 @@ func (s *session) run(file string) (outcome, error) {
 		{"spentUsd", result.SpentUSD},
 		{"budgetUsd", result.Settings.BudgetUSD},
 		{"replays", object{{"ok", counts.ok}, {"failed", counts.failed}, {"skipped", counts.skipped}}},
-		{"hostedLink", hosted},
-	}}, nil
+	}, mapFields...)}, nil
 }
 
 // printReport prints the report (and, with --explain, its notes). help is
@@ -692,6 +750,23 @@ func (s *session) report(file string) (outcome, error) {
 		abs = file
 	}
 	fields := object{{"command", "report"}, {"runFile", abs}}
+	if err := s.checkOptions("report", s.v.bool("map") || report.IsMapRun(r)); err != nil {
+		return outcome{}, err
+	}
+	if s.v.bool("map") || report.IsMapRun(r) {
+		// A map run is read part by part: its cases are a sample of each part,
+		// not of the file, so the whole-run report and the explorer do not apply.
+		m, err := report.BuildMap(r, report.MapOptions{Rename: s.v.list("name"), Only: commaList(s.v.list("only"))})
+		if err != nil {
+			var usage *parts.UsageError
+			if errors.As(err, &usage) || errors.Is(err, report.ErrNotMapRun) {
+				return outcome{}, usagef(err.Error())
+			}
+			return outcome{}, err
+		}
+		s.printMap(m)
+		return outcome{ExitOK, append(fields, field{"parts", m.Parts})}, nil
+	}
 	if !s.asJSON && !s.v.bool("explain") && s.interactive() {
 		code, err := s.explore(r, tracked, s.shownPath(abs))
 		if err != nil {
@@ -706,6 +781,12 @@ func (s *session) report(file string) (outcome, error) {
 }
 
 func (s *session) demo() (outcome, error) {
+	if err := s.checkOptions("demo", s.v.bool("map")); err != nil {
+		return outcome{}, err
+	}
+	if s.v.bool("map") {
+		return s.demoMap()
+	}
 	r, err := demo.Run()
 	if err != nil {
 		return outcome{}, err
@@ -733,7 +814,7 @@ func (s *session) demo() (outcome, error) {
 	if err := os.WriteFile(runPath, demo.RunJSON, 0o666); err != nil {
 		return outcome{}, err
 	}
-	fields := object{{"command", "demo"}, {"runFile", runPath}, {"hostedLink", link.HostedLink(r, link.MediumCLI)}}
+	fields := object{{"command", "demo"}, {"runFile", runPath}}
 	if s.v.bool("explore") && !s.asJSON && s.interactive() {
 		code, err := s.explore(r, tracked, s.shownPath(runPath))
 		if err != nil {

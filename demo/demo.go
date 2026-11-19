@@ -32,3 +32,24 @@ func Run() (*types.RunFile, error) {
 	}
 	return &run, nil
 }
+
+// MapRunJSON is demo/map-run.json as committed: a map run over a made-up
+// support desk with five parts.
+//
+//go:embed map-run.json
+var MapRunJSON []byte
+
+// MapTracesJSONL is demo/map-traces.jsonl as committed: the trace file that
+// run replayed.
+//
+//go:embed map-traces.jsonl
+var MapTracesJSONL []byte
+
+// MapRun is the recorded map run, decoded afresh on every call.
+func MapRun() (*types.RunFile, error) {
+	var run types.RunFile
+	if err := json.Unmarshal(MapRunJSON, &run); err != nil {
+		return nil, err
+	}
+	return &run, nil
+}

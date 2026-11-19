@@ -1,0 +1,34 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "The capital of France is Paris."
+          },
+          {
+            "functionCall": {
+              "name": "cite_source",
+              "args": {
+                "url": "https://example.com/france"
+              }
+            }
+          },
+          {
+            "text": " Done."
+          }
+        ],
+        "role": "model"
+      },
+      "index": 0,
+      "finishReason": "STOP"
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 9,
+    "candidatesTokenCount": 15,
+    "totalTokenCount": 24
+  },
+  "modelVersion": "gemini-2.0-flash",
+  "responseId": "synthetic-response-001"
+}

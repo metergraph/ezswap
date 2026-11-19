@@ -14,7 +14,6 @@ import (
 	"unicode/utf8"
 
 	"github.com/metergraph/replay/internal/core"
-	"github.com/metergraph/replay/internal/report/link"
 	"github.com/metergraph/replay/internal/report/term"
 	"github.com/metergraph/replay/internal/types"
 )
@@ -27,8 +26,6 @@ const (
 	DefaultWidth = 100
 	// ChangeLimit is the lines "What changed" lists before it says how many more there are.
 	ChangeLimit = 8
-	// HostedLabel is what a clickable hosted link shows instead of the long URL.
-	HostedLabel = "metergraph.dev/replay"
 	// ExplainHint is where the footer sends a reader for the caveats.
 	ExplainHint = "run with --explain"
 )
@@ -41,8 +38,6 @@ type RenderOptions struct {
 	Paint term.Paint
 	// Plain ASCII: no Unicode glyphs, captured text mapped to ASCII.
 	ASCII bool
-	// The hosted link's utm_medium; link.MediumCLI when empty.
-	Medium link.LinkMedium
 	// The run file's path as the user would type it, for the hint to explore
 	// it; no hint when empty.
 	Explore string
@@ -74,8 +69,6 @@ type ctx struct {
 	p     term.Paint
 	ascii bool
 	ell   string
-	// Emit OSC 8 hyperlinks: only on a colour terminal, never in ASCII mode.
-	links bool
 	opts  RenderOptions
 }
 
@@ -89,7 +82,7 @@ func newCtx(o RenderOptions) ctx {
 	if o.ASCII {
 		ell = "~"
 	}
-	return ctx{w: w, p: o.Paint, ascii: o.ASCII, ell: ell, links: o.Paint.Color && !o.ASCII, opts: o}
+	return ctx{w: w, p: o.Paint, ascii: o.ASCII, ell: ell, opts: o}
 }
 
 func (c ctx) g(unicode, ascii string) string {
@@ -132,8 +125,8 @@ func finish(c ctx, lines []string) string {
 	return text
 }
 
-// Render is the printed report: header, summary, footer and the hosted link,
-// ending in a newline.
+// Render is the printed report: header, summary and footer, ending in a
+// newline.
 func Render(m *Model, o RenderOptions) string {
 	c := newCtx(o)
 	var lines []string
@@ -845,23 +838,6 @@ func footer(c ctx, m *Model) []string {
 			lines = append(lines, p.Muted(lead), p.Bold(command))
 		}
 	}
-	medium := c.opts.Medium
-	if medium == "" {
-		medium = link.MediumCLI
-	}
-	url := link.HostedLink(m.Run, medium)
-	lead = "Keep this running on live traffic:"
-	if c.links {
-		label := p.Underline(term.Hyperlink(url, HostedLabel))
-		if term.Width(lead)+1+term.Width(HostedLabel) <= c.w {
-			lines = append(lines, p.Muted(lead)+" "+label)
-		} else {
-			lines = append(lines, p.Muted(lead), label)
-		}
-	} else {
-		// The link stays whole on its own line so it can be copied; the terminal may wrap it.
-		lines = append(lines, p.Muted(lead), p.Underline(url))
-	}
 	return lines
 }
 
@@ -870,9 +846,8 @@ func footer(c ctx, m *Model) []string {
 
 // Caveats are the notes the report leaves out of its body, as plain
 // sentences, one paragraph each: how to read the itself column, what
-// production's figures are, how cost is estimated, why calls were not
-// replayed, and what the hosted link carries. The CLI prints them for
-// --explain and the explorer under ?. Captured text in them is cleaned to one
+// production's figures are, how cost is estimated and why calls were not
+// replayed. The CLI prints them for --explain and the explorer under ?. Captured text in them is cleaned to one
 // line each but not made ASCII.
 func Caveats(m *Model) []string {
 	clean := term.CleanLine
@@ -915,6 +890,5 @@ func Caveats(m *Model) []string {
 	for _, r := range m.NotReplayable {
 		out = append(out, "Not replayable, "+lowerFirst(clean(r.Title))+" ("+core.FormatCount(r.Count)+"): "+r.Fix)
 	}
-	out = append(out, "The hosted link carries the run's setup only: models, settings, tracked fields and sample size. Or set it up in one command: "+SetupCommand)
 	return out
 }

@@ -129,12 +129,11 @@ func TestCleanedTextCannotInjectEscapesThroughPaint(t *testing.T) {
 }
 
 func TestHyperlinkIsOSC8WithST(t *testing.T) {
-	url := "https://www.metergraph.dev/replay?utm_source=replay#setup=abc"
+	url := "https://example.com/page?a=b#c"
 	link := Hyperlink(url, "metergraph.dev/replay")
 	eq(t, link, "\x1b]8;;"+url+"\x1b\\metergraph.dev/replay\x1b]8;;\x1b\\")
 	eq(t, Width(link), len("metergraph.dev/replay"))
-	// A cut stops before the closing OSC 8: the report
-	// never cuts its link (the link line is exempt from the width limit).
+	// A cut stops before the closing OSC 8, so a caller must not cut a link.
 	eq(t, Truncate(link, 10), "\x1b]8;;"+url+"\x1b\\metergrap\x1b[0m…")
 	if !strings.HasPrefix(link, "\x1b]8;;") {
 		t.Error("opens with OSC 8")

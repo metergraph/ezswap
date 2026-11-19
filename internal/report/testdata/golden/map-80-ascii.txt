@@ -1,0 +1,37 @@
+5 parts | map-traces.jsonl | 2026-10-20 to 2026-10-27 | 20 cases per part
+spent $0.016 of $5.00
+
+treatment A openai/gpt-5.4-nano
+
+PART             LABEL           CHANGED   RERUN     COST/CALL  LATENCY
+extract-order    beyond noise    9 of 20   1 of 20   -35%       -52%
+route-to-team    within noise    4 of 20   3 of 20   -37%       -41%
+classify-ticket  within noise    2 of 20   3 of 20   -36%       -33%
+summarise-thread too few calls   6 paired, needs 10  -28%       -41%
+draft-reply      not comparable  free text           -29%       -45%
+
+WHAT CHANGED
+extract-order
+  sku       changed 4, rerun 1
+  quantity  changed 6, rerun 0
+  order_id  changed 1, rerun 0
+  call-0003  quantity  5 -> 6
+  call-0004  sku       "B-204" -> "B-204B"
+  call-0006  quantity  2 -> 3
+  call-0008  sku       "B-19" -> "B-19B"
+  call-0010  quantity  4 -> 5
+  call-0013  quantity  1 -> 2
+  call-0015  sku       "C-77" -> "C-77B"
+  call-0017  quantity  3 -> 4
+  and 1 more
+route-to-team
+  team    changed 4, rerun 3
+  call-0022  team    "support" -> "sales"
+  call-0027  team    "support" -> "sales"
+  call-0031  team    "billing" -> "support"
+  call-0036  team    "billing" -> "support"
+
+CHANGED: cases where the treatment's answer differs from the recorded one.
+RERUN: the same for a fresh run of production's own model. A part is beyond
+noise when CHANGED exceeds RERUN by a paired sign test at 5%.
+This shows where outputs change. It does not say a change is better or worse.

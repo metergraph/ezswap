@@ -5,7 +5,7 @@
 //
 // With colour off every primitive writes plain text, byte for byte what the
 // golden files under internal/report/testdata/golden pin. With colour on the only escape sequences are SGR (ESC [ ... m) and,
-// from Hyperlink, the one OSC 8 link the report writes itself; captured text
+// from Hyperlink, OSC 8 for a link the caller built itself; captured text
 // must go through Clean (or CleanDeep / CleanLine) before it is drawn, so it
 // can never carry escapes of its own.
 //

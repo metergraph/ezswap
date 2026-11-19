@@ -25,6 +25,7 @@ package run
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/metergraph/replay/internal/jsnum"
@@ -319,6 +320,12 @@ func ExecuteRun(ctx context.Context, plan *RunPlan, options ExecuteOptions) (*ty
 			endpoint := plan.FloorEndpoint
 			isFree := free[endpoint]
 			model := pricing.FloorModel(*c, prices, at)
+			if isFree && c.Model != nil && strings.TrimSpace(*c.Model) != "" {
+				// A local server names models its own way: send the model as
+				// production named it, not the catalog's creator/model id.
+				local := strings.TrimSpace(*c.Model)
+				model = &local
+			}
 			for _, arm := range FloorArms {
 				if model == nil {
 					items = append(items, &item{item: c, arm: arm, endpoint: endpoint, free: isFree, skip: "floor_model_unknown"})

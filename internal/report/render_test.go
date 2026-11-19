@@ -513,22 +513,6 @@ func TestZeroTreatmentsAndAllFailed(t *testing.T) {
 	}
 }
 
-// The one hyperlink the report may emit: the hosted link (OSC 8 open, then close).
-var ownLink = regexp.MustCompile(`\x1b\]8;;(?:https://www\.metergraph\.dev/replay\?[A-Za-z0-9_=&.%-]*#setup=[A-Za-z0-9_-]*)?\x1b\\`)
-
-func withoutOwnLink(t *testing.T, out string, expected bool) string {
-	t.Helper()
-	found := ownLink.FindAllString(out, -1)
-	want := 0
-	if expected {
-		want = 2
-	}
-	if len(found) != want {
-		t.Errorf("hosted link sequences: %d, want %d", len(found), want)
-	}
-	return ownLink.ReplaceAllString(out, "")
-}
-
 var sgrOnly = regexp.MustCompile(`^\x1b\[[0-9;]*m$`)
 
 func TestASCIIAndColourEscapes(t *testing.T) {
@@ -537,7 +521,7 @@ func TestASCIIAndColourEscapes(t *testing.T) {
 	if !regexp.MustCompile(`^[\x20-\x7e\n]*$`).MatchString(ascii) {
 		t.Error("ASCII mode prints something other than printable ASCII")
 	}
-	colored := withoutOwnLink(t, Render(m, RenderOptions{Width: 100, Paint: term.NewPaint(colorprofile.TrueColor)}), true)
+	colored := Render(m, RenderOptions{Width: 100, Paint: term.NewPaint(colorprofile.TrueColor)})
 	escapes := regexp.MustCompile(`\x1b[^m]*m?`).FindAllString(colored, -1)
 	if len(escapes) == 0 {
 		t.Error("no colour")
@@ -550,10 +534,6 @@ func TestASCIIAndColourEscapes(t *testing.T) {
 	if strings.Contains(Render(m, RenderOptions{Width: 100}), "\x1b") {
 		t.Error("an escape without colour")
 	}
-	// The clickable link shows a short label instead of the URL.
-	if out := Render(m, RenderOptions{Width: 100, Paint: term.NewPaint(colorprofile.TrueColor)}); !strings.Contains(out, HostedLabel) {
-		t.Error("no hosted label")
-	}
 }
 
 func TestHostileTextIsNeutralized(t *testing.T) {
@@ -564,8 +544,7 @@ func TestHostileTextIsNeutralized(t *testing.T) {
 			if color {
 				p = term.NewPaint(colorprofile.TrueColor)
 			}
-			rendered := Render(m, RenderOptions{Width: 100, Paint: p, ASCII: ascii, Explore: "out\x1b[2J/run.json", ChangeLimit: 100})
-			out := withoutOwnLink(t, rendered, color && !ascii)
+			out := Render(m, RenderOptions{Width: 100, Paint: p, ASCII: ascii, Explore: "out\x1b[2J/run.json", ChangeLimit: 100})
 			for _, e := range regexp.MustCompile(`\x1b[\s\S]?[^m]*m?`).FindAllString(out, -1) {
 				if !sgrOnly.MatchString(e) {
 					t.Errorf("color=%v ascii=%v: escape %q", color, ascii, e)

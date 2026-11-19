@@ -83,6 +83,7 @@ func helicone(record any, context RecordContext) types.CapturedCall {
 			LatencyMs: FirstNum(get(record, "delay_ms"), get(record, "latency")),
 		}),
 		Missing: missing,
+		Part:    partFrom(context, get(record, "request_properties"), get(record, "properties")),
 	})
 }
 
@@ -161,6 +162,7 @@ func litellm(record any, context RecordContext) types.CapturedCall {
 			LatencyMs: latency,
 		}),
 		Missing: missing,
+		Part:    partFrom(context, ParseJSON(get(record, "metadata"))),
 	})
 }
 
@@ -209,6 +211,9 @@ func generic(record any, context RecordContext) types.CapturedCall {
 		}),
 		Truncated: get(record, "truncated") == true,
 		Missing:   missing,
+		// The developer's key wins over the plain "part" when both are there:
+		// they asked for it.
+		Part: orDefault(partFrom(context, record), CleanPart(get(record, "part"))),
 	})
 }
 

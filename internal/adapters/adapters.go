@@ -59,6 +59,9 @@ type ReadTracesOptions struct {
 	Limit *int
 	// Called for each line that is not JSON or that the adapter could not read.
 	OnSkip func(line int, reason string)
+	// The key that holds the part name in the source's own records, when the
+	// developer named one. Empty: only a top-level "part" is read.
+	PartKey string
 }
 
 type sourceRecord struct {
@@ -264,6 +267,7 @@ func IterateTraces(path string, options ReadTracesOptions) iter.Seq2[types.Captu
 					return false
 				}
 			}
+			source.context.PartKey = options.PartKey
 			calls, err := readSafely(adapter, source.record, source.context)
 			if err != nil {
 				if options.OnSkip != nil {

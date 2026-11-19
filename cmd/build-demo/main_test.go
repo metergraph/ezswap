@@ -50,3 +50,42 @@ func TestBuildReproducesTheCommittedDemo(t *testing.T) {
 		t.Fatal("run.json is not the same JSON as demo/run.json")
 	}
 }
+
+// The committed map demo is what this command builds, in the same way.
+func TestBuildReproducesTheCommittedMapDemo(t *testing.T) {
+	dir := t.TempDir()
+	if _, err := buildMap(dir); err != nil {
+		t.Fatal(err)
+	}
+	traces, err := os.ReadFile(filepath.Join(dir, "map-traces.jsonl"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(traces, demo.MapTracesJSONL) {
+		t.Fatal("map-traces.jsonl differs from demo/map-traces.jsonl")
+	}
+	text, err := os.ReadFile(filepath.Join(dir, "map-run.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var built types.RunFile
+	if err := json.Unmarshal(text, &built); err != nil {
+		t.Fatal(err)
+	}
+	committed, err := demo.MapRun()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !reflect.DeepEqual(&built, committed) {
+		t.Fatal("map-run.json does not decode to the committed map run")
+	}
+	names := map[string]bool{}
+	for _, kase := range committed.Cases {
+		names[kase.PartName] = true
+	}
+	for _, name := range []string{"extract-order", "route-to-team", "classify-ticket", "summarise-thread", "draft-reply"} {
+		if !names[name] {
+			t.Fatalf("the map demo has no part %q", name)
+		}
+	}
+}

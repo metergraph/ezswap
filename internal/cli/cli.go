@@ -33,9 +33,9 @@ import (
 	"github.com/metergraph/replay/internal/types"
 )
 
-// Version is the tool's version: printed by --version, recorded in every
-// run file (so it reaches the hosted link's utm_campaign). GoReleaser sets
-// it with -X github.com/metergraph/replay/internal/cli.Version=...; a
+// Version is the tool's version: printed by --version and recorded in every
+// run file. GoReleaser sets it with
+// -X github.com/metergraph/replay/internal/cli.Version=...; a
 // `go install ...@vX.Y.Z` build takes it from the module version instead.
 var Version = "dev"
 
@@ -311,7 +311,18 @@ func Main(args []string, o IO) int {
 			if err != nil {
 				return outcome{}, err
 			}
-			return s.run(file)
+			return s.run(file, false)
+		case "map":
+			file, err := needFile("trace file")
+			if err != nil {
+				return outcome{}, err
+			}
+			return s.run(file, true)
+		case "record":
+			if len(rest) > 0 {
+				return outcome{}, usagef("record takes no file.")
+			}
+			return s.record()
 		case "report":
 			file, err := needFile("run.json")
 			if err != nil {

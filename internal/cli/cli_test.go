@@ -481,8 +481,6 @@ func TestRunReplaysWritesAndPrintsTheReport(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(out, "report.html")); err == nil {
 		t.Fatal("no HTML report")
 	}
-	match(t, `Keep this running on live traffic:`, result.stdout)
-	match(t, `(?m)^https://www\.metergraph\.dev/replay\?\S*utm_medium=cli&utm_campaign=`+Version, result.stdout)
 	match(t, `Explore every call:\s+metergraph-replay report \S*run\.json`, result.stdout)
 	match(t, `Notes: add --explain to the report command\s+below\.`, result.stdout)
 	match(t, `^[\x20-\x7e\n]*$`, result.stdout)
@@ -589,7 +587,6 @@ func TestDemoAndReport(t *testing.T) {
 	if r.Schema != types.RunSchema || len(r.Replays) == 0 {
 		t.Fatal("the demo run")
 	}
-	match(t, `utm_medium=cli`, j["hostedLink"].(string))
 
 	plain := cli(t, args("demo", "--out", out), noEnv, nil)
 	match(t, `gpt-4\.1-mini calls replayed`, plain.stdout)

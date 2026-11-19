@@ -2,6 +2,10 @@
 
 ```sh
 metergraph-replay demo
+metergraph-replay demo --map
+metergraph-replay record
+metergraph-replay estimate traces.jsonl --map --models openai/gpt-5-mini
+metergraph-replay map traces.jsonl --models openai/gpt-5-mini
 metergraph-replay estimate traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5
 metergraph-replay run traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5 --budget 2.00
 metergraph-replay report replay-out/run.json
@@ -13,11 +17,25 @@ The README lists every way to install it.
 | Command | What it does |
 |---|---|
 | `demo` | Prints the report of bundled synthetic traces and recorded replies. No keys, no network. `--explore` opens the explorer instead. |
+| `demo --map` | Prints the map of a bundled synthetic app with five parts. No keys, no network, no file written. |
+| `record` | Runs a local proxy on `127.0.0.1` that forwards your app's model calls to one provider and appends each captured call to `<out>/traces.jsonl`. Takes no file. See [Recording](record.md). |
 | `estimate <traces>` | Reads the traces, says how many cases can be replayed and why the rest cannot, and prices the run. Makes no provider call. |
+| `estimate <traces> --map` | Lists the parts of the app (name, how it was named, cases, compared fields, expected cost) and prices a map. Makes no provider call. Writes the names file. |
+| `map <traces>` | Estimates, asks before spending, replays a sample of every part on every model and twice on production's model, then writes `run.json` and prints the map. See [the sensitivity map](sensitivity-map.md). |
 | `run <traces>` | Estimates, asks before spending, replays every case on every model plus the noise floor, then writes `run.json` and prints the report. |
-| `report <run.json>` | Opens the interactive explorer on an existing run. Without an interactive terminal, or with `--no-interactive`, it prints the report instead. |
+| `report <run.json>` | Opens the interactive explorer on an existing run. Without an interactive terminal, or with `--no-interactive`, it prints the report instead. On a run that `map` made it prints the map, never the explorer. |
 
-The report lives in the terminal; nothing else is written besides `run.json`.
+The report and the map live in the terminal. Replay writes three files and
+nothing else:
+
+| File | Written by | Holds |
+|---|---|---|
+| `<out>/run.json` | `run`, `map`, `demo` (not `demo --map`) | The sampled prompts and every model's output. |
+| `<out>/traces.jsonl` | `record` | Each captured call's request and response bodies. Appended to. |
+| `replay-parts.json`, beside the trace file | `estimate --map`, `map` | Part keys and names. |
+
+`map` and `run` write the same `run.json`. Give one of them another `--out`
+to keep both.
 
 ## Models and endpoints
 
@@ -57,19 +75,22 @@ report or the terminal. A run records an endpoint by its preset name or host.
 
 ## Options
 
+Options every replay command takes (`estimate`, `run`, `map`), and the
+display options:
+
 | Option | Default | |
 |---|---|---|
-| `--sample N` | 20 | The latest N replayable cases, one per trace id (max 200). Cases that cannot be replayed among them are kept, with the reason. |
-| `--track PATH` | none | A JSON field to compare with production, such as `$.category`. Repeat it, up to 10. |
-| `--budget USD` | 1.00 | The most the run may spend. |
+| `--sample N` | 20 | The latest N replayable cases, one per trace id (max 200). Cases that cannot be replayed among them are kept, with the reason. Not for a map: use `--per-part`. |
+| `--track PATH` | none | A JSON field to compare with production, such as `$.category`. Repeat it, up to 10. In a map, tracked fields come first among each part's compared fields. |
+| `--budget USD` | 1.00, or 5.00 for a map | The most the run may spend. |
 | `--monthly-calls N` | from the file | Calls a month the workload makes, for the monthly cost projection. Without it, the projection uses the file's calls a day when the file spans at least a day. |
-| `--no-noise-floor` | off | Skip the two replays of production's model. |
-| `--labels` | off | Within-noise badges in the explorer's tables. The printed report marks a figure beyond the noise floor with `*` either way. |
+| `--no-noise-floor` | off | Skip the two replays of production's model. A map made without them labels every part `not comparable`. |
+| `--labels` | off | Within-noise badges in the explorer's tables. The printed report marks a figure beyond the noise floor with `*` either way. Not for `map`. |
 | `--allow-no-search` | off | Replay calls that searched the web, without search. |
 | `--allow-unpriced` | off | Run models the price catalog does not know. |
 | `--adapter NAME` | detected | `replay-jsonl`, `raw`, `langfuse` or `otel`. See [trace formats](trace-format.md). |
-| `--out DIR` | `./replay-out` | Where `run.json` goes (`demo` and `run`). |
-| `--explore` | off | `demo`: open the explorer instead of printing the report. |
+| `--out DIR` | `./replay-out` | Where `run.json` goes (`demo`, `run` and `map`), and `record`'s `traces.jsonl`. Not for `report` or `demo --map`, which write nothing. |
+| `--explore` | off | `demo`: open the explorer instead of printing the report. Not for `demo --map`. |
 | `--no-interactive` | off | Print instead of drawing: `report` prints the report instead of opening the explorer, and `run` shows plain progress. Also the default when `CI` is set. |
 | `--explain` | off | Print the report's notes after it: how to read the `itself` column, how cost is estimated, why calls were not replayed. `report --explain` prints rather than opening the explorer. |
 | `--ascii` | detected | Plain ASCII: no box drawing or block characters. On by default when stdout is not a terminal or `TERM` is `dumb`. |
@@ -77,6 +98,91 @@ report or the terminal. A run records an endpoint by its preset name or host.
 | `--concurrency N` | 4 | Calls in flight at once. |
 | `--yes` | off | Skip the spend confirmation. Without a terminal, `run` refuses without it. |
 | `--json` | off | Print one JSON object on stdout and nothing else. |
+
+### Map options
+
+| Option | Default | |
+|---|---|---|
+| `--map` | off | `estimate`: list the parts and price a map. `demo`: print the bundled map. `report`: accepted on a run that `map` made (which prints the map either way), a usage error on any other run. |
+| `--per-part N` | 20 | The latest N replayable cases of each part, one per trace id (10 to 200). |
+| `--part-key KEY` | none | The key that holds the part name in your records. See [trace formats](trace-format.md#parts). |
+| `--ignore PATH` | none | Leave a field out of the comparison, such as a generated id: `--ignore '$.request_id'`. Repeat it, or separate paths with commas. |
+| `--only NAME` | all parts | Keep these parts, by name or key. Repeat it, or separate names with commas. |
+| `--name KEY=NAME` | none | Rename a part for this command. `KEY` is a part's key or current name. Two parts given one name merge. Nothing is saved. Applied before `--only`. |
+
+### Record options
+
+| Option | Default | |
+|---|---|---|
+| `--upstream URL` | `https://api.openai.com` | Where calls are forwarded. `https`, or `http` to this machine. |
+| `--port N` | 8787 | The port on `127.0.0.1` (0 to 65535). `0` picks a free one. |
+
+### Which command takes which
+
+An option given to a command that does not take it is a usage error (exit
+2), so a slip such as `run --per-part 30` does not pass silently.
+
+| Option | `estimate --map` | `map` | `report` (map run) | `demo --map` | `run`, `estimate` | `record` |
+|---|---|---|---|---|---|---|
+| `--map` | yes | no (always a map) | yes | yes | `estimate` only | no |
+| `--per-part`, `--part-key`, `--ignore` | yes | yes | no | no | no | no |
+| `--only`, `--name` | yes | yes | yes | no | no | no |
+| `--sample` | no | no | not used | not used | yes | no |
+| `--upstream`, `--port` | no | no | no | no | no | yes |
+| `--models`, `--budget` and the other replay options | yes | yes | not used | not used | yes | no |
+
+`record` takes `--upstream`, `--port`, `--out` and `--json`, and no file.
+
+## The map
+
+`map` and `estimate --map` group calls into **parts**: places in your app
+that call a model. [The sensitivity map](sensitivity-map.md) is the full
+description. In short:
+
+- A part is named by a `part` field in the trace file, by the
+  `X-Replay-Part` header when recording, or by `--part-key`. A call with no
+  name is grouped by a fingerprint of its system prompt, forced tool and
+  response schema.
+- Each part has a key: `name:<name>`, or `fp1:<hash>` for a fingerprint,
+  with the default name `part-<first 6 characters>`.
+- When the parts that would run include at least four fingerprint groups and
+  more than half hold a single call, the commands refuse (exit 2, error code
+  `parts_not_found`) and ask for names.
+
+### The names file
+
+`estimate --map` and `map` read `replay-parts.json` in the trace file's
+directory and add any new key with its default name. They never change or
+remove an entry.
+
+```json
+{
+  "schema": "metergraph.replay-parts/v1",
+  "parts": {
+    "fp1:ecc195d1a7b4": "draft-reply",
+    "name:classify-ticket": "classify-ticket"
+  }
+}
+```
+
+Edit a name to rename a part. Give two keys the same name to merge them.
+`--name` does the same for one command and saves nothing. A names file that
+is not valid JSON, or has another `schema`, is a usage error.
+
+`report` does not read the names file. A map run keeps the names that were
+in effect when it was made; `report --name` renames for one printing.
+
+### Budget
+
+- `--budget` defaults to 5.00 for `map` and `estimate --map`.
+- An expected spend over the budget refuses before any provider call (exit
+  4). The message suggests raising `--budget`, lowering `--per-part`, or
+  keeping fewer parts with `--only`.
+- Cases run part by part, largest part first. If the budget is reached
+  partway, the run stops (exit 6, `"stopped": "budget"`) and parts are
+  labelled from the cases that finished.
+
+Everything under [Spend](#spend) applies to `map` as it does to `run`.
 
 ## The report
 
@@ -99,9 +205,7 @@ unknown). It answers first, from the top:
 3. **WHAT CHANGED**: the calls whose tracked fields changed, with the old and
    new values, up to eight, then how many more.
 4. How many calls were not replayable, and the most common reason.
-5. A footer: what `itself` means, the command to explore every call, and the
-   link to keep the comparison running on live traffic (shown as
-   `metergraph.dev/replay` where the terminal supports links).
+5. A footer: what `itself` means and the command to explore every call.
 
 `--explain` adds NOTES after it: each model's settings and endpoint, how to
 read `itself`, what `production` stands for in cost and latency, how the
@@ -142,8 +246,8 @@ output and half the token cap, never above the cap), with a 25% margin. The
 most a run can spend is every call using its full `max_tokens` on an input
 bounded at one token per byte.
 
-`run` refuses when the expected spend is over `--budget`, or when a model has
-no price and `--allow-unpriced` is not set. While it runs:
+`run` and `map` refuse when the expected spend is over `--budget`, or when a
+model has no price and `--allow-unpriced` is not set. While one runs:
 
 - Each call reserves its upper bound before it is sent. A case starts only
   when all of its calls fit in the budget beside what is spent and still
@@ -167,15 +271,18 @@ reason.
 | Code | Meaning |
 |---|---|
 | 0 | Done. |
-| 1 | Any other error, or every call failed. |
-| 2 | Usage: a bad option, value or file. |
-| 3 | No case in the sample can be replayed. |
+| 1 | Any other error, or every call failed. `record`: the port is in use, the upstream is not accepted, or the trace file cannot be written. |
+| 2 | Usage: a bad option, value or file. Also an option the command does not take, `report --map` on a run that is not a map, a bad names file, and a file whose parts cannot be told apart (`parts_not_found`). |
+| 3 | No case in the sample can be replayed. For a map: no case in any part. |
 | 4 | Refused: expected spend over the budget, unpriced models, or no confirmation. |
 | 5 | Endpoint configuration, such as a missing key or base URL. |
 | 6 | Interrupted, or stopped early (budget, or a call above its reservation). |
 
 With `--json` every command prints one object with `ok`, `exitCode` and
-`command`; a failure adds `error: { code, message }`.
+`command`; a failure adds `error: { code, message }`. `map`, `report` on a
+map run and `demo --map` add a `parts` array, described in
+[the sensitivity map](sensitivity-map.md#json). `record` prints its object
+when it stops.
 
 ## Development
 
@@ -183,7 +290,7 @@ With `--json` every command prints one object with `ok`, `exitCode` and
 go run ./cmd/metergraph-replay demo --out /tmp/replay-demo   # run from source
 go test ./...
 go test ./internal/report -update   # accepts changed report output in internal/report/testdata/golden
-go run ./cmd/build-demo             # regenerates demo/traces.jsonl and demo/run.json
+go run ./cmd/build-demo             # regenerates demo/traces.jsonl, demo/run.json, demo/map-traces.jsonl and demo/map-run.json
 ```
 
 See [CONTRIBUTING.md](../CONTRIBUTING.md) for the rest.

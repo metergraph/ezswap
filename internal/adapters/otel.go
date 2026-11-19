@@ -478,6 +478,7 @@ func readSpan(span any, resource attributes, context RecordContext) *types.Captu
 		}),
 		Truncated: truncated,
 		Missing:   missing,
+		Part:      otelPart(span, a, context),
 	})
 	return &captured
 }
@@ -522,3 +523,22 @@ func readOtel(record any, context RecordContext) []types.CapturedCall {
 
 // Otel reads OpenTelemetry GenAI spans.
 var Otel Adapter = adapter{name: "otel", detect: detectOtel, read: readOtel}
+
+// otelPart is the part name under the developer's key: a span or resource
+// attribute, or the span name when the key is "span.name". Span names are
+// instrumentation defaults such as "chat gpt-4o-mini" unless the developer
+// set them, so they are read only when asked for.
+func otelPart(span any, a attributes, context RecordContext) *string {
+	if context.PartKey == "" {
+		return nil
+	}
+	if attrHas(a, context.PartKey) {
+		if part := CleanPart(attr(a, context.PartKey)); part != nil {
+			return part
+		}
+	}
+	if context.PartKey == "span.name" {
+		return CleanPart(get(span, "name"))
+	}
+	return nil
+}

@@ -14,7 +14,6 @@ import (
 	"sync"
 
 	"github.com/metergraph/replay/internal/report"
-	"github.com/metergraph/replay/internal/report/link"
 	"github.com/metergraph/replay/internal/report/term"
 	"github.com/metergraph/replay/internal/types"
 )
@@ -38,8 +37,6 @@ type Data struct {
 	// The model with every string cleaned for the terminal (and made ASCII
 	// when asked), for the explorer's own panels.
 	Clean *report.Model
-	// The hosted link for the Summary footer.
-	Link string
 	// The run's name for the status bar.
 	Name string
 	// Drawn in ASCII.
@@ -70,7 +67,6 @@ func NewData(run *types.RunFile, options Options) (*Data, error) {
 	return &Data{
 		Model:   m,
 		Clean:   term.CleanDeep(m, options.ASCII),
-		Link:    link.HostedLink(run, link.MediumCLI),
 		Name:    term.CleanLine(name),
 		ASCII:   options.ASCII,
 		Caveats: caveats,

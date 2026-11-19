@@ -26,5 +26,3 @@ WHAT CHANGED
 
 itself: gpt-4.1-mini replayed again, the noise floor. Notes: run with --explain.
 Explore every call: metergraph-replay report replay-out/run.json
-Keep this running on live traffic:
-https://www.metergraph.dev/replay?utm_source=replay&utm_medium=cli&utm_campaign=0.0.0#setup=eyJ2IjoxLCJ0cmVhdG1lbnRzIjpbeyJtb2RlbCI6Imdvb2dsZS9nZW1pbmktMi41LWZsYXNoLWxpdGUiLCJzZXR0aW5ncyI6eyJ0ZW1wZXJhdHVyZSI6bnVsbCwibWF4VG9rZW5zIjpudWxsLCJyZWFzb25pbmdFZmZvcnQiOm51bGx9fSx7Im1vZGVsIjoib3BlbmFpL2dwdC01LjQtbmFubyIsInNldHRpbmdzIjp7InRlbXBlcmF0dXJlIjpudWxsLCJtYXhUb2tlbnMiOm51bGwsInJlYXNvbmluZ0VmZm9ydCI6bnVsbH19XSwidHJhY2tlZEZpZWxkcyI6WyIkLmNhdGVnb3J5IiwiJC5wcmlvcml0eSJdLCJzYW1wbGUiOjIwfQ

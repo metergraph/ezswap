@@ -1,0 +1,10 @@
+data: {"id":"chatcmpl-synthetic001","object":"chat.completion.chunk","created":1772442000,"model":"gpt-4o-mini-2024-07-18","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-synthetic001","object":"chat.completion.chunk","created":1772442000,"model":"gpt-4o-mini-2024-07-18","choices":[{"index":0,"delta":{"content":"Checking the order"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-synthetic001","object":"chat.completion.chunk","created":1772442000,"model":"gpt-4o-mini-2024-07-18","choices":[{"index":0,"delta":{"content":" for ada@example.com."},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-synthetic001","object":"chat.completion.chunk","created":1772442000,"model":"gpt-4o-mini-2024-07-18","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_synthetic_1","type":"function","function":{"name":"lookup_order","arguments":""}}]},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-synthetic001","object":"chat.completion.chunk","created":1772442000,"model":"gpt-4o-mini-2024-07-18","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\"order_id\":"}}]},"finish_reason":null}]}
+

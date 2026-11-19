@@ -1,0 +1,94 @@
+[{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "The capital"
+          }
+        ],
+        "role": "model"
+      },
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 9,
+    "totalTokenCount": 9
+  },
+  "modelVersion": "gemini-2.0-flash",
+  "responseId": "synthetic-response-001"
+}
+,
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": " of France is Paris."
+          }
+        ],
+        "role": "model"
+      },
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 9,
+    "totalTokenCount": 9
+  },
+  "modelVersion": "gemini-2.0-flash",
+  "responseId": "synthetic-response-001"
+}
+,
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "functionCall": {
+              "name": "cite_source",
+              "args": {
+                "url": "https://example.com/france"
+              }
+            }
+          }
+        ],
+        "role": "model"
+      },
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 9,
+    "totalTokenCount": 9
+  },
+  "modelVersion": "gemini-2.0-flash",
+  "responseId": "synthetic-response-001"
+}
+,
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": " Done."
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 9,
+    "candidatesTokenCount": 15,
+    "totalTokenCount": 24
+  },
+  "modelVersion": "gemini-2.0-flash",
+  "responseId": "synthetic-response-001"
+}]

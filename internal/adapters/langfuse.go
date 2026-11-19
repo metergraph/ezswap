@@ -193,8 +193,26 @@ func readLangfuse(record any, context RecordContext) []types.CapturedCall {
 			}),
 			Truncated: truncated,
 			Missing:   missing,
+			Part:      langfusePart(record, context),
 		}),
 	}
+}
+
+// langfusePart is the part name under the developer's key: in the
+// observation's metadata, or the observation name when the key is "name".
+// The name is an instrumentation default unless the developer set it, so it
+// is read only when asked for.
+func langfusePart(record any, context RecordContext) *string {
+	if context.PartKey == "" {
+		return nil
+	}
+	if part := partFrom(context, ParseJSON(get(record, "metadata"))); part != nil {
+		return part
+	}
+	if context.PartKey == "name" {
+		return CleanPart(get(record, "name"))
+	}
+	return nil
 }
 
 // Langfuse reads a Langfuse observation export.

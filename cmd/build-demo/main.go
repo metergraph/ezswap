@@ -424,7 +424,7 @@ func build(dir string) (*types.RunFile, error) {
 }
 
 func main() {
-	dir := flag.String("dir", "demo", "directory to write traces.jsonl and run.json into")
+	dir := flag.String("dir", "demo", "directory to write the demo's trace files and runs into")
 	flag.Parse()
 	result, err := build(*dir)
 	if err != nil {
@@ -432,4 +432,10 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Printf("Wrote %d replays over %d cases; spent $%s.\n", len(result.Replays), len(result.Cases), jsnum.ToFixed(result.SpentUSD, 4))
+	mapped, err := buildMap(*dir)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+	fmt.Printf("Wrote the map run: %d replays over %d cases; spent $%s.\n", len(mapped.Replays), len(mapped.Cases), jsnum.ToFixed(mapped.SpentUSD, 4))
 }

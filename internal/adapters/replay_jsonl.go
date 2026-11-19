@@ -114,6 +114,7 @@ func readReplayJSONL(record any, context RecordContext) []types.CapturedCall {
 			}),
 			Truncated: get(meta, "truncated") == true,
 			Missing:   missing,
+			Part:      orDefault(partFrom(context, record, meta), CleanPart(get(record, "part"))),
 		}),
 	}
 }
