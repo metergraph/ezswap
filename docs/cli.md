@@ -88,6 +88,7 @@ display options:
 | `--labels` | off | Within-noise badges in the explorer's tables. The printed report marks a figure beyond the noise floor with `*` either way. Not for `map`. |
 | `--allow-no-search` | off | Replay calls that searched the web, without search. |
 | `--allow-unpriced` | off | Run models the price catalog does not know. |
+| `--no-price-lookup` | off | Do not ask Metergraph's Pricing API for models the bundled catalog cannot price. See [prices](#prices). |
 | `--adapter NAME` | detected | `replay-jsonl`, `raw`, `langfuse` or `otel`. See [trace formats](trace-format.md). |
 | `--out DIR` | `./replay-out` | Where `run.json` goes (`demo`, `run` and `map`), and `record`'s `traces.jsonl`. Not for `report` or `demo --map`, which write nothing. |
 | `--explore` | off | `demo`: open the explorer instead of printing the report. Not for `demo --map`. |
@@ -265,6 +266,32 @@ model has no price and `--allow-unpriced` is not set. While one runs:
 
 Calls that were not sent are in `run.json` as `"status": "skipped"`, with the
 reason.
+
+### Prices
+
+Replay bundles Metergraph's public price catalog (`internal/pricing/prices.json`,
+built from metergraph-core's `prices.yaml`), so pricing works offline. When a
+`creator/model` id you name is not in it, `estimate`, `run` and `map` ask
+Metergraph's free [Pricing API](https://metergraph.dev/docs/reference/pricing-api)
+for that id on the `vercel-ai-gateway` channel, and print which models it
+priced:
+
+```text
+Prices from Metergraph's Pricing API: openai/gpt-6.1-terra. Only model names were sent. Turn this off with --no-price-lookup.
+```
+
+Only the model ids are sent. Answers, unknown models included, are cached for
+a day in the user cache directory. `run.json` records the catalog as, for
+example, `metergraph-core prices.yaml 2026-11-18 (28e57272a1ab) + Metergraph
+Pricing API (1 model)`. A bare id (no `creator/`) is not looked up, because
+the API needs the provider that billed it. If the API cannot be reached, the
+models stay unpriced and Replay says so.
+
+| Setting | Effect |
+|---|---|
+| `--no-price-lookup` | No lookup for this command. |
+| `METERGRAPH_REPLAY_NO_PRICE_LOOKUP=1` | No lookup, ever. |
+| `METERGRAPH_PRICING_URL` | Another Pricing API base URL, such as a self-hosted Metergraph. |
 
 ## Exit codes
 

@@ -1,8 +1,8 @@
 {
  "about": "Pricing conformance: expected costs computed by metergraph-core's Python catalog from the same prices.yaml. Generated; never edit expected values by hand.",
  "catalog": {
-  "version": "2026-10-06",
-  "commit": "e0d9203fd42d85a341ab339d9c2178bd526f5b67"
+  "version": "2026-11-18",
+  "commit": "28e57272a1ab445beb5c29d253fad9e3d7a176a5"
  },
  "cases": [
   {
@@ -35,7 +35,7 @@
    },
    "expected": {
     "canonicalModel": "anthropic/claude-sonnet-5.5",
-    "priceId": "anthropic/claude-sonnet-5.5:vercel-ai-gateway:global:2026-09-28",
+    "priceId": "anthropic/claude-sonnet-5.5:vercel-ai-gateway:global:2026-10-07",
     "costUsd": "0.01800000",
     "status": "priced",
     "reasons": []
@@ -107,7 +107,7 @@
    },
    "expected": {
     "canonicalModel": "xai/grok-4.3",
-    "priceId": "xai/grok-4.3:xai-api:global:2026-05-15",
+    "priceId": "xai/grok-4.3:vercel-ai-gateway:global:2026-04-30",
     "costUsd": "0.00475000",
     "status": "priced",
     "reasons": []
@@ -201,7 +201,7 @@
    },
    "expected": {
     "canonicalModel": "anthropic/claude-sonnet-5.5",
-    "priceId": "anthropic/claude-sonnet-5.5:anthropic-api:global:2026-09-28",
+    "priceId": "anthropic/claude-sonnet-5.5:anthropic-api:global:2026-10-07",
     "costUsd": "0.01800000",
     "status": "priced",
     "reasons": []
@@ -275,8 +275,8 @@
    },
    "expected": {
     "canonicalModel": "anthropic/claude-sonnet-5.5",
-    "priceId": "anthropic/claude-sonnet-5.5:anthropic-api:global:2026-09-28",
-    "costUsd": "0.02360000",
+    "priceId": "anthropic/claude-sonnet-5.5:anthropic-api:global:2026-10-07",
+    "costUsd": "0.02280000",
     "status": "priced",
     "reasons": []
    }
@@ -293,8 +293,8 @@
    },
    "expected": {
     "canonicalModel": "anthropic/claude-sonnet-5.5",
-    "priceId": "anthropic/claude-sonnet-5.5:anthropic-api:global:2026-09-28",
-    "costUsd": "0.00760000",
+    "priceId": "anthropic/claude-sonnet-5.5:anthropic-api:global:2026-10-07",
+    "costUsd": "0.00680000",
     "status": "priced",
     "reasons": []
    }
@@ -367,8 +367,8 @@
    },
    "expected": {
     "canonicalModel": "anthropic/claude-sonnet-5.5",
-    "priceId": "anthropic/claude-sonnet-5.5:anthropic-api:global:2026-09-28",
-    "costUsd": "0.00300000",
+    "priceId": "anthropic/claude-sonnet-5.5:anthropic-api:global:2026-10-07",
+    "costUsd": "0.00250000",
     "status": "priced",
     "reasons": []
    }
@@ -385,8 +385,8 @@
    },
    "expected": {
     "canonicalModel": "anthropic/claude-sonnet-5.5",
-    "priceId": "anthropic/claude-sonnet-5.5:vercel-ai-gateway:global:2026-09-28",
-    "costUsd": "0.00760000",
+    "priceId": "anthropic/claude-sonnet-5.5:vercel-ai-gateway:global:2026-10-07",
+    "costUsd": "0.00680000",
     "status": "priced",
     "reasons": []
    }
@@ -675,7 +675,7 @@
    },
    "expected": {
     "canonicalModel": "anthropic/claude-sonnet-5.5",
-    "priceId": "anthropic/claude-sonnet-5.5:vercel-ai-gateway:global:2026-09-28",
+    "priceId": "anthropic/claude-sonnet-5.5:vercel-ai-gateway:global:2026-10-07",
     "costUsd": "3.64000000",
     "status": "priced",
     "reasons": []
@@ -1269,8 +1269,8 @@
    },
    "expected": {
     "canonicalModel": "anthropic/claude-sonnet-5.5",
-    "priceId": "anthropic/claude-sonnet-5.5:vercel-ai-gateway:global:2026-09-28",
-    "costUsd": "0.02724900",
+    "priceId": "anthropic/claude-sonnet-5.5:vercel-ai-gateway:global:2026-10-07",
+    "costUsd": "0.02701450",
     "status": "priced",
     "reasons": []
    }
@@ -1699,8 +1699,8 @@
    },
    "expected": {
     "canonicalModel": "xai/grok-4.3",
-    "priceId": "xai/grok-4.3:xai-api:global:2026-05-15",
-    "costUsd": "0.01466400",
+    "priceId": "xai/grok-4.3:vercel-ai-gateway:global:2026-04-30",
+    "costUsd": "0.01759525",
     "status": "priced",
     "reasons": []
    }
@@ -1866,8 +1866,8 @@
    },
    "expected": {
     "canonicalModel": "deepseek/deepseek-v4.1-flash",
-    "priceId": "deepseek/deepseek-v4.1-flash:vercel-ai-gateway:global:2026-10-02",
-    "costUsd": "0.00383002",
+    "priceId": "deepseek/deepseek-v4.1-flash:vercel-ai-gateway:global:2026-10-19",
+    "costUsd": "0.00095692",
     "status": "priced",
     "reasons": []
    }
@@ -2186,7 +2186,7 @@
    },
    "expected": {
     "canonicalModel": "xai/grok-4.7",
-    "priceId": "xai/grok-4.7:xai-api:global:2026-09-21",
+    "priceId": "xai/grok-4.7:vercel-ai-gateway:global:2026-10-02",
     "costUsd": "0.02524050",
     "status": "priced",
     "reasons": []
@@ -2753,7 +2753,7 @@
    "expected": {
     "canonicalModel": "mistral/mistral-small-4",
     "priceId": "mistral/mistral-small-4:mistral-api:global:2026-03-16",
-    "costUsd": "0.00229373",
+    "costUsd": "0.00194198",
     "status": "priced",
     "reasons": []
    }

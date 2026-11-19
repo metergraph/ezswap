@@ -4,8 +4,9 @@ package pricing
 
 // The price catalog and cost function.
 //
-// The catalog is metergraph-core's public prices.yaml, converted to JSON at
-// build time (scripts/build-prices.mjs). Resolution follows metergraph-core:
+// The catalog is metergraph-core's public prices.yaml, converted to JSON by
+// cmd/build-prices. Models it lacks can be added at run time from
+// Metergraph's Pricing API (lookup.go). Resolution follows metergraph-core:
 // an alias is looked up by (provider, model) and is effective-dated and
 // region-pinned; the price is the row effective at the call's time for the
 // alias's model and channel; cache reads come out of the input count where the
@@ -742,6 +743,12 @@ type CatalogPricing struct {
 	version  string
 	snapshot *snapshot
 	now      func() time.Time
+	// The document and region the snapshot was built from, so a lookup can
+	// add models to it.
+	document *CatalogDocument
+	region   string
+	// Models added from the Pricing API.
+	looked int
 }
 
 var _ types.Pricing = (*CatalogPricing)(nil)
@@ -763,7 +770,7 @@ func LoadPricing(options LoadPricingOptions) (*CatalogPricing, error) {
 	if now == nil {
 		now = time.Now
 	}
-	return &CatalogPricing{Source: document.Source, version: CatalogVersion(document), snapshot: s, now: now}, nil
+	return &CatalogPricing{Source: document.Source, version: CatalogVersion(document), snapshot: s, now: now, document: document, region: region}, nil
 }
 
 func (c *CatalogPricing) instant(at string) int64 {
@@ -834,7 +841,13 @@ func (c *CatalogPricing) Quote(query types.PriceQuery) Quote {
 	})
 }
 
-func (c *CatalogPricing) CatalogVersion() string { return c.version }
+// CatalogVersion names the catalog, and says when the Pricing API added models.
+func (c *CatalogPricing) CatalogVersion() string {
+	if c.looked == 0 {
+		return c.version
+	}
+	return fmt.Sprintf("%s + Metergraph Pricing API (%d %s)", c.version, c.looked, map[bool]string{true: "model", false: "models"}[c.looked == 1])
+}
 
 func (c *CatalogPricing) Price(query types.PriceQuery) *float64 { return c.Quote(query).CostUSD }
 

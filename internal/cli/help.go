@@ -96,6 +96,8 @@ Spend
   --monthly-calls N        Calls a month the workload makes, for the monthly cost
                            projection (default: estimated from the file's time span).
   --allow-unpriced         Run models the price catalog does not know.
+  --no-price-lookup        Do not ask Metergraph's Pricing API for models the
+                           bundled catalog cannot price (only model names are sent).
   --yes                    Skip the spend confirmation (needed without a terminal).
   --concurrency N          Calls in flight at once (default ` + strconv.Itoa(run.DefaultRunConcurrency) + `).
 

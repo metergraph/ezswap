@@ -18,9 +18,19 @@ Replay reads trace files that can hold production prompts and outputs, and it
 calls model endpoints with your keys. It is designed to keep these boundaries:
 
 - **No telemetry.** Replay makes no network request except the model calls a
-  `run` or `map` sends to the endpoints you name, and the calls `record`
-  forwards for your app to the one upstream you name. `demo`, `estimate` and
-  `report` make none.
+  `run` or `map` sends to the endpoints you name, the calls `record`
+  forwards for your app to the one upstream you name, and one price lookup.
+  `demo` and `report` make none.
+- **The price lookup sends model names only.** When `estimate`, `run` or
+  `map` is given a `creator/model` id that the bundled price catalog cannot
+  price, Replay asks Metergraph's Pricing API
+  (`POST https://app.metergraph.dev/v1/pricing/lookup`) for those ids and the
+  `vercel-ai-gateway` channel. Nothing from the trace file, no prompt, output
+  or key, goes with it. Answers, unknown models included, are cached for a
+  day in the user cache directory (`metergraph-replay/pricing-lookup.json`,
+  mode 0600). `--no-price-lookup` or `METERGRAPH_REPLAY_NO_PRICE_LOOKUP=1`
+  turns it off; `METERGRAPH_PRICING_URL` points it elsewhere. A failed lookup
+  leaves the models unpriced and the run goes on.
 - **`record` listens on this machine only.** It binds `127.0.0.1` on one
   port (default 8787). It answers a request only when the request names
   `127.0.0.1:<port>` or `localhost:<port>` as its host and carries no

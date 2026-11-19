@@ -17,6 +17,7 @@ import (
 	"io/fs"
 	"net/http"
 	"os"
+	"path/filepath"
 	"runtime/debug"
 	"slices"
 	"strconv"
@@ -27,6 +28,7 @@ import (
 	"github.com/charmbracelet/colorprofile"
 	xterm "github.com/charmbracelet/x/term"
 
+	"github.com/metergraph/replay/internal/pricing"
 	"github.com/metergraph/replay/internal/providers"
 	"github.com/metergraph/replay/internal/report/term"
 	"github.com/metergraph/replay/internal/run"
@@ -89,6 +91,11 @@ type IO struct {
 	Hard context.Context
 	// The directory paths are shown relative to; "" is the working directory.
 	Cwd string
+	// Metergraph's Pricing API, asked for models the bundled catalog cannot
+	// price. "" never asks.
+	PricingURL string
+	// Where the Pricing API's answers are cached. "" caches nothing.
+	CacheDir string
 }
 
 // ExploreOptions are what the explorer is opened with.
@@ -122,6 +129,15 @@ func DefaultIO() IO {
 		StderrTTY: xterm.IsTerminal(os.Stderr.Fd()),
 		StdinTTY:  xterm.IsTerminal(os.Stdin.Fd()),
 		Env:       env,
+	}
+	if v := env["METERGRAPH_REPLAY_NO_PRICE_LOOKUP"]; v == "" || v == "0" {
+		o.PricingURL = pricing.DefaultPricingURL
+		if url := env["METERGRAPH_PRICING_URL"]; url != "" {
+			o.PricingURL = url
+		}
+	}
+	if dir, err := os.UserCacheDir(); err == nil {
+		o.CacheDir = filepath.Join(dir, "metergraph-replay")
 	}
 	if o.StdoutTTY {
 		if w, h, err := xterm.GetSize(os.Stdout.Fd()); err == nil {

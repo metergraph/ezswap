@@ -28,7 +28,7 @@ var (
 	runOnlyOptions = []string{
 		"models", "endpoint", "floor-endpoint", "api-key-env", "sample", "track", "temperature", "max-tokens",
 		"reasoning-effort", "budget", "monthly-calls", "no-noise-floor", "labels", "allow-no-search",
-		"allow-unpriced", "adapter", "explore", "explain", "yes", "concurrency",
+		"allow-unpriced", "no-price-lookup", "adapter", "explore", "explain", "yes", "concurrency",
 	}
 )
 

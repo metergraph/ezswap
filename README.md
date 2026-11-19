@@ -12,9 +12,14 @@ when the new model changes more than a rerun does.
 Replay prices every run before it spends anything, and can also compare
 models over a whole trace file for cost, latency and output differences.
 
-Local, no account, your own keys. Replay sends no telemetry. The only
-network traffic is the provider calls you ask for: the calls a `run` or `map`
-sends, and the calls `record` forwards for your app.
+Local, no account, your own keys. Replay sends no telemetry. The network
+traffic is the provider calls you ask for (the calls a `run` or `map` sends,
+and the calls `record` forwards for your app), plus one request to
+Metergraph's free [Pricing API](https://metergraph.dev/docs/reference/pricing-api)
+when a model you name is not in Replay's bundled price catalog. That request
+carries the model names only, never a trace, prompt or key. The answer is
+cached for a day. Turn it off with `--no-price-lookup` or
+`METERGRAPH_REPLAY_NO_PRICE_LOOKUP=1`.
 
 Replay writes three files, all on your machine: `run.json` (a finished run
 or map), `traces.jsonl` (what `record` captured) and `replay-parts.json`

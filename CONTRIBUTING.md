@@ -28,6 +28,11 @@ go build ./cmd/metergraph-replay        # or build the binary
 - `go run ./cmd/build-prices <clone of metergraph>` regenerates
   `internal/pricing/prices.json` from metergraph-core's `prices.yaml` at the
   clone's last commit to that file.
+  Then run
+  `uv run --no-project --with pyyaml python scripts/build_pricing_conformance.py <same clone>`
+  to recompute `conformance/pricing.json` with metergraph-core's own catalog
+  code. Run it with `--check` on a clone at the previous catalog commit first:
+  it should report 0 differences. Refresh both before each release.
 - Run `gofmt -l .` (it should print nothing) and `go mod tidy` before you
   push; CI checks both.
 

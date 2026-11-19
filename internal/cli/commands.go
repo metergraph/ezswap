@@ -284,11 +284,40 @@ func (s *session) setup(file string, mapMode bool) (*setupResult, error) {
 		}
 		return nil, err
 	}
+	if len(plan.Estimate.Unpriced) > 0 {
+		if again, err := s.lookUpPrices(prices, plan.Estimate.Unpriced, options); err != nil {
+			return nil, err
+		} else if again != nil {
+			plan = again
+		}
+	}
 	result.plan = plan
 	if mapMode {
 		s.writeNames(result)
 	}
 	return result, nil
+}
+
+// lookUpPrices asks Metergraph's Pricing API for models the bundled catalog
+// cannot price, and plans again when it priced any. Only model names are
+// sent. A failure is a note, not an error: the models stay unpriced.
+func (s *session) lookUpPrices(prices *pricing.CatalogPricing, unpriced []string, options run.PlanOptions) (*run.RunPlan, error) {
+	if s.io.PricingURL == "" || s.v.bool("no-price-lookup") {
+		return nil, nil
+	}
+	ctx := s.io.Signal
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	found, err := prices.LookUp(ctx, unpriced, pricing.LookupOptions{BaseURL: s.io.PricingURL, CacheDir: s.io.CacheDir})
+	if err != nil {
+		s.say("Could not look up prices for " + strings.Join(unpriced, ", ") + ": " + err.Error() + ".")
+	}
+	if len(found.Found) == 0 {
+		return nil, nil
+	}
+	s.say("Prices from Metergraph's Pricing API: " + strings.Join(found.Found, ", ") + ". Only model names were sent. Turn this off with --no-price-lookup.")
+	return run.PlanRun(options)
 }
 
 func (s *session) concurrency() (int, error) {
