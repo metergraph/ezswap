@@ -1,8 +1,10 @@
 # Support desk example
 
-A made-up support desk that calls a model from three places: it classifies a
-ticket, extracts an order, and drafts a reply (streamed). Use it to try
-`record` and `map` end to end. Every ticket, order and address is invented.
+A made-up support desk that calls a model from four places: it classifies a
+ticket, extracts an order, decides a refund under a written policy, and
+drafts a reply (streamed). Each place has 24 hand-written inputs. Use it to
+try `record` and `map` end to end. Every ticket, order and address is
+invented.
 
 ## With a local model (free)
 
@@ -42,19 +44,26 @@ metergraph-replay map replay-out/traces.jsonl --models openai/gpt-5-mini --endpo
 ```
 
 To go through [Vercel AI Gateway](https://vercel.com/docs/ai-gateway)
-instead, forward the recorder there and give the app your gateway key:
+instead, forward the recorder there and give the app your gateway key. This
+records the app on an expensive model and asks which places could move to
+cheaper ones, with `--judge` comparing the free-text replies:
 
 ```sh
 metergraph-replay record --upstream https://ai-gateway.vercel.sh
-OPENAI_API_KEY="$AI_GATEWAY_API_KEY" go run ./examples/support-desk --model openai/gpt-4.1-mini --calls 20
-metergraph-replay map replay-out/traces.jsonl --models openai/gpt-4.1-nano --endpoint vercel
+OPENAI_API_KEY="$AI_GATEWAY_API_KEY" go run ./examples/support-desk --model anthropic/claude-sonnet-5.5
+metergraph-replay map replay-out/traces.jsonl --endpoint vercel --judge \
+  --models anthropic/claude-haiku-5.5,openai/gpt-5.4-nano,openai/gpt-5.4-mini
 ```
 
-With 20 calls per part this made 180 replay calls and cost about one cent.
+Recording made 96 calls for about $0.25. The map made 400 replay calls and
+200 judge calls for about $0.17. In two runs, Haiku 5.5 stayed within noise
+on every part for 93% less per call, and GPT-5.4 nano changed the priority of
+15 of 20 tickets.
 
-`map` prints an estimate and asks before it spends anything. With 12 calls a
-part, a change in a few cases can fall short of the test; 20 is the default
-sample per part.
+`map` prints an estimate and asks before it spends anything. The app makes
+24 calls a part by default (`--calls`), and the map samples the latest 20 of
+each. At 20 cases, 4 or 5 changes against none on a rerun sits on the line
+between beyond and within noise, so such a cell can flip between runs.
 
 ## What the app sends
 
@@ -63,5 +72,5 @@ removes before forwarding:
 
 | Header | Value |
 |---|---|
-| `X-Replay-Part` | The place in the app: `classify-ticket`, `extract-order` or `draft-reply`. |
+| `X-Replay-Part` | The place in the app: `classify-ticket`, `extract-order`, `refund-decision` or `draft-reply`. |
 | `X-Replay-Trace` | An id for the request, so the map samples one call per request. |

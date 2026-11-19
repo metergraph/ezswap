@@ -12,6 +12,7 @@ import (
 	"github.com/metergraph/replay/demo"
 	"github.com/metergraph/replay/internal/cases"
 	"github.com/metergraph/replay/internal/core"
+	"github.com/metergraph/replay/internal/judge"
 	"github.com/metergraph/replay/internal/parts"
 	"github.com/metergraph/replay/internal/report"
 	"github.com/metergraph/replay/internal/report/term"
@@ -50,8 +51,8 @@ func (s *session) checkOptions(command string, mapMode bool) error {
 		}
 		return nil
 	}
-	if command != "map" {
-		if err := refuse([]string{"judge"}, "is for map. To judge a map run already made: metergraph-replay judge <run.json>"); err != nil {
+	if command != "map" && !(command == "estimate" && mapMode) {
+		if err := refuse([]string{"judge"}, "is for map and estimate --map. To judge a map run already made: metergraph-replay judge <run.json>"); err != nil {
 			return err
 		}
 	}
@@ -183,7 +184,10 @@ func (s *session) writeNames(setup *setupResult) {
 	}
 }
 
-func comparedText(part run.PartPlan) string {
+func comparedText(part run.PartPlan, judged bool) string {
+	if judged && part.Reason == parts.ReasonFreeText {
+		return "judged: free text"
+	}
 	if part.Reason != "" {
 		return "no: " + part.Reason
 	}
@@ -251,7 +255,7 @@ func (s *session) explainMapEstimate(setup *setupResult) string {
 	}
 	lines = append(lines, d.paint.Muted(row("PART", "FROM", "CASES", "COMPARED", "EXPECTED")))
 	for _, part := range plan.Parts {
-		lines = append(lines, row(clean(part.Name), part.Source, fmt.Sprint(part.Sampled), comparedText(part), usd(part.Estimate.ExpectedUSD)))
+		lines = append(lines, row(clean(part.Name), part.Source, fmt.Sprint(part.Sampled), comparedText(part, s.v.bool("judge")), usd(part.Estimate.ExpectedUSD)))
 	}
 	lines = append(lines, "")
 	estimate := plan.Estimate
@@ -262,6 +266,18 @@ func (s *session) explainMapEstimate(setup *setupResult) string {
 	lines = append(lines, fmt.Sprintf("%s in all: each case runs on %s%s.", plural(estimate.Replayable*perCase, "call"),
 		plural(len(plan.Treatments), "model"), map[bool]string{true: ", plus twice on production's model", false: ""}[plan.FloorEndpoint != ""]))
 	lines = append(lines, "Expected "+usd(estimate.ExpectedUSD)+", at most "+usd(estimate.UpperBoundUSD)+". Budget "+usd(plan.Settings.BudgetUSD)+".")
+	if s.v.bool("judge") {
+		pairs := 0
+		for _, part := range plan.Parts {
+			if part.Reason == parts.ReasonFreeText {
+				pairs += part.Sampled * (len(plan.Treatments) + 2)
+			}
+		}
+		if pairs > 0 {
+			lines = append(lines, fmt.Sprintf("--judge: about %s of free-text replies go to %s, for about %s more, outside the budget.",
+				plural(pairs, "pair"), judge.DefaultModel, usd(float64(pairs)*judgePairUSD)))
+		}
+	}
 	if estimate.ExpectedUSD > plan.Settings.BudgetUSD {
 		lines = append(lines, "The expected spend is over the budget, so map will refuse. "+overBudgetHint(true))
 	} else if estimate.UpperBoundUSD > plan.Settings.BudgetUSD {

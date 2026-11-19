@@ -21,6 +21,10 @@ import (
 // judgeNote is said before any reply is sent to the judge.
 const judgeNote = "The request and both replies of each pair go to the AI Gateway, which passes them to the judge's provider with zero data retention asked for."
 
+// judgePairUSD is about what one judged pair costs: two calls of a few
+// hundred input tokens at the judge's price. Only the estimate uses it.
+const judgePairUSD = 0.00005
+
 type judged struct {
 	pairs   int
 	failed  int

@@ -52,10 +52,11 @@ The map (map, estimate --map)
                            span.name.
   --ignore PATH            Leave a field out of the comparison, such as a
                            generated id: $.request_id
-  --judge                  map: compare free-text parts with a judge model
-                           (typesafe-ai/jev, through the AI Gateway; needs
-                           AI_GATEWAY_API_KEY). Each request and its replies are
-                           sent to it. Costs about a cent per 200 pairs.
+  --judge                  map, estimate --map: compare free-text parts with
+                           a judge model (typesafe-ai/jev, through the AI
+                           Gateway; needs AI_GATEWAY_API_KEY). Each request
+                           and its replies are sent to it. About a cent per
+                           200 pairs.
   Names are kept in replay-parts.json beside the trace file. Edit a name
   there to rename a part; give two parts one name to merge them.
 

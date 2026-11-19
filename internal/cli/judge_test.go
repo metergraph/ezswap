@@ -156,6 +156,20 @@ func TestJudgeRefusals(t *testing.T) {
 	}
 }
 
+func TestEstimateMapWithJudge(t *testing.T) {
+	var calls atomic.Int32
+	server := fakeGatewayJudge(t, http.StatusOK, &calls)
+	file := freeTextTraces(t)
+	plain := cli(t, args("estimate", file, "--map", models), nil, nil)
+	match(t, `reply +name +12  no: free text`, plain.stdout)
+	judged := cli(t, args("estimate", file, "--map", models, "--judge"), withJudge(server), nil)
+	if judged.code != ExitOK || judged.fetches != 0 || calls.Load() != 0 {
+		t.Fatalf("%d, %d fetches, %d judge calls\n%s", judged.code, judged.fetches, calls.Load(), judged.stderr)
+	}
+	match(t, `reply +name +12  judged: free text`, judged.stdout)
+	match(t, `--judge: about 36 pairs of free-text replies go to typesafe-ai/jev, for about \$0\.0\d+ more, outside the budget\.`, judged.stdout)
+}
+
 func TestJudgeFailureKeepsTheRun(t *testing.T) {
 	var calls atomic.Int32
 	server := fakeGatewayJudge(t, http.StatusUnauthorized, &calls)

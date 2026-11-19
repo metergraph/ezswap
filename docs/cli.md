@@ -107,7 +107,7 @@ display options:
 
 | Option | Default | |
 |---|---|---|
-| `--judge` | off | `map`: compare free-text parts with a judge model. See [judged parts](sensitivity-map.md#judged-free-text-parts). |
+| `--judge` | off | `map`: compare free-text parts with a judge model. `estimate --map`: show those parts as judged and price the judging. See [judged parts](sensitivity-map.md#judged-free-text-parts). |
 | `--map` | off | `estimate`: list the parts and price a map. `demo`: print the bundled map. `report`: accepted on a run that `map` made (which prints the map either way), a usage error on any other run. |
 | `--per-part N` | 20 | The latest N replayable cases of each part, one per trace id (10 to 200). |
 | `--part-key KEY` | none | The key that holds the part name in your records. See [trace formats](trace-format.md#parts). |
@@ -132,7 +132,7 @@ An option given to a command that does not take it is a usage error (exit
 | `--map` | yes | no (always a map) | yes | yes | `estimate` only | no |
 | `--per-part`, `--part-key`, `--ignore` | yes | yes | no | no | no | no |
 | `--only`, `--name` | yes | yes | yes | no | no | no |
-| `--judge` | no | yes | no (use `judge`) | no | no | no |
+| `--judge` | yes | yes | no (use `judge`) | no | no | no |
 | `--sample` | no | no | not used | not used | yes | no |
 | `--upstream`, `--port` | no | no | no | no | no | yes |
 | `--models`, `--budget` and the other replay options | yes | yes | not used | not used | yes | no |
