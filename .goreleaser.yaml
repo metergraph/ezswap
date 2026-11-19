@@ -35,6 +35,12 @@ archives:
 checksum:
   name_template: checksums.txt
 
+# Named outright, so download URLs never depend on the clone's git remote.
+release:
+  github:
+    owner: metergraph
+    name: replay
+
 changelog:
   use: github
   sort: asc
