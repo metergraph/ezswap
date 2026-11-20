@@ -5,6 +5,7 @@ package mapview
 
 import (
 	"github.com/metergraph/replay/internal/report"
+	"github.com/metergraph/replay/internal/report/term"
 )
 
 // Views, from the outside in.
@@ -84,9 +85,9 @@ func (s State) Entries() []Entry {
 		if ch, isChanged := changed[c.ID]; isChanged {
 			e.Status = "changed"
 			if ch.Path == report.JudgedPath {
-				e.Change = ch.To
+				e.Change = term.CleanLine(ch.To)
 			} else {
-				e.Change = report.ShortPath(ch.Path) + ": " + ch.From + " -> " + ch.To
+				e.Change = term.CleanLine(report.ShortPath(ch.Path) + ": " + ch.From + " -> " + ch.To)
 			}
 			first = append(first, e)
 			continue

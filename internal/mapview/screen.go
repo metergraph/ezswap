@@ -206,7 +206,7 @@ func gridLines(s State, c ctx) []string {
 	default:
 		reason := ""
 		if mt.Reason != nil {
-			reason = ": " + *mt.Reason
+			reason = ": " + term.CleanLine(*mt.Reason)
 		}
 		what += labelName(mt.Result) + reason + "."
 	}
@@ -295,7 +295,7 @@ func cellLines(s State, c ctx, height int) []string {
 	var fields []string
 	for _, pc := range mt.Paths {
 		if pc.Changed > 0 || pc.Rerun > 0 {
-			fields = append(fields, fmt.Sprintf("%s changed %d, rerun %d", report.ShortPath(pc.Path), pc.Changed, pc.Rerun))
+			fields = append(fields, fmt.Sprintf("%s changed %d, rerun %d", term.CleanLine(report.ShortPath(pc.Path)), pc.Changed, pc.Rerun))
 		}
 	}
 	if len(fields) > 0 {
@@ -335,6 +335,7 @@ func cellLines(s State, c ctx, height int) []string {
 	idW = min(idW, 20)
 	for i := start; i < min(len(entries), start+room); i++ {
 		e := entries[i]
+		e.Status = term.CleanLine(e.Status)
 		status := term.PadEnd(e.Status, 10)
 		switch e.Status {
 		case "changed":
@@ -402,6 +403,7 @@ func caseLines(s State, c ctx) []string {
 }
 
 func statusText(c ctx, status string) string {
+	status = term.CleanLine(status)
 	switch status {
 	case "changed":
 		return c.p.Hue(beyondHue, status)
@@ -424,7 +426,7 @@ func replyHead(r Reply, c ctx) string {
 		head += "  " + c.p.Muted(strings.Join(facts, " · "))
 	}
 	if r.Problem != "" {
-		head += "  " + c.p.Hue(beyondHue, r.Problem)
+		head += "  " + c.p.Hue(beyondHue, term.CleanLine(r.Problem))
 	}
 	return head
 }

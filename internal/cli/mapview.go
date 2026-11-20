@@ -5,7 +5,6 @@ package cli
 
 import (
 	"context"
-	"errors"
 	"os"
 	"path/filepath"
 
@@ -22,13 +21,17 @@ func (s *session) exploreMap(r *types.RunFile, m *report.Map, runPath string) (c
 		return ExitOK, false, nil
 	}
 	d := s.display()
+	// --html wrote the page during this command: o opens that file.
+	// Otherwise o writes a fresh page into a new private folder, never into
+	// the run file's folder, which may hold a file or link this command did
+	// not write.
 	pagePath, err := s.htmlPath()
 	if err != nil {
 		return 0, false, err
 	}
-	if pagePath == "" {
-		// Written only if o asks for it.
-		pagePath = filepath.Join(filepath.Dir(runPath), "map.html")
+	written := pagePath != ""
+	if !written {
+		pagePath = "map.html" // shown only; the page is written on demand
 	}
 	data := mapview.NewData(r, m, mapview.Options{HTMLPath: pagePath, Name: s.shownPath(runPath), ASCII: d.ascii})
 	var reason string
@@ -46,17 +49,14 @@ func (s *session) exploreMap(r *types.RunFile, m *report.Map, runPath string) (c
 			Input: s.io.Stdin, Output: s.io.Stdout, Env: s.environ(), Profile: d.profile,
 			Columns: columns, Rows: rows, Signals: true,
 			Open: func(path string) error {
-				if _, statErr := os.Stat(path); errors.Is(statErr, os.ErrNotExist) {
-					text, err := page.MapPage(r, m)
-					if err != nil {
-						return err
-					}
-					// Owner-only: the page holds the prompts and replies.
-					if err := os.WriteFile(path, text, 0o600); err != nil {
-						return err
-					}
+				if written {
+					return mapview.OpenInBrowser(path)
 				}
-				return mapview.OpenInBrowser(path)
+				fresh, err := privatePage(r, m)
+				if err != nil {
+					return err
+				}
+				return mapview.OpenInBrowser(fresh)
 			},
 		})
 	}
@@ -70,4 +70,29 @@ func (s *session) exploreMap(r *types.RunFile, m *report.Map, runPath string) (c
 		return ExitSIGTERM, true, nil
 	}
 	return ExitOK, true, nil
+}
+
+// privatePage writes the map's page into a new folder only this user can
+// read, and returns its path. The folder is left for the browser to read;
+// the system's temporary directory clears it.
+func privatePage(r *types.RunFile, m *report.Map) (string, error) {
+	text, err := page.MapPage(r, m)
+	if err != nil {
+		return "", err
+	}
+	dir, err := os.MkdirTemp("", "metergraph-replay-page-")
+	if err != nil {
+		return "", err
+	}
+	path := filepath.Join(dir, "map.html")
+	// O_EXCL in a folder just made: nothing else can be there to follow.
+	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o600)
+	if err != nil {
+		return "", err
+	}
+	if _, err := file.Write(text); err != nil {
+		file.Close()
+		return "", err
+	}
+	return path, file.Close()
 }

@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/metergraph/replay/internal/report"
+	"github.com/metergraph/replay/internal/report/term"
 	"github.com/metergraph/replay/internal/types"
 )
 
@@ -91,8 +92,10 @@ func NewData(run *types.RunFile, m *report.Map, o Options) *Data {
 				message = &text
 			}
 			c.Arms[arm] = Reply{
-				Label: labels[arm], Text: deref(r.Output),
-				Problem: problem(r.Status, r.FinishReason, r.Refusal, message),
+				Label: term.CleanLine(labels[arm]), Text: deref(r.Output),
+				// The error text is from the run file: cleaned like every
+				// other captured string.
+				Problem: term.CleanLine(problem(r.Status, r.FinishReason, r.Refusal, message)),
 				CostUSD: r.CostUSD, LatencyMs: r.LatencyMs,
 			}
 		}

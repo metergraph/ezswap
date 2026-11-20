@@ -3,9 +3,12 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/metergraph/replay/demo"
 	"github.com/metergraph/replay/internal/mapview"
+	"github.com/metergraph/replay/internal/report"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -374,4 +377,30 @@ func TestHelpNamesTheNewCommands(t *testing.T) {
 			t.Errorf("help does not mention %q", word)
 		}
 	}
+}
+
+func TestPrivatePageIsFreshAndOwnerOnly(t *testing.T) {
+	r, err := demo.MapRun()
+	if err != nil {
+		t.Fatal(err)
+	}
+	m, _ := report.BuildMap(r, report.MapOptions{})
+	first, err := privatePage(r, m)
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, _ := privatePage(r, m)
+	if first == second || filepath.Base(first) != "map.html" {
+		t.Errorf("pages %s %s", first, second)
+	}
+	info, err := os.Stat(first)
+	if err != nil || info.Size() < 1000 || (runtime.GOOS != "windows" && info.Mode().Perm() != 0o600) {
+		t.Errorf("%v %v", info, err)
+	}
+	dir, _ := os.Stat(filepath.Dir(first))
+	if runtime.GOOS != "windows" && dir.Mode().Perm()&0o077 != 0 {
+		t.Errorf("folder mode %v", dir.Mode())
+	}
+	os.RemoveAll(filepath.Dir(first))
+	os.RemoveAll(filepath.Dir(second))
 }

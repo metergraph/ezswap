@@ -8,6 +8,7 @@ import (
 	"github.com/metergraph/replay/demo"
 	"github.com/metergraph/replay/internal/report"
 	"github.com/metergraph/replay/internal/report/term"
+	"github.com/metergraph/replay/internal/types"
 )
 
 func demoData(t *testing.T) *Data {
@@ -155,15 +156,48 @@ func TestHelpAndOpenPage(t *testing.T) {
 	}
 }
 
-func TestRepliesCannotDriveTheTerminal(t *testing.T) {
-	d := demoData(t)
-	for _, cases := range d.Cases {
-		for _, c := range cases {
-			c.Request = "\x1b]0;pwned\x07evil"
+func TestRunFileTextCannotDriveTheTerminal(t *testing.T) {
+	run, err := demo.MapRun()
+	if err != nil {
+		t.Fatal(err)
+	}
+	evil := "\x1b]0;pwned\x07evil"
+	for i := range run.Replays {
+		r := &run.Replays[i]
+		if r.Arm == "t1" {
+			r.Status = "failed"
+			r.Output = nil
+			r.Error = &types.ReplayError{Code: evil, Message: evil}
 		}
 	}
-	s := press(NewState(d, 100, 30), "enter", "enter")
-	if text := frame(s); strings.Contains(text, "\x1b]") || strings.Contains(text, "\x07") {
-		t.Fatalf("an escape reached the frame")
+	for i := range run.Cases {
+		run.Cases[i].ID = run.Cases[i].ID + evil
+	}
+	m, err := report.BuildMap(run, report.MapOptions{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for i := range m.Parts {
+		for j := range m.Parts[i].Treatments {
+			mt := &m.Parts[i].Treatments[j]
+			reason := evil
+			mt.Reason = &reason
+			for k := range mt.Paths {
+				mt.Paths[k].Path = "$." + evil
+			}
+		}
+	}
+	d := NewData(run, m, Options{})
+	for _, cases := range d.Cases {
+		for _, c := range cases {
+			c.Request = evil
+		}
+	}
+	s := NewState(d, 100, 30)
+	frames := []string{frame(s), frame(press(s, "enter")), frame(press(s, "enter", "a")), frame(press(s, "enter", "a", "enter"))}
+	for i, text := range frames {
+		if strings.Contains(text, "\x1b]") || strings.Contains(text, "\x07") {
+			t.Fatalf("frame %d: an escape reached the frame", i)
+		}
 	}
 }
