@@ -25,6 +25,20 @@ type Choice struct {
 	Parts   []string
 	PerPart int
 	Judge   bool
+	// The objective's key, or "" when the plan offers none.
+	Objective string
+}
+
+// Objective is one thing a person may want from a map, with the models
+// suggested for it.
+type Objective struct {
+	Key   string
+	Label string
+	// What the suggestions are, in a few words.
+	Detail string
+	Models []string
+	// Turn the judge on when this is chosen and a part has free text.
+	Judge bool
 }
 
 // PartRow is one part as the estimate sees it.
@@ -53,7 +67,8 @@ type Preview struct {
 
 // Row kinds of the plan screen, top to bottom.
 const (
-	rowPart = iota
+	rowObjective = iota
+	rowPart
 	rowModel
 	rowAddModel
 	rowEndpoint
@@ -75,7 +90,15 @@ type Plan struct {
 	// Every part and model on offer; Choice holds the ones chosen.
 	AllParts  []PartRow
 	AllModels []string
-	Preview   Preview
+	// The objectives on offer. Pinned is the models that stay whatever the
+	// objective: the settings file's and those typed in. TickSuggested
+	// ticks an objective's models when it is chosen.
+	Objectives    []Objective
+	Pinned        []string
+	TickSuggested bool
+	// The objective, not the person, turned the judge on.
+	judgeByObjective bool
+	Preview          Preview
 	// The estimate is being worked out for this revision.
 	Pending  bool
 	Revision int
@@ -108,8 +131,73 @@ func NewPlan(file, step string, parts []PartRow, start Choice) Plan {
 	return p
 }
 
+// WithObjectives is the plan offering these objectives, the one named
+// start chosen (the first when start names none), and the cursor on it.
+// pinned is the models that stay whatever the objective. tick ticks each
+// objective's suggestions as it is chosen: for a plan that starts with no
+// model of the person's own.
+func (p Plan) WithObjectives(objectives []Objective, pinned []string, tick bool, start string) Plan {
+	if len(objectives) == 0 {
+		return p
+	}
+	p.Objectives = objectives
+	p.Pinned = append([]string(nil), pinned...)
+	p.TickSuggested = tick
+	if !slices.ContainsFunc(objectives, func(o Objective) bool { return o.Key == start }) {
+		start = objectives[0].Key
+	}
+	p = p.choose(start)
+	p.Cursor = p.firstRow(rowObjective)
+	return p
+}
+
+func (p Plan) objective() (Objective, int) {
+	for i, o := range p.Objectives {
+		if o.Key == p.Choice.Objective {
+			return o, i
+		}
+	}
+	return Objective{}, -1
+}
+
+// choose sets the objective: the models on offer become the pinned ones
+// and the objective's suggestions. The ticks on pinned models are kept.
+func (p Plan) choose(key string) Plan {
+	first := p.Choice.Objective == ""
+	p.Choice.Objective = key
+	o, _ := p.objective()
+	all := append([]string(nil), p.Pinned...)
+	for _, m := range o.Models {
+		if !slices.Contains(all, m) {
+			all = append(all, m)
+		}
+	}
+	var chosen []string
+	for _, m := range all {
+		pinned := slices.Contains(p.Pinned, m)
+		switch {
+		case pinned && (first || slices.Contains(p.Choice.Models, m)):
+			chosen = append(chosen, m)
+		case !pinned && p.TickSuggested:
+			chosen = append(chosen, m)
+		}
+	}
+	p.AllModels, p.Choice.Models = all, chosen
+	// An objective that turned the judge on turns it off again when left.
+	if p.judgeByObjective {
+		p.Choice.Judge, p.judgeByObjective = false, false
+	}
+	if o.Judge && p.hasFreeText() && !p.Choice.Judge {
+		p.Choice.Judge, p.judgeByObjective = true, true
+	}
+	return p
+}
+
 func (p Plan) rows() []row {
 	var rows []row
+	if len(p.Objectives) > 0 {
+		rows = append(rows, row{rowObjective, 0})
+	}
 	for i := range p.AllParts {
 		rows = append(rows, row{rowPart, i})
 	}
@@ -165,6 +253,7 @@ func ReducePlan(p Plan, key string) (Plan, bool) {
 			if name != "" && !slices.Contains(p.AllModels, name) {
 				p.AllModels = append(p.AllModels, name)
 				p.Choice.Models = append(p.Choice.Models, name)
+				p.Pinned = append(p.Pinned, name)
 				// A row was added above the cursor: stay on the add row.
 				p.Cursor++
 			}
@@ -211,6 +300,15 @@ func ReducePlan(p Plan, key string) (Plan, bool) {
 func (p Plan) act(r row, key string) Plan {
 	toggle := key == " " || key == "x" || key == "enter"
 	switch r.kind {
+	case rowObjective:
+		_, i := p.objective()
+		switch key {
+		case "left", "h", "-":
+			i = (i - 1 + len(p.Objectives)) % len(p.Objectives)
+		default:
+			i = (i + 1) % len(p.Objectives)
+		}
+		p = p.choose(p.Objectives[i].Key)
 	case rowPart:
 		if toggle {
 			p.Choice.Parts = toggled(p.Choice.Parts, p.AllParts[r.index].Name, partOrder(p.AllParts))
@@ -242,6 +340,7 @@ func (p Plan) act(r row, key string) Plan {
 	case rowJudge:
 		if toggle || key == "left" || key == "right" {
 			p.Choice.Judge = !p.Choice.Judge
+			p.judgeByObjective = false
 		}
 	case rowRun:
 		if key == "enter" && p.Ready() {
@@ -301,7 +400,7 @@ func PlanFrame(p Plan, paint term.Paint, ascii bool) []string {
 	}
 	section := ""
 	for i, r := range rows {
-		title := map[int]string{rowPart: "PARTS", rowModel: "MODELS TO TRY", rowAddModel: "MODELS TO TRY", rowEndpoint: "SETTINGS", rowPerPart: "SETTINGS", rowJudge: "SETTINGS", rowRun: ""}[r.kind]
+		title := map[int]string{rowObjective: "OBJECTIVE", rowPart: "PARTS", rowModel: "MODELS TO TRY", rowAddModel: "MODELS TO TRY", rowEndpoint: "SETTINGS", rowPerPart: "SETTINGS", rowJudge: "SETTINGS", rowRun: ""}[r.kind]
 		if title != section {
 			if title != "" {
 				lines = append(lines, "", paint.Muted(title))
@@ -312,6 +411,9 @@ func PlanFrame(p Plan, paint term.Paint, ascii bool) []string {
 		}
 		var text string
 		switch r.kind {
+		case rowObjective:
+			o, _ := p.objective()
+			text = g("‹ ", "< ") + paint.Bold(o.Label) + g(" ›", " >") + "  " + paint.Muted(term.CleanLine(o.Detail))
 		case rowPart:
 			part := p.AllParts[r.index]
 			on := slices.Contains(p.Choice.Parts, part.Name)

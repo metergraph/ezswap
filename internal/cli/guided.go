@@ -19,15 +19,82 @@ import (
 	"github.com/metergraph/ezswap/internal/flow"
 	"github.com/metergraph/ezswap/internal/judge"
 	"github.com/metergraph/ezswap/internal/parts"
+	"github.com/metergraph/ezswap/internal/pricing"
+	"github.com/metergraph/ezswap/internal/recommend"
 	"github.com/metergraph/ezswap/internal/report"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
-// Models the plan offers, unticked, when the settings file names none.
-var suggestedModels = []string{
-	"anthropic/claude-haiku-5.5",
-	"openai/gpt-5.4-nano",
-	"openai/gpt-5.4-mini",
-	"google/gemini-3.8-flash",
+// How many models an objective suggests.
+const suggested = 3
+
+// A typical call, for comparing what models cost: three input tokens to
+// each output token.
+const typicalInput, typicalOutput = 3000, 1000
+
+// objectives is the plan's objectives for traces recorded on production,
+// each with the models suggested for it. Prices are the catalog's.
+func objectives(list recommend.List, production string, prices *pricing.CatalogPricing) []flow.Objective {
+	price := func(model string) (float64, bool) {
+		if model == "" {
+			return 0, false
+		}
+		usd := prices.Price(types.PriceQuery{Model: model, InputTokens: typicalInput, OutputTokens: typicalOutput})
+		if usd == nil {
+			return 0, false
+		}
+		return *usd, true
+	}
+	_, known := price(production)
+	than := "the model in the traces"
+	if production != "" {
+		than = production
+	}
+	var out []flow.Objective
+	for _, key := range recommend.Objectives {
+		o := flow.Objective{Key: key, Models: recommend.Suggest(list, key, production, price, suggested)}
+		switch key {
+		case recommend.Cost:
+			o.Label, o.Detail = "Reduce cost", "models that cost less than "+than
+			if !known {
+				o.Detail = "the cheapest models on ezswap's list"
+			}
+		case recommend.Quality:
+			o.Label, o.Detail, o.Judge = "Improve quality", "models that cost more than "+than, true
+			if !known {
+				o.Detail = "the costliest models on ezswap's list"
+			}
+		case recommend.Latest:
+			o.Label, o.Detail = "Try the latest models", "the newest model from each provider"
+		}
+		if len(o.Models) == 0 {
+			o.Detail = "ezswap's list has no such model for " + than
+		}
+		out = append(out, o)
+	}
+	return out
+}
+
+// productionModel is the model most of the plan's cases were recorded on,
+// the first seen winning a tie, or "". It is the catalog's name for the
+// model when the catalog knows it, and the name as captured otherwise.
+func productionModel(cases []types.Case, prices *pricing.CatalogPricing) string {
+	count := map[string]int{}
+	best := ""
+	for _, c := range cases {
+		if c.Model == nil || *c.Model == "" {
+			continue
+		}
+		name := *c.Model
+		if resolved := prices.ResolveProduction(c.Provider, c.Model, ""); resolved != nil {
+			name = *resolved
+		}
+		count[name]++
+		if best == "" || count[name] > count[best] {
+			best = name
+		}
+	}
+	return best
 }
 
 // Upstreams the recorder offers.
@@ -184,14 +251,16 @@ func (s *session) guidedPlan(file string, o flow.Options) (outcome, error) {
 	if _, _, err := s.applyConfig("map"); err != nil {
 		return outcome{}, err
 	}
-	// The models to start from: the settings file's, or suggestions.
+	// The models to start from: the settings file's. The objective adds
+	// its suggestions, ticked when the settings file names none.
 	chosen := commaList([]string{func() string { m, _ := s.v.str("models"); return m }()})
-	offered := append([]string(nil), chosen...)
-	if len(chosen) == 0 {
-		offered = append(offered, suggestedModels...)
-	}
+	list := recommend.Bundled()
 	// The parts, from a plan on any one model: parts do not depend on it.
-	probe := s.quiet(withChoice(s.v, flow.Choice{Models: offered[:1], Endpoint: endpointOf(s.v), PerPart: perPartOf(s.v)}, nil))
+	probeModel := list.Models[0].ID
+	if len(chosen) > 0 {
+		probeModel = chosen[0]
+	}
+	probe := s.quiet(withChoice(s.v, flow.Choice{Models: []string{probeModel}, Endpoint: endpointOf(s.v), PerPart: perPartOf(s.v)}, nil))
 	setup, err := probe.setup(file, true)
 	if err != nil {
 		return outcome{}, err
@@ -209,8 +278,8 @@ func (s *session) guidedPlan(file string, o flow.Options) (outcome, error) {
 	if only := commaList(s.v.list("only")); len(only) > 0 {
 		start.Parts = only
 	}
-	plan := flow.NewPlan(file, stepAnalyze, rows, start)
-	plan.AllModels = offered
+	plan := flow.NewPlan(file, stepAnalyze, rows, start).
+		WithObjectives(objectives(list, productionModel(setup.plan.Cases, setup.pricing), setup.pricing), chosen, len(chosen) == 0, "")
 	estimate := func(c flow.Choice) flow.Preview {
 		if len(c.Models) == 0 || len(c.Parts) == 0 {
 			return flow.Preview{Err: "Choose at least one model and one part."}
