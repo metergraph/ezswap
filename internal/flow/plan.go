@@ -290,7 +290,7 @@ func PlanFrame(p Plan, paint term.Paint, ascii bool) []string {
 		}
 		return g("○", "[ ]")
 	}
-	lines := header(p.Step, "Plan the map", paint, w, ascii)
+	lines := header(p.Step, "Analyze", paint, w, ascii)
 	lines = append(lines, paint.Muted("Trace file ")+term.CleanLine(p.File))
 	rows := p.rows()
 	cursorAt := func(i int) string {

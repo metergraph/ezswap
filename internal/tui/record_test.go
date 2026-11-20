@@ -29,6 +29,13 @@ func TestRecordingCountsCallsByPart(t *testing.T) {
 	if !strings.Contains(m.Frame(), "Starting...") {
 		t.Fatalf("before ready:\n%s", m.Frame())
 	}
+	if strings.Contains(m.Frame(), "step ") {
+		t.Errorf("a step is shown outside the guided workflow:\n%s", m.Frame())
+	}
+	guided := NewRecording(RecordingOptions{Paint: term.PlainPaint(), Width: 90, ASCII: true, Step: "step 1 of 3"})
+	if first := strings.SplitN(guided.Frame(), "\n", 2)[0]; !strings.Contains(first, "ezswap record  step 1 of 3") {
+		t.Errorf("title lacks the step: %q", first)
+	}
 	m = step(m, RecordReadyMsg{Address: "127.0.0.1:8787"})
 	if !strings.Contains(m.Frame(), "Waiting for the first call.") || !strings.Contains(m.Frame(), "http://127.0.0.1:8787/v1") {
 		t.Fatalf("ready:\n%s", m.Frame())

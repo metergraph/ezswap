@@ -58,6 +58,14 @@ func TestGridOpensOnTheFirstBeyondNoiseCell(t *testing.T) {
 			t.Errorf("grid lacks %q:\n%s", want, text)
 		}
 	}
+	if strings.Contains(text, "step ") {
+		t.Errorf("a step is shown outside the guided workflow:\n%s", text)
+	}
+	guided := demoData(t)
+	guided.Step = "step 3 of 3"
+	if first := strings.SplitN(frame(NewState(guided, 100, 30)), "\n", 2)[0]; !strings.Contains(first, "ezswap map  step 3 of 3") {
+		t.Errorf("title lacks the step: %q", first)
+	}
 	lines := strings.Split(text, "\n")
 	if len(lines) != 30 {
 		t.Fatalf("%d lines", len(lines))

@@ -33,6 +33,14 @@ func TestPlanChoiceBecomesMapOptions(t *testing.T) {
 	}
 }
 
+func TestGuidedStepsAreNumberedOfThree(t *testing.T) {
+	for i, step := range []string{stepRecord, stepAnalyze, stepMap} {
+		if want := "step " + string(rune('1'+i)) + " of 3"; step != want {
+			t.Errorf("step %d is %q, want %q", i+1, step, want)
+		}
+	}
+}
+
 func TestNoCommandWithoutATerminalPrintsHelp(t *testing.T) {
 	out := cli(t, nil, nil, nil)
 	if out.code != ExitUsage || out.stdout != Help {

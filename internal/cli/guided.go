@@ -1,11 +1,11 @@
 package cli
 
 // The guided workflow: ezswap with no command on an interactive
-// terminal. It runs, in order: a start menu; for a recording, the
-// upstream's menu and the record dashboard; the plan of the map, with a
-// live estimate; then map itself (the spend confirmation, the progress
-// view, the printed map and the map explorer). Every step is also a
-// command of its own.
+// terminal. It has three steps. Record: the upstream's menu and the record
+// dashboard. Analyze: the parts found in the traces, the models to try and
+// a live estimate. Map: the spend confirmation, the progress view, the
+// printed map and the map explorer. A start menu chooses the step to begin
+// at. Every step is also a command of its own.
 
 import (
 	"errors"
@@ -16,7 +16,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/metergraph/ezswap/demo"
 	"github.com/metergraph/ezswap/internal/flow"
 	"github.com/metergraph/ezswap/internal/judge"
 	"github.com/metergraph/ezswap/internal/parts"
@@ -42,9 +41,9 @@ var upstreams = []flow.Item{
 }
 
 const (
-	stepStart  = "step 1 of 4"
-	stepRecord = "step 2 of 4"
-	stepPlan   = "step 3 of 4"
+	stepRecord  = "step 1 of 3"
+	stepAnalyze = "step 2 of 3"
+	stepMap     = "step 3 of 3"
 )
 
 func (s *session) flowOptions() flow.Options {
@@ -66,17 +65,16 @@ func (s *session) guided() (outcome, error) {
 	o := s.flowOptions()
 	traces := filepath.Join("ezswap-out", "traces.jsonl")
 	runFile := filepath.Join("ezswap-out", "run.json")
-	open := flow.Item{Title: "Open a finished map", Detail: "Explore a run.json that map wrote.", Prompt: "Run file:", Value: runFile}
+	open := flow.Item{Title: "Open a finished map", Detail: "Step 3. Explore a run.json that an earlier map wrote.", Prompt: "Run file:", Value: runFile}
 	if !exists(filepath.Join(s.io.Cwd, runFile)) {
 		open.Value = ""
 	}
-	start := flow.NewMenu(stepStart, "What would you like to do?", []string{
-		"ezswap records the model calls your app makes, replays them on other models and twice on production's own, and maps where answers change beyond that noise.",
+	start := flow.NewMenu("", "Where would you like to start?", []string{
+		"ezswap works in three steps. Record the model calls your app makes. Analyze them: the call sites found, the models to try and the price. Map where answers change on those models, beyond what production's own model changes when it is replayed twice.",
 	}, []flow.Item{
-		{Title: "Record my app's model calls", Detail: "Run a local proxy your app sends its calls through. Then map them."},
-		{Title: "Map a trace file", Detail: "A file record wrote, or Langfuse, OpenTelemetry or raw provider logs.", Prompt: "Trace file:", Value: traces},
+		{Title: "Record my app's model calls", Detail: "Step 1. Run a local proxy your app sends its calls through."},
+		{Title: "Analyze a trace file", Detail: "Step 2. A file record wrote, or Langfuse, OpenTelemetry or raw provider logs.", Prompt: "Trace file:", Value: traces},
 		open,
-		{Title: "Try the demo", Detail: "The map of a synthetic app. No keys, no network."},
 	})
 	chosen, err := flow.RunMenu(start, o)
 	if err != nil || chosen.Cancel {
@@ -92,19 +90,9 @@ func (s *session) guided() (outcome, error) {
 		file = recorded
 	case 1:
 		file = strings.TrimSpace(chosen.Value)
-	case 2:
-		return s.guidedOpen(strings.TrimSpace(chosen.Value))
 	default:
-		r, err := demo.MapRun()
-		if err != nil {
-			return outcome{}, err
-		}
-		m, err := report.BuildMap(r, report.MapOptions{})
-		if err != nil {
-			return outcome{}, err
-		}
-		code, _, err := s.exploreMap(r, m, "demo")
-		return outcome{code, done.json}, err
+		s.step = stepMap
+		return s.guidedOpen(strings.TrimSpace(chosen.Value))
 	}
 	return s.guidedPlan(file, o)
 }
@@ -112,7 +100,7 @@ func (s *session) guided() (outcome, error) {
 // guidedRecord asks for the upstream and records, fresh, until the person
 // stops it. It returns the trace file, or "" when nothing was recorded.
 func (s *session) guidedRecord(o flow.Options) (string, error) {
-	menu, err := flow.RunMenu(flow.NewMenu(stepRecord, "Where does your app send its model calls?", []string{
+	menu, err := flow.RunMenu(flow.NewMenu(stepRecord, "Record: where does your app send its model calls?", []string{
 		"ezswap forwards each call there unchanged and writes a copy to ezswap-out/traces.jsonl. Your app's key passes through and is never written. A previous recording is kept beside the new one.",
 	}, upstreams), o)
 	if err != nil || menu.Cancel {
@@ -121,6 +109,7 @@ func (s *session) guidedRecord(o flow.Options) (string, error) {
 	upstream := strings.TrimSpace(menu.Value)
 	s.v.strings["upstream"] = upstream
 	s.v.bools["fresh"] = true
+	s.step = stepRecord
 	if _, err := s.record(); err != nil {
 		return "", err
 	}
@@ -220,7 +209,7 @@ func (s *session) guidedPlan(file string, o flow.Options) (outcome, error) {
 	if only := commaList(s.v.list("only")); len(only) > 0 {
 		start.Parts = only
 	}
-	plan := flow.NewPlan(file, stepPlan, rows, start)
+	plan := flow.NewPlan(file, stepAnalyze, rows, start)
 	plan.AllModels = offered
 	estimate := func(c flow.Choice) flow.Preview {
 		if len(c.Models) == 0 || len(c.Parts) == 0 {
@@ -266,6 +255,7 @@ func (s *session) guidedPlan(file string, o flow.Options) (outcome, error) {
 		return outcome{ExitOK, object{{"command", "guided"}}}, err
 	}
 	s.v = withChoice(s.v, final.Choice, all)
+	s.step = stepMap
 	return s.run(file, true)
 }
 

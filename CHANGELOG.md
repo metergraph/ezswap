@@ -5,6 +5,12 @@ All notable changes to this project are recorded here. The format follows
 uses [semantic versioning](https://semver.org/). Until 1.0, a minor release
 may change the command line or the `run.json` format.
 
+## Unreleased
+
+- The guided workflow is three named steps: Record, Analyze and Map. The
+  start menu asks which to begin at and no longer offers the demo, which
+  stays as `ezswap demo`.
+
 ## 0.1.1 (2026-11-20)
 
 - The first release on npm. The 0.1.0 release workflow passed npm a path it

@@ -40,6 +40,7 @@ type Recording struct {
 	Width int
 
 	file, upstream, setAside string
+	step                     string
 	address                  string
 	start                    time.Time
 	now                      func() time.Time
@@ -63,6 +64,8 @@ type RecordingOptions struct {
 	File, Upstream string
 	// The previous recording --fresh set aside, as shown, or "".
 	SetAside string
+	// The guided workflow's step, shown after the title, or "".
+	Step string
 	// Stops the recorder.
 	Stop context.CancelFunc
 	Now  func() time.Time
@@ -81,7 +84,7 @@ func NewRecording(o RecordingOptions) Recording {
 	}
 	return Recording{
 		Paint: o.Paint, ASCII: o.ASCII, Width: o.Width,
-		file: term.CleanLine(o.File), upstream: term.CleanLine(o.Upstream), setAside: term.CleanLine(o.SetAside),
+		file: term.CleanLine(o.File), upstream: term.CleanLine(o.Upstream), setAside: term.CleanLine(o.SetAside), step: o.Step,
 		start: now(), now: now, byPart: map[string]int{}, skipped: map[string]int{},
 		stop: o.Stop, spinner: s,
 	}
@@ -162,6 +165,9 @@ func (m Recording) Frame() string {
 	width = max(40, width)
 	var lines []string
 	title := p.Brand(m.g("▁▃▅▇", "::")) + " " + p.Bold("ezswap record")
+	if m.step != "" {
+		title += "  " + p.Muted(m.step)
+	}
 	if m.stopping {
 		title += "  " + p.Muted("stopping: the calls in flight finish first")
 	} else {
