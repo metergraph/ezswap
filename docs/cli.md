@@ -12,6 +12,14 @@ metergraph-replay report replay-out/run.json
 metergraph-replay judge replay-out/run.json
 ```
 
+Run with no command on an interactive terminal, `metergraph-replay` walks
+through a map step by step: what to do (record your app, map a trace file,
+open a finished map or try the demo), where your app's calls go, the plan
+(parts, models, cases per part and the judge, with the estimate updating as
+you choose), then the spend confirmation, the progress and the map explorer.
+Every step is also a command of its own, below. Without a terminal it prints
+the help.
+
 Installed from npm, prefix each with `npx` (`npx metergraph-replay demo`).
 The README lists every way to install it.
 
@@ -224,6 +232,31 @@ in effect when it was made; `report --name` renames for one printing.
   labelled from the cases that finished.
 
 Everything under [Spend](#spend) applies to `map` as it does to `run`.
+
+## The map explorer
+
+On an interactive terminal, `map` and `report` on a map run print the map
+and then open the map explorer:
+
+- **The grid:** every model on every part, the first beyond-noise cell
+  selected, with the selection described in a sentence. Arrow keys or
+  `h j k l` move; `enter` opens a cell.
+- **A cell:** its label and counts, the fields that changed, the notes, and
+  the changed cases with what each request said. `a` shows every case;
+  `enter` opens one.
+- **A case:** the request, then the recorded reply, the model's reply and
+  production's rerun, side by side on a wide terminal and stacked on a narrow
+  one. Left and right step through the cases.
+- `o` opens the HTML page in your browser: the `--html` file if you gave
+  one, otherwise a fresh page in a private temporary folder. `esc` goes back,
+  `?` shows the keys, `q` quits.
+
+`record` on an interactive terminal shows a live dashboard: where to point
+your app, calls per part, the latest calls and the time running. `q`, `Esc`
+or Ctrl-C stops it, and the summary follows.
+
+Pipes, CI (`CI` set), `--json` and `--no-interactive` keep the plain text
+output.
 
 ## The report
 

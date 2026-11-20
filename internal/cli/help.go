@@ -12,6 +12,7 @@ var Help = `metergraph-replay: replay your production LLM calls on other models,
 what changes against a noise floor (production's model replayed twice).
 
 Usage
+  metergraph-replay                  (on a terminal: the guided workflow)
   metergraph-replay demo [--out DIR] [--explore]
   metergraph-replay demo --map
   metergraph-replay record [--upstream URL] [--port N] [--out DIR] [--fresh]
@@ -20,6 +21,9 @@ Usage
   metergraph-replay run <traces> --models LIST [options]
   metergraph-replay report <run.json> [--no-interactive] [--explain]
   metergraph-replay judge <run.json>
+
+With no command on an interactive terminal, Replay walks through recording,
+planning and mapping step by step, and opens the result in the map explorer.
 
 Commands
   demo       Print the report of bundled synthetic traces. No keys, no network.

@@ -72,6 +72,10 @@ Prebuilt archives for macOS, Linux and Windows (amd64 and arm64) are on the
 
 ## Quick start
 
+On a terminal, `metergraph-replay` with no command walks you through it:
+record your app, choose the models, check the price, and explore the map.
+The same steps as commands:
+
 ```sh
 metergraph-replay demo --map    # a bundled map: no keys, no network
 metergraph-replay record        # capture your app's calls, see "Map your own app"

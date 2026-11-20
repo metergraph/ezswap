@@ -307,6 +307,10 @@ func Main(args []string, o IO) int {
 		if len(positionals) > 0 {
 			command, hasCommand = positionals[0], true
 		}
+		// No command on an interactive terminal: the guided workflow.
+		if !hasCommand && !v.bool("help") && !s.asJSON && s.interactive() {
+			return s.guided()
+		}
 		if v.bool("help") || !hasCommand || command == "help" {
 			if !s.asJSON {
 				io.WriteString(o.Stdout, Help)

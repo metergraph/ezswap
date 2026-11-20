@@ -9,6 +9,16 @@ may change the command line or the `run.json` format.
 
 The first public release.
 
+### The guided workflow
+
+- `metergraph-replay` with no command, on an interactive terminal, walks
+  through recording, planning (parts, models, cases per part and the judge,
+  with a live estimate) and mapping, and ends in the map explorer.
+- The map explorer: a grid of every model on every part, each cell's
+  figures and changed cases, and each case's replies side by side. `o` opens
+  the HTML page.
+- `record` shows a live dashboard of calls per part on a terminal.
+
 ### The sensitivity map
 
 - `map` groups an app's model calls into parts, replays a sample of each
