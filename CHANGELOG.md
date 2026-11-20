@@ -5,6 +5,14 @@ All notable changes to this project are recorded here. The format follows
 uses [semantic versioning](https://semver.org/). Until 1.0, a minor release
 may change the command line or the `run.json` format.
 
+## 0.1.1 (2026-11-20)
+
+- The first release on npm. The 0.1.0 release workflow passed npm a path it
+  read as a GitHub repository, so no 0.1.0 package was published. 0.1.0 is
+  on GitHub Releases and Homebrew only.
+- The release can be run again after a partial npm failure: a version that
+  is already on the registry is skipped.
+
 ## 0.1.0 (2026-11-20)
 
 The first public release.
