@@ -118,7 +118,11 @@ func pendingPairs(r *types.RunFile, model string) ([]pendingPair, error) {
 func (s *session) judgeKey(command string) (string, error) {
 	key := strings.TrimSpace(s.env(judge.KeyEnv))
 	if key == "" {
-		return "", &cliError{ExitRefused, "credential_missing", command + " --judge asks a judge through the AI Gateway and needs " + judge.KeyEnv + ". Set it, or leave out --judge."}
+		way := "leave out --judge"
+		if s.configured("judge") {
+			way = "set judge: false in " + s.configPath
+		}
+		return "", &cliError{ExitRefused, "credential_missing", command + " --judge asks a judge through the AI Gateway and needs " + judge.KeyEnv + ". Set it, or " + way + "."}
 	}
 	return key, nil
 }

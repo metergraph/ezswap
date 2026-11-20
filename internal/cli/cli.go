@@ -230,6 +230,14 @@ type session struct {
 	v      values
 	asJSON bool
 	mu     sync.Mutex
+	// The settings the settings file supplied, and the file as shown.
+	fromConfig []string
+	configPath string
+}
+
+// configured is whether the settings file, not a flag, set this option.
+func (s *session) configured(name string) bool {
+	return slices.Contains(s.fromConfig, name)
 }
 
 // say writes a line to stdout, except with --json.
@@ -310,6 +318,7 @@ func Main(args []string, o IO) int {
 		if err != nil {
 			return outcome{}, err
 		}
+		s.fromConfig, s.configPath = taken, configPath
 		if len(taken) > 0 {
 			s.say("Settings from " + configPath + ": " + strings.Join(taken, ", ") + ".")
 		}

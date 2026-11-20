@@ -118,3 +118,18 @@ func TestSettingsKeysPassEachCommandsCheck(t *testing.T) {
 		}
 	}
 }
+
+func TestJudgeFromSettingsFileNamesTheFile(t *testing.T) {
+	file := freeTextTraces(t)
+	dir := t.TempDir()
+	writeConfig(t, dir, "models: google/gemini-2.5-flash-lite\njudge: true\n")
+	out := cli(t, args("map", file, "--yes"), inDir(dir), nil)
+	if out.code != ExitRefused || !strings.Contains(out.stderr, "Set it, or set judge: false in "+ConfigFile+".") {
+		t.Errorf("%d %s", out.code, out.stderr)
+	}
+	// From a flag, the advice is about the flag.
+	flagged := cli(t, args("map", file, "--yes", "--judge", "--no-config", models), nil, nil)
+	if !strings.Contains(flagged.stderr, "Set it, or leave out --judge.") {
+		t.Errorf("%s", flagged.stderr)
+	}
+}
