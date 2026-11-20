@@ -128,7 +128,9 @@ jobs:
           npm install --no-audit --no-fund "./pkgs/$platform-0.0.0-snapshot.tgz" ./pkgs/ezswap-0.0.0-snapshot.tgz
           version="$(node node_modules/ezswap/bin/ezswap.js --version)"
           echo "launcher ran: $version"
-          case "$version" in 0.0.0-SNAPSHOT-*) ;; *) echo "unexpected version"; exit 1 ;; esac
+          # GoReleaser names a snapshot after the latest tag, so the prefix
+          # changes with every release.
+          case "$version" in *-SNAPSHOT-*) ;; *) echo "unexpected version"; exit 1 ;; esac
           npx --no-install ezswap demo --no-color > demo.txt
           head -n 5 demo.txt
 
