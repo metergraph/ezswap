@@ -5,7 +5,7 @@ All notable changes to this project are recorded here. The format follows
 uses [semantic versioning](https://semver.org/). Until 1.0, a minor release
 may change the command line or the `run.json` format.
 
-## Unreleased
+## 0.1.0 (2026-11-20)
 
 The first public release.
 
