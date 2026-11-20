@@ -246,6 +246,38 @@ func TestObjectiveKeepsThePersonsModels(t *testing.T) {
 	}
 }
 
+func TestObjectiveJudgeFollowsTheChosenParts(t *testing.T) {
+	// Deselect the free-text part, choose the objective that judges, then
+	// select the part again: the judge comes on with it.
+	p := objectivePlan(nil, true)
+	freeText := p.firstRow(rowPart) + 1
+	p.Cursor = freeText
+	p, _ = ReducePlan(p, " ")
+	p.Cursor = p.firstRow(rowObjective)
+	p, _ = ReducePlan(p, "right")
+	if p.Choice.Objective != "quality" || p.Choice.Judge {
+		t.Fatalf("no free-text part chosen, yet: %+v", p.Choice)
+	}
+	p.Cursor = freeText
+	p, changed := ReducePlan(p, " ")
+	if !p.Choice.Judge || !changed {
+		t.Fatalf("the free-text part came back without the judge: changed %v %+v", changed, p.Choice)
+	}
+	// Deselecting it again turns the objective's judge off.
+	if p, _ = ReducePlan(p, " "); p.Choice.Judge {
+		t.Errorf("the judge stayed on with no free-text part")
+	}
+	// A judge the person turned off stays off when the part comes back.
+	p, _ = ReducePlan(p, " ")
+	p.Cursor = p.firstRow(rowJudge)
+	p, _ = ReducePlan(p, " ")
+	p.Cursor = freeText
+	p, _ = keys(p, " ", " ")
+	if p.Choice.Judge {
+		t.Errorf("the judge the person turned off came back on")
+	}
+}
+
 func TestPlanWithoutObjectivesHasNoObjectiveRow(t *testing.T) {
 	p := NewPlan("t.jsonl", "", []PartRow{{Name: "p", Cases: 20}}, Choice{Models: []string{"a/one"}}).WithObjectives(nil, nil, false, "")
 	if p.firstRow(rowObjective) != 0 || p.rows()[0].kind == rowObjective {
