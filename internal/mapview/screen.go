@@ -92,6 +92,9 @@ func scrolled(lines []string, at, height int) []string {
 func header(s State, c ctx) string {
 	m := s.Data.Map
 	logo := c.p.Brand(c.g("▁▃▅▇", "::")) + " " + c.p.Bold("ezswap map")
+	if s.Data.Step != "" {
+		logo += "  " + c.p.Muted(s.Data.Step)
+	}
 	facts := []string{
 		fmt.Sprintf("%d %s", len(m.Parts), plural(len(m.Parts), "part", "parts")),
 		term.CleanLine(m.File),

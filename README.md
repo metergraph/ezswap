@@ -72,9 +72,10 @@ Prebuilt archives for macOS, Linux and Windows (amd64 and arm64) are on the
 
 ## Quick start
 
-On a terminal, `ezswap` with no command walks you through it:
-record your app, choose the models, check the price, and explore the map.
-The same steps as commands:
+On a terminal, `ezswap` with no command walks you through three steps:
+Record your app's calls, Analyze them (the call sites found, the models to
+try and the price), and Map where answers change. The same steps as
+commands:
 
 ```sh
 ezswap demo --map    # a bundled map: no keys, no network

@@ -13,12 +13,16 @@ ezswap judge ezswap-out/run.json
 ```
 
 Run with no command on an interactive terminal, `ezswap` walks
-through a map step by step: what to do (record your app, map a trace file,
-open a finished map or try the demo), where your app's calls go, the plan
-(parts, models, cases per part and the judge, with the estimate updating as
-you choose), then the spend confirmation, the progress and the map explorer.
-Every step is also a command of its own, below. Without a terminal it prints
-the help.
+through three steps, and first asks which to start at:
+
+1. **Record.** Where your app's calls go, then the record dashboard.
+2. **Analyze.** The parts found in the traces, the models to try, cases
+   per part and the judge, with the estimate updating as you choose.
+3. **Map.** The spend confirmation, the progress and the map explorer.
+
+Start at Analyze with a trace file you already have, or at Map to open a
+finished `run.json`. Every step is also a command of its own, below.
+Without a terminal it prints the help.
 
 Installed from npm, prefix each with `npx` (`npx ezswap demo`).
 The README lists every way to install it.

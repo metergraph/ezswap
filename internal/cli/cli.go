@@ -237,6 +237,8 @@ type session struct {
 	// The settings the settings file supplied, and the file as shown.
 	fromConfig []string
 	configPath string
+	// The guided workflow's step, shown in a screen's title, or "".
+	step string
 }
 
 // configured is whether the settings file, not a flag, set this option.

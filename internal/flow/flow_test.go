@@ -12,7 +12,7 @@ func samplePlan() Plan {
 		{Name: "route-ticket", Source: "name", Cases: 48, Compared: "2 fields"},
 		{Name: "draft-reply", Source: "name", Cases: 48, Compared: "free text", FreeText: true},
 	}
-	p := NewPlan("ezswap-out/traces.jsonl", "step 3 of 4", parts, Choice{Models: []string{"anthropic/claude-haiku-5.5", "openai/gpt-5.4-nano"}, Endpoint: "vercel", PerPart: 40})
+	p := NewPlan("ezswap-out/traces.jsonl", "step 2 of 3", parts, Choice{Models: []string{"anthropic/claude-haiku-5.5", "openai/gpt-5.4-nano"}, Endpoint: "vercel", PerPart: 40})
 	p.Width = 90
 	p.Preview = Preview{Calls: 400, ExpectedUSD: 0.44, UpperUSD: 0.92, BudgetUSD: 5}
 	return p
@@ -37,7 +37,7 @@ func TestPlanStartsOnTheModels(t *testing.T) {
 		t.Fatalf("%+v ready %v", p.Choice, p.Ready())
 	}
 	frame := strings.Join(PlanFrame(p, term.PlainPaint(), false), "\n")
-	for _, want := range []string{"step 3 of 4", "Plan the map", "PARTS", "route-ticket", "48 cases, 2 fields", "MODELS TO TRY", "anthropic/claude-haiku-5.5", "Endpoint", "vercel", "Cases per part", "40", "Judge free text", "Run the map", "400 calls. Expected $0.44, at most $0.92. Budget $5.00."} {
+	for _, want := range []string{"step 2 of 3", "Analyze", "PARTS", "route-ticket", "48 cases, 2 fields", "MODELS TO TRY", "anthropic/claude-haiku-5.5", "Endpoint", "vercel", "Cases per part", "40", "Judge free text", "Run the map", "400 calls. Expected $0.44, at most $0.92. Budget $5.00."} {
 		if !strings.Contains(frame, want) {
 			t.Errorf("frame lacks %q:\n%s", want, frame)
 		}
@@ -128,7 +128,7 @@ func TestPlanFrameFitsAndCleans(t *testing.T) {
 }
 
 func TestMenu(t *testing.T) {
-	m := NewMenu("step 1 of 4", "Start", []string{"What would you like to do?"}, []Item{
+	m := NewMenu("step 1 of 3", "Start", []string{"What would you like to do?"}, []Item{
 		{Title: "Open a finished map", Disabled: "(no run.json here)"},
 		{Title: "Record my app", Detail: "Start a local proxy."},
 		{Title: "Map a trace file", Prompt: "Trace file:", Value: "ezswap-out/traces.jsonl"},
@@ -161,7 +161,7 @@ func TestMenu(t *testing.T) {
 	}
 	m.Width = 90
 	frame := strings.Join(MenuFrame(m, term.PlainPaint(), true), "\n")
-	for _, want := range []string{"step 1 of 4", "Start", "1  Open a finished map  (no run.json here)", "> 3  Map a trace file"} {
+	for _, want := range []string{"step 1 of 3", "Start", "1  Open a finished map  (no run.json here)", "> 3  Map a trace file"} {
 		if !strings.Contains(frame, want) {
 			t.Errorf("menu lacks %q:\n%s", want, frame)
 		}

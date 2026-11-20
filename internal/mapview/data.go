@@ -45,6 +45,8 @@ type Data struct {
 	// The run file as shown, for the header.
 	Name  string
 	ASCII bool
+	// The guided workflow's step, shown after the title, or "".
+	Step string
 }
 
 // Options say what NewData shows.
@@ -52,11 +54,12 @@ type Options struct {
 	HTMLPath string
 	Name     string
 	ASCII    bool
+	Step     string
 }
 
 // NewData is the explorer's data for a map run.
 func NewData(run *types.RunFile, m *report.Map, o Options) *Data {
-	d := &Data{Map: m, Parts: report.SummaryParts(m), Cases: map[string][]*Case{}, HTMLPath: o.HTMLPath, Name: o.Name, ASCII: o.ASCII}
+	d := &Data{Map: m, Parts: report.SummaryParts(m), Cases: map[string][]*Case{}, HTMLPath: o.HTMLPath, Name: o.Name, ASCII: o.ASCII, Step: o.Step}
 	partOf := map[string]string{}
 	for _, part := range m.Parts {
 		for _, key := range part.Keys {

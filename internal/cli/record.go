@@ -152,7 +152,7 @@ func (s *session) record() (outcome, error) {
 		err = tui.RunRecording(tui.RunOptions{
 			Input: s.io.Stdin, Output: s.io.Stderr, Env: s.environ(), Profile: d.profile,
 			ASCII: d.ascii, Width: d.width, Signals: s.io.Signal == nil, Now: s.io.Now,
-		}, tui.RecordingOptions{File: shown, Upstream: upstream, SetAside: aside, Stop: stopLive},
+		}, tui.RecordingOptions{File: shown, Upstream: upstream, SetAside: aside, Step: s.step, Stop: stopLive},
 			func(onReady func(string), onEvent func(record.Event)) error {
 				options.Ready, options.Events = onReady, onEvent
 				var runErr error

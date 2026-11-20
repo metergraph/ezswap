@@ -33,7 +33,7 @@ func (s *session) exploreMap(r *types.RunFile, m *report.Map, runPath string) (c
 	if !written {
 		pagePath = "map.html" // shown only; the page is written on demand
 	}
-	data := mapview.NewData(r, m, mapview.Options{HTMLPath: pagePath, Name: s.shownPath(runPath), ASCII: d.ascii})
+	data := mapview.NewData(r, m, mapview.Options{HTMLPath: pagePath, Name: s.shownPath(runPath), ASCII: d.ascii, Step: s.step})
 	var reason string
 	if s.io.ExploreMap != nil {
 		reason, err = s.io.ExploreMap(data)
