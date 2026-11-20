@@ -46,7 +46,7 @@ func TestSettingsFileByPathAndForMapRun(t *testing.T) {
 	file := twoParts(t)
 	dir := t.TempDir()
 	path := filepath.Join(dir, "elsewhere.yaml")
-	os.WriteFile(path, []byte("models: google/gemini-2.5-flash-lite\nignore: [\"$.n\"]\nhtml: page.html\nout: "+filepath.Join(dir, "out")+"\n"), 0o644)
+	os.WriteFile(path, []byte("models: google/gemini-2.5-flash-lite\nignore: [\"$.n\"]\nhtml: "+filepath.Join(dir, "page.html")+"\nout: "+filepath.Join(dir, "out")+"\n"), 0o644)
 	out := cli(t, args("map", file, "--yes", "--config", path), inDir(t.TempDir()), nil)
 	if out.code != ExitOK {
 		t.Fatalf("%d %s", out.code, out.stderr)
@@ -55,6 +55,9 @@ func TestSettingsFileByPathAndForMapRun(t *testing.T) {
 	match(t, `classify +within noise`, out.stdout)
 	if _, err := os.Stat(filepath.Join(dir, "out", "run.json")); err != nil {
 		t.Errorf("out from the file was not used: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(dir, "page.html")); err != nil {
+		t.Errorf("html from the file was not used: %v", err)
 	}
 }
 
