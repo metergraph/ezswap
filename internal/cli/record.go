@@ -19,6 +19,7 @@ import (
 	"github.com/metergraph/replay/internal/adapters"
 	"github.com/metergraph/replay/internal/cases"
 	"github.com/metergraph/replay/internal/record"
+	"github.com/metergraph/replay/internal/tui"
 )
 
 const (
@@ -135,7 +136,32 @@ func (s *session) record() (outcome, error) {
 			stop()
 		}()
 	}
-	summary, err := record.Run(ctx, options)
+	var summary record.Summary
+	if s.interactive() && !s.asJSON {
+		// The live view: it stops the recorder itself on q or Ctrl-C.
+		live, stopLive := context.WithCancel(ctx)
+		defer stopLive()
+		if insideGit(out) {
+			tell("Note: the trace file holds prompts and responses, and " + s.shownPath(out) + " is inside a Git repository. Keep it out of commits.")
+		}
+		d := s.display()
+		aside := ""
+		if setAside != "" {
+			aside = s.shownPath(setAside)
+		}
+		err = tui.RunRecording(tui.RunOptions{
+			Input: s.io.Stdin, Output: s.io.Stderr, Env: s.environ(), Profile: d.profile,
+			ASCII: d.ascii, Width: d.width, Signals: s.io.Signal == nil, Now: s.io.Now,
+		}, tui.RecordingOptions{File: shown, Upstream: upstream, SetAside: aside, Stop: stopLive},
+			func(onReady func(string), onEvent func(record.Event)) error {
+				options.Ready, options.Events = onReady, onEvent
+				var runErr error
+				summary, runErr = record.Run(live, options)
+				return runErr
+			})
+	} else {
+		summary, err = record.Run(ctx, options)
+	}
 	if err != nil {
 		if errors.Is(err, record.ErrPortInUse) {
 			return outcome{}, &cliError{ExitError, "record_failed", fmt.Sprintf("Port %d is already in use. Pick another with --port, or --port 0 for a free one.", port)}
