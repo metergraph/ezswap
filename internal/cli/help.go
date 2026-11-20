@@ -14,7 +14,7 @@ what changes against a noise floor (production's model replayed twice).
 Usage
   metergraph-replay demo [--out DIR] [--explore]
   metergraph-replay demo --map
-  metergraph-replay record [--upstream URL] [--port N] [--out DIR]
+  metergraph-replay record [--upstream URL] [--port N] [--out DIR] [--fresh]
   metergraph-replay estimate <traces> --models LIST [--map] [options]
   metergraph-replay map <traces> --models LIST [options]
   metergraph-replay run <traces> --models LIST [options]
@@ -65,6 +65,8 @@ Recording (record)
                            https://api.openai.com). https, or http to this
                            machine.
   --port N                 Port on 127.0.0.1 (default 8787; 0 picks a free one).
+  --fresh                  Start an empty trace file. The previous one is
+                           renamed traces-<date>-<time>.jsonl, not deleted.
   Point your app's base URL at http://127.0.0.1:8787/v1. Your API key passes
   through to the provider and is never written or shown.
 
@@ -108,6 +110,13 @@ Spend
                            bundled catalog cannot price (only model names are sent).
   --yes                    Skip the spend confirmation (needed without a terminal).
   --concurrency N          Calls in flight at once (default ` + strconv.Itoa(run.DefaultRunConcurrency) + `).
+
+Settings file
+  estimate, map and run read replay.yaml in the working directory: its keys
+  are the option names (models, endpoint, per-part, judge, html, ...), and a
+  flag on the command line wins. Each command takes the keys it accepts.
+  --config FILE            Read this file instead.
+  --no-config              Read no settings file.
 
 Output
   --out DIR                Where run.json goes, and record's traces.jsonl

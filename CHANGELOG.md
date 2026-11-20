@@ -25,11 +25,18 @@ The first public release.
 - The map says when replies were cut off at the output cap, and whether
   reasoning used it up.
 
+### Settings
+
+- `estimate`, `map` and `run` read `replay.yaml` from the working
+  directory: the option names as keys, with flags winning. `--config FILE`
+  and `--no-config` choose another file or none.
+
 ### Recording and reading traces
 
 - `record` runs a local proxy on `127.0.0.1` that forwards an app's model
   calls to one provider and writes each call to `traces.jsonl`. Keys pass
-  through and are never written.
+  through and are never written. `--fresh` starts an empty file and keeps
+  the previous one beside it.
 - Reads Replay JSONL, raw provider request and response logs (including
   Helicone and LiteLLM), Langfuse observation exports and OpenTelemetry
   GenAI spans.

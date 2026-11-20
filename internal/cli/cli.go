@@ -306,6 +306,13 @@ func Main(args []string, o IO) int {
 			return outcome{code, object{{"command", "help"}}}, nil
 		}
 		rest := positionals[1:]
+		taken, configPath, err := s.applyConfig(command)
+		if err != nil {
+			return outcome{}, err
+		}
+		if len(taken) > 0 {
+			s.say("Settings from " + configPath + ": " + strings.Join(taken, ", ") + ".")
+		}
 		needFile := func(what string) (string, error) {
 			if len(rest) != 1 {
 				return "", usagef(command + " takes one " + what + ".")

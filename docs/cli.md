@@ -39,6 +39,40 @@ nothing else:
 `map` and `run` write the same `run.json`. Give one of them another `--out`
 to keep both.
 
+## Settings file
+
+`estimate`, `map` and `run` read `replay.yaml` from the working directory
+when it exists. Its keys are the option names, without the leading dashes,
+and a flag given on the command line wins over the file:
+
+```yaml
+models:
+  - anthropic/claude-haiku-5.5
+  - openai/gpt-5.4-nano
+endpoint: vercel
+per-part: 40
+judge: true
+html: map.html
+budget: 2.50
+```
+
+With that file, `metergraph-replay map traces.jsonl` is the whole command.
+The command says which settings came from the file:
+`Settings from replay.yaml: budget, endpoint, html, judge, models, per-part.`
+
+- Each command takes the keys it accepts and leaves the rest, so one file
+  serves all three: `sample` is used by `run`, `per-part` by `map`.
+- `models` takes a list or a comma-separated string. Repeatable options
+  (`track`, `ignore`, `only`, `name`) take a list. Booleans take `true` or
+  `false`.
+- A key that is not an option name is an error, so a misspelling does not
+  pass silently. `yes`, `json`, `map`, the display options and `record`'s
+  options cannot be set in the file: spending is always confirmed on the
+  command line.
+- `--config FILE` reads another file; `--no-config` reads none. Other
+  commands read no settings file.
+- The file holds no keys: credentials stay in environment variables.
+
 ## Models and endpoints
 
 Models are named as the price catalog names them, `creator/model`. Every
@@ -121,6 +155,7 @@ display options:
 |---|---|---|
 | `--upstream URL` | `https://api.openai.com` | Where calls are forwarded. `https`, or `http` to this machine. |
 | `--port N` | 8787 | The port on `127.0.0.1` (0 to 65535). `0` picks a free one. |
+| `--fresh` | off | Start an empty `traces.jsonl`. The previous file is renamed `traces-<date>-<time>.jsonl` beside it, never deleted. Without it, a recording appends to the file. |
 
 ### Which command takes which
 
