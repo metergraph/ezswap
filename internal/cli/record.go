@@ -14,6 +14,7 @@ import (
 	"sort"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/metergraph/replay/internal/adapters"
 	"github.com/metergraph/replay/internal/cases"
@@ -68,6 +69,24 @@ func (s *session) record() (outcome, error) {
 	if err := record.Validate(options); err != nil {
 		return outcome{}, &cliError{ExitError, "record_failed", sentence(err.Error())}
 	}
+	var setAside string
+	if s.v.bool("fresh") {
+		// A fresh recording starts from an empty file. The previous one is
+		// renamed, never deleted: it holds calls that cannot be made again.
+		if _, err := os.Stat(file); err == nil {
+			now := time.Now
+			if s.io.Now != nil {
+				now = s.io.Now
+			}
+			setAside = filepath.Join(out, "traces-"+now().Format("20060102-150405")+".jsonl")
+			if _, err := os.Stat(setAside); err == nil {
+				return outcome{}, &cliError{ExitError, "record_failed", "Could not set the previous recording aside: " + s.shownPath(setAside) + " exists. Try again in a second."}
+			}
+			if err := os.Rename(file, setAside); err != nil {
+				return outcome{}, &cliError{ExitError, "record_failed", "Could not set the previous recording aside: " + sentence(err.Error())}
+			}
+		}
+	}
 	// With --json, stdout carries one object at the end. The lines a person
 	// needs while the recorder runs (above all the address, with --port 0)
 	// go to stderr instead.
@@ -80,6 +99,9 @@ func (s *session) record() (outcome, error) {
 		}
 	}
 	options.Ready = func(address string) {
+		if setAside != "" {
+			tell("Started a fresh recording. The previous one is now " + s.shownPath(setAside) + ".")
+		}
 		tell("Recording model calls to " + shown)
 		tell("Forwarding to " + upstream)
 		tell("")

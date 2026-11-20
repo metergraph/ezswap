@@ -25,7 +25,7 @@ import (
 var (
 	mapPlanOptions = []string{"per-part", "part-key", "ignore"}
 	mapViewOptions = []string{"only", "name"}
-	recordOptions  = []string{"upstream", "port"}
+	recordOptions  = []string{"upstream", "port", "fresh"}
 	runOnlyOptions = []string{
 		"models", "endpoint", "floor-endpoint", "api-key-env", "sample", "track", "temperature", "max-tokens",
 		"reasoning-effort", "budget", "monthly-calls", "no-noise-floor", "labels", "allow-no-search",
