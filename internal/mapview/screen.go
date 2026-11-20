@@ -345,17 +345,27 @@ func cellLines(s State, c ctx, height int) []string {
 		default:
 			status = c.p.Muted(status)
 		}
-		text := e.Change
-		if text == "" {
-			text = e.Case.Preview
+		// The change, then what the request said, as far as room allows.
+		room := c.w - idW - 20
+		text := c.cut(e.Change, room)
+		plain := text
+		if e.Change == "" {
+			text = c.cut(e.Case.Preview, room)
+			plain = text
+		} else if left := room - term.Width(text) - 3; left > 12 {
+			preview := c.cut(e.Case.Preview, left)
+			text += "   " + c.p.Muted(preview)
+			plain += "   " + preview
 		}
-		rest := term.PadEnd(c.cut(e.Case.ID, idW), idW) + "  " + c.cut(text, c.w-idW-20)
+		id := term.PadEnd(c.cut(e.Case.ID, idW), idW) + "  "
+		rest := id + text
 		row := " " + status + " " + rest
 		if i == s.Cursor {
+			// Unstyled inside the highlight: a nested reset would end it.
 			if c.p.Color {
-				row = " " + c.p.Reverse(term.PadEnd(term.PadEnd(e.Status, 10)+" "+rest, c.w-3))
+				row = " " + c.p.Reverse(term.PadEnd(term.PadEnd(e.Status, 10)+" "+id+plain, c.w-3))
 			} else {
-				row = ">" + term.PadEnd(e.Status, 10) + " " + rest
+				row = ">" + term.PadEnd(e.Status, 10) + " " + id + plain
 			}
 		}
 		lines = append(lines, row)
