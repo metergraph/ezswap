@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -120,7 +121,8 @@ func TestLookUpCachesForADay(t *testing.T) {
 		t.Errorf("a second run within a day asked again: %d calls", api.calls.Load())
 	}
 	info, err := os.Stat(filepath.Join(dir, lookupCacheFile))
-	if err != nil || info.Mode().Perm()&0o077 != 0 {
+	// Windows has no Unix permission bits: Go reports every file as 0666 there.
+	if err != nil || (runtime.GOOS != "windows" && info.Mode().Perm()&0o077 != 0) {
 		t.Errorf("cache file %v %v", info, err)
 	}
 	c, _ := LoadPricing(LoadPricingOptions{Now: clockAt("2026-11-21T12:00:01Z")})

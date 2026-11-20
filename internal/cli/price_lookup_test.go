@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"runtime"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -85,7 +86,8 @@ func TestHTMLPage(t *testing.T) {
 		t.Fatalf("%d %s %s", out.code, out.stdout, out.stderr)
 	}
 	info, err := os.Stat(path)
-	if err != nil || info.Mode().Perm() != 0o600 || info.Size() < 1000 {
+	// Windows has no Unix permission bits: Go reports every file as 0666 there.
+	if err != nil || (runtime.GOOS != "windows" && info.Mode().Perm() != 0o600) || info.Size() < 1000 {
 		t.Fatalf("%v %v", info, err)
 	}
 	if out := cli(t, args("estimate", writeTraces(t, 1, nil), models, "--html", path), nil, nil); out.code != ExitUsage {
