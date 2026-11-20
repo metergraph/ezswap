@@ -96,8 +96,10 @@ type Plan struct {
 	Objectives    []Objective
 	Pinned        []string
 	TickSuggested bool
-	// The objective, not the person, turned the judge on.
+	// The objective, not the person, turned the judge on; and the person
+	// has set the judge themselves, so the objective leaves it alone.
 	judgeByObjective bool
+	judgeByPerson    bool
 	Preview          Preview
 	// The estimate is being worked out for this revision.
 	Pending  bool
@@ -183,12 +185,25 @@ func (p Plan) choose(key string) Plan {
 		}
 	}
 	p.AllModels, p.Choice.Models = all, chosen
-	// An objective that turned the judge on turns it off again when left.
-	if p.judgeByObjective {
-		p.Choice.Judge, p.judgeByObjective = false, false
+	return p.syncJudge()
+}
+
+// syncJudge keeps the judge in step with the objective, after the
+// objective or the chosen parts change: on while an objective that judges
+// is chosen and a free-text part is selected, and off again otherwise. A
+// judge the person set themselves is left alone.
+func (p Plan) syncJudge() Plan {
+	if p.judgeByPerson {
+		return p
 	}
-	if o.Judge && p.hasFreeText() && !p.Choice.Judge {
-		p.Choice.Judge, p.judgeByObjective = true, true
+	o, _ := p.objective()
+	switch {
+	case o.Judge && p.hasFreeText():
+		if !p.Choice.Judge {
+			p.Choice.Judge, p.judgeByObjective = true, true
+		}
+	case p.judgeByObjective:
+		p.Choice.Judge, p.judgeByObjective = false, false
 	}
 	return p
 }
@@ -312,6 +327,7 @@ func (p Plan) act(r row, key string) Plan {
 	case rowPart:
 		if toggle {
 			p.Choice.Parts = toggled(p.Choice.Parts, p.AllParts[r.index].Name, partOrder(p.AllParts))
+			p = p.syncJudge()
 		}
 	case rowModel:
 		if toggle {
@@ -340,7 +356,7 @@ func (p Plan) act(r row, key string) Plan {
 	case rowJudge:
 		if toggle || key == "left" || key == "right" {
 			p.Choice.Judge = !p.Choice.Judge
-			p.judgeByObjective = false
+			p.judgeByObjective, p.judgeByPerson = false, true
 		}
 	case rowRun:
 		if key == "enter" && p.Ready() {
