@@ -13,6 +13,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/metergraph/replay/internal/mapview"
 	"io"
 	"io/fs"
 	"net/http"
@@ -84,6 +85,9 @@ type IO struct {
 	// Opens the explorer and says how it ended ("quit", "SIGINT" or
 	// "SIGTERM"); nil opens it on the terminal.
 	Explore func(run *types.RunFile, o ExploreOptions) (string, error)
+	// Opens the interactive map in place of the terminal (for tests); nil
+	// draws it on the terminal.
+	ExploreMap func(data *mapview.Data) (string, error)
 	// Stops new calls when done; nil installs a handler: the first Ctrl-C.
 	Signal context.Context
 	// Cancels calls in flight when done; nil with Signal set means never,

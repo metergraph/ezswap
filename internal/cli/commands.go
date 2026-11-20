@@ -650,6 +650,11 @@ func (s *session) run(file string, mapMode bool) (outcome, error) {
 			return outcome{}, err
 		}
 		mapFields = append(mapFields, pageField...)
+		if code, opened, err := s.exploreMap(result, m, written.RunPath); err != nil {
+			return outcome{}, err
+		} else if opened && code != ExitOK {
+			return outcome{code, mapFields}, nil
+		}
 	} else {
 		if err := s.printReport(result, setup.tracked, shown, "add --explain to the report command below"); err != nil {
 			return outcome{}, err
@@ -830,7 +835,11 @@ func (s *session) report(file string) (outcome, error) {
 		if err != nil {
 			return outcome{}, err
 		}
-		return outcome{ExitOK, append(append(fields, field{"parts", m.Parts}), pageField...)}, nil
+		code, _, err := s.exploreMap(r, m, abs)
+		if err != nil {
+			return outcome{}, err
+		}
+		return outcome{code, append(append(fields, field{"parts", m.Parts}), pageField...)}, nil
 	}
 	if path, err := s.htmlPath(); err != nil {
 		return outcome{}, err

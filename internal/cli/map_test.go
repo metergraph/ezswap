@@ -3,6 +3,7 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/metergraph/replay/internal/mapview"
 	"os"
 	"path/filepath"
 	"strings"
@@ -285,9 +286,25 @@ func TestMapReplaysWritesAndPrintsTheMap(t *testing.T) {
 	if parts := asJSON["parts"].([]any); len(parts) != 2 || parts[0].(map[string]any)["treatments"].([]any)[0].(map[string]any)["result"] != "within_noise" {
 		t.Fatalf("%v", asJSON)
 	}
-	// A terminal does not open the explorer on a map run.
-	onTerminal := cli(t, args("report", runPath), func(o *IO) { o.StdinTTY, o.StdoutTTY = true, true }, nil)
+	// On a terminal, the map is printed and then the map explorer opens on it.
+	var explored *mapview.Data
+	onTerminal := cli(t, args("report", runPath), func(o *IO) {
+		o.StdinTTY, o.StdoutTTY = true, true
+		o.ExploreMap = func(d *mapview.Data) (string, error) { explored = d; return mapview.ReasonQuit, nil }
+	}, nil)
 	match(t, `PART +LABEL`, onTerminal.stdout)
+	if onTerminal.code != ExitOK || explored == nil || len(explored.Parts) != 2 || filepath.Base(explored.HTMLPath) != "map.html" {
+		t.Fatalf("explorer %+v, exit %d", explored, onTerminal.code)
+	}
+	// Without a terminal, or with --no-interactive or --json, it does not open.
+	explored = nil
+	cli(t, args("report", runPath, "--no-interactive"), func(o *IO) {
+		o.StdinTTY, o.StdoutTTY = true, true
+		o.ExploreMap = func(d *mapview.Data) (string, error) { explored = d; return mapview.ReasonQuit, nil }
+	}, nil)
+	if explored != nil {
+		t.Error("--no-interactive opened the explorer")
+	}
 }
 
 func TestReportMapNeedsParts(t *testing.T) {
