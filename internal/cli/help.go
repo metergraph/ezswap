@@ -3,26 +3,27 @@ package cli
 import (
 	"strconv"
 
-	"github.com/metergraph/replay/internal/jsnum"
-	"github.com/metergraph/replay/internal/run"
+	"github.com/metergraph/ezswap/internal/jsnum"
+	"github.com/metergraph/ezswap/internal/run"
 )
 
 // Help is what --help prints.
-var Help = `metergraph-replay: replay your production LLM calls on other models, and read
-what changes against a noise floor (production's model replayed twice).
+var Help = `ezswap: find which of your app's LLM calls can move to a cheaper model. It
+replays your production calls on other models and reads what changes against
+a noise floor (production's model replayed twice).
 
 Usage
-  metergraph-replay                  (on a terminal: the guided workflow)
-  metergraph-replay demo [--out DIR] [--explore]
-  metergraph-replay demo --map
-  metergraph-replay record [--upstream URL] [--port N] [--out DIR] [--fresh]
-  metergraph-replay estimate <traces> --models LIST [--map] [options]
-  metergraph-replay map <traces> --models LIST [options]
-  metergraph-replay run <traces> --models LIST [options]
-  metergraph-replay report <run.json> [--no-interactive] [--explain]
-  metergraph-replay judge <run.json>
+  ezswap                  (on a terminal: the guided workflow)
+  ezswap demo [--out DIR] [--explore]
+  ezswap demo --map
+  ezswap record [--upstream URL] [--port N] [--out DIR] [--fresh]
+  ezswap estimate <traces> --models LIST [--map] [options]
+  ezswap map <traces> --models LIST [options]
+  ezswap run <traces> --models LIST [options]
+  ezswap report <run.json> [--no-interactive] [--explain]
+  ezswap judge <run.json>
 
-With no command on an interactive terminal, Replay walks through recording,
+With no command on an interactive terminal, ezswap walks through recording,
 planning and mapping step by step, and opens the result in the map explorer.
 
 Commands
@@ -43,7 +44,7 @@ Commands
 
 The map (map, estimate --map)
   A part is a place in your app that calls a model. It is named by a "part"
-  field in the trace file, by the X-Replay-Part header when recording, or by
+  field in the trace file, by the X-Ezswap-Part header when recording, or by
   --part-key; calls with no name are grouped by a fingerprint of the system
   prompt, forced tool and response schema.
   --per-part N             Latest N replayable cases of each part (default
@@ -61,7 +62,7 @@ The map (map, estimate --map)
                            Gateway; needs AI_GATEWAY_API_KEY). Each request
                            and its replies are sent to it. About a cent per
                            200 pairs.
-  Names are kept in replay-parts.json beside the trace file. Edit a name
+  Names are kept in ezswap-parts.json beside the trace file. Edit a name
   there to rename a part; give two parts one name to merge them.
 
 Recording (record)
@@ -99,7 +100,7 @@ Sampling and statistics
   --no-noise-floor         Skip the two replays of production's model.
   --labels                 Show within-noise labels in the report.
   --allow-no-search        Replay calls that searched the web, without search.
-  --adapter NAME           Trace format: replay-jsonl, raw, langfuse, otel
+  --adapter NAME           Trace format: ezswap-jsonl, raw, langfuse, otel
                            (default: detected).
 
 Spend
@@ -116,7 +117,7 @@ Spend
   --concurrency N          Calls in flight at once (default ` + strconv.Itoa(run.DefaultRunConcurrency) + `).
 
 Settings file
-  estimate, map and run read replay.yaml in the working directory: its keys
+  estimate, map and run read ezswap.yaml in the working directory: its keys
   are the option names (models, endpoint, per-part, judge, html, ...), and a
   flag on the command line wins. Each command takes the keys it accepts.
   --config FILE            Read this file instead.
@@ -124,7 +125,7 @@ Settings file
 
 Output
   --out DIR                Where run.json goes, and record's traces.jsonl
-                           (default ./replay-out).
+                           (default ./ezswap-out).
   --html FILE              run, map, report, demo: also write the result as one
                            self-contained HTML page (it holds the replies).
   --explore                demo: open the explorer instead of printing the report.

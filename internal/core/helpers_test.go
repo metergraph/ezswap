@@ -12,7 +12,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // fixture reads conformance/<name> as loose JSON.

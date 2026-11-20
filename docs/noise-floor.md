@@ -80,7 +80,7 @@ floor's. A floor gap of zero means any disagreement at all is beyond noise.
 
 ## The map's rule
 
-`metergraph-replay map` also prints "within noise" and "beyond noise", one
+`ezswap map` also prints "within noise" and "beyond noise", one
 label for each part of an app. It does not use the rule above.
 
 | | The report (`run`, `--labels`) | The map (`map`) |

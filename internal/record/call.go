@@ -11,8 +11,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/metergraph/replay/internal/cases/jsval"
-	"github.com/metergraph/replay/internal/report/term"
+	"github.com/metergraph/ezswap/internal/cases/jsval"
+	"github.com/metergraph/ezswap/internal/report/term"
 )
 
 // maxBody is the most of one body the recorder keeps. A larger body is

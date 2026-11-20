@@ -10,7 +10,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/colorprofile"
 
-	"github.com/metergraph/replay/internal/report/term"
+	"github.com/metergraph/ezswap/internal/report/term"
 )
 
 // SignalMsg is SIGINT or SIGTERM, forwarded to a view (Bubble Tea's own

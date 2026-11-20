@@ -3,33 +3,33 @@
 ## Reporting a vulnerability
 
 Please report security issues privately through
-[GitHub private vulnerability reporting](https://github.com/metergraph/replay/security/advisories/new)
+[GitHub private vulnerability reporting](https://github.com/metergraph/ezswap/security/advisories/new)
 (the repository's **Security** tab, "Report a vulnerability"). Do not open a
 public issue, and do not include real credentials, tokens, prompts or outputs
 in a report.
 
 ## Supported versions
 
-`metergraph-replay` is pre-1.0. Only the latest version receives fixes.
+`ezswap` is pre-1.0. Only the latest version receives fixes.
 
 ## Security properties
 
-Replay reads trace files that can hold production prompts and outputs, and it
+ezswap reads trace files that can hold production prompts and outputs, and it
 calls model endpoints with your keys. It is designed to keep these boundaries:
 
-- **No telemetry.** Replay makes no network request except the model calls a
+- **No telemetry.** ezswap makes no network request except the model calls a
   `run` or `map` sends to the endpoints you name, the calls `record`
   forwards for your app to the one upstream you name, one price lookup, and
   with `map --judge` or `judge` the judge's calls. `demo` and `report` make
   none.
 - **The price lookup sends model names only.** When `estimate`, `run` or
   `map` is given a `creator/model` id that the bundled price catalog cannot
-  price, Replay asks Metergraph's Pricing API
+  price, ezswap asks Metergraph's Pricing API
   (`POST https://app.metergraph.dev/v1/pricing/lookup`) for those ids and the
   `vercel-ai-gateway` channel. Nothing from the trace file, no prompt, output
   or key, goes with it. Answers, unknown models included, are cached for a
-  day in the user cache directory (`metergraph-replay/pricing-lookup.json`,
-  mode 0600). `--no-price-lookup` or `METERGRAPH_REPLAY_NO_PRICE_LOOKUP=1`
+  day in the user cache directory (`ezswap/pricing-lookup.json`,
+  mode 0600). `--no-price-lookup` or `EZSWAP_NO_PRICE_LOOKUP=1`
   turns it off; `METERGRAPH_PRICING_URL` points it elsewhere. A failed lookup
   leaves the models unpriced and the run goes on.
 - **The judge sees free-text replies, only when asked.** `map --judge` and
@@ -46,13 +46,13 @@ calls model endpoints with your keys. It is designed to keep these boundaries:
   and those calls are recorded too.
 - **`record` forwards to one upstream.** Every request goes to the upstream
   you name (default `https://api.openai.com`), with its path, query string
-  and headers as the app sent them, minus the two `X-Replay-*` headers. The
+  and headers as the app sent them, minus the two `X-Ezswap-*` headers. The
   upstream must be `https`, or `http` to a loopback host, and may not embed
   a user name. The standard proxy environment variables apply to forwarded
   calls.
 - **`record` never writes or shows a header or a query string.** API keys
-  travel in both. The only header values kept are `X-Replay-Part` and
-  `X-Replay-Trace`, cleaned and cut to 64 characters. Error messages do not
+  travel in both. The only header values kept are `X-Ezswap-Part` and
+  `X-Ezswap-Trace`, cleaned and cut to 64 characters. Error messages do not
   repeat the upstream URL.
 - **`traces.jsonl` holds your prompts and responses.** `record` writes each
   captured call's request and response bodies as they were sent. It does not
@@ -76,7 +76,7 @@ calls model endpoints with your keys. It is designed to keep these boundaries:
   terminal.
 - **`run.json` holds your trace content.** It contains the sampled prompts and
   every model's output, so treat it like the trace file it came from.
-- **The names file holds no content.** `replay-parts.json`, written beside
+- **The names file holds no content.** `ezswap-parts.json`, written beside
   the trace file by `estimate --map` and `map`, holds part keys and names
   only. A fingerprint key is a truncated hash of the system prompt, forced
   tool name and response schema. A part name is whatever you chose.

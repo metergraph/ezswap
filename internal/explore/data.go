@@ -13,9 +13,9 @@ package explore
 import (
 	"sync"
 
-	"github.com/metergraph/replay/internal/report"
-	"github.com/metergraph/replay/internal/report/term"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/report"
+	"github.com/metergraph/ezswap/internal/report/term"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // Options say what to build. Tracked, Labels and MonthlyCalls are as for
@@ -26,7 +26,7 @@ type Options struct {
 	MonthlyCalls *float64
 	// Draw in plain ASCII.
 	ASCII bool
-	// The run's name for the status bar, such as replay-out/run.json.
+	// The run's name for the status bar, such as ezswap-out/run.json.
 	Name string
 }
 

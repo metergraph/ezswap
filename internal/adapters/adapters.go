@@ -14,8 +14,8 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/metergraph/replay/internal/cases/jsval"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/cases/jsval"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // Adapters in detection order. Detection order matters: the most specific

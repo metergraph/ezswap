@@ -19,7 +19,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 const testKey = "sk-test-not-a-real-key-0000"

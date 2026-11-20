@@ -16,8 +16,8 @@ import (
 	"charm.land/bubbles/v2/spinner"
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/metergraph/replay/internal/record"
-	"github.com/metergraph/replay/internal/report/term"
+	"github.com/metergraph/ezswap/internal/record"
+	"github.com/metergraph/ezswap/internal/report/term"
 )
 
 // RecordReadyMsg says the recorder listens at an address.
@@ -161,7 +161,7 @@ func (m Recording) Frame() string {
 	}
 	width = max(40, width)
 	var lines []string
-	title := p.Brand(m.g("▁▃▅▇", "::")) + " " + p.Bold("replay record")
+	title := p.Brand(m.g("▁▃▅▇", "::")) + " " + p.Bold("ezswap record")
 	if m.stopping {
 		title += "  " + p.Muted("stopping: the calls in flight finish first")
 	} else {
@@ -179,7 +179,7 @@ func (m Recording) Frame() string {
 			"Point your app's model base URL at",
 			"  "+p.Bold("http://"+m.address+"/v1")+p.Muted("   OpenAI SDKs"),
 			"  "+p.Bold("http://"+m.address)+p.Muted("      Anthropic and Google SDKs"),
-			p.Muted("and name each call site with the header X-Replay-Part."),
+			p.Muted("and name each call site with the header X-Ezswap-Part."),
 		)
 	}
 	lines = append(lines, "")

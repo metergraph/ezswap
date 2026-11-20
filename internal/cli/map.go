@@ -9,15 +9,15 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/metergraph/replay/demo"
-	"github.com/metergraph/replay/internal/cases"
-	"github.com/metergraph/replay/internal/core"
-	"github.com/metergraph/replay/internal/judge"
-	"github.com/metergraph/replay/internal/parts"
-	"github.com/metergraph/replay/internal/report"
-	"github.com/metergraph/replay/internal/report/term"
-	"github.com/metergraph/replay/internal/run"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/demo"
+	"github.com/metergraph/ezswap/internal/cases"
+	"github.com/metergraph/ezswap/internal/core"
+	"github.com/metergraph/ezswap/internal/judge"
+	"github.com/metergraph/ezswap/internal/parts"
+	"github.com/metergraph/ezswap/internal/report"
+	"github.com/metergraph/ezswap/internal/report/term"
+	"github.com/metergraph/ezswap/internal/run"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // Options that only some commands take. A command not listed for an option
@@ -52,7 +52,7 @@ func (s *session) checkOptions(command string, mapMode bool) error {
 		return nil
 	}
 	if command != "map" && !(command == "estimate" && mapMode) {
-		if err := refuse([]string{"judge"}, "is for map and estimate --map. To judge a map run already made: metergraph-replay judge <run.json>"); err != nil {
+		if err := refuse([]string{"judge"}, "is for map and estimate --map. To judge a map run already made: ezswap judge <run.json>"); err != nil {
 			return err
 		}
 	}
@@ -362,7 +362,7 @@ func (s *session) demoMap() (outcome, error) {
 	}
 	s.say("A map of a synthetic support desk with five parts, recorded so it needs no keys and no network.")
 	s.say("Make one from your own traces:")
-	s.say("  metergraph-replay map traces.jsonl --models openai/gpt-5-mini")
+	s.say("  ezswap map traces.jsonl --models openai/gpt-5-mini")
 	s.say("")
 	s.printMap(m)
 	pageField, err := s.writePage(r, m, nil)

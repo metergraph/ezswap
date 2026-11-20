@@ -8,7 +8,7 @@ import (
 	"math"
 	"strings"
 
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 type PayloadOptions struct {

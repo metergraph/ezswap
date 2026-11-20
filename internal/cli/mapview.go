@@ -8,10 +8,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/metergraph/replay/internal/mapview"
-	"github.com/metergraph/replay/internal/report"
-	"github.com/metergraph/replay/internal/report/page"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/mapview"
+	"github.com/metergraph/ezswap/internal/report"
+	"github.com/metergraph/ezswap/internal/report/page"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // exploreMap opens the map explorer when the terminal is interactive and
@@ -80,7 +80,7 @@ func privatePage(r *types.RunFile, m *report.Map) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	dir, err := os.MkdirTemp("", "metergraph-replay-page-")
+	dir, err := os.MkdirTemp("", "ezswap-page-")
 	if err != nil {
 		return "", err
 	}

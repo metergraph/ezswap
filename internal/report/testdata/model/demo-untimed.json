@@ -8,7 +8,7 @@
   },
   {
    "label": "Source",
-   "value": "replay-jsonl, traces.jsonl"
+   "value": "ezswap-jsonl, traces.jsonl"
   },
   {
    "label": "Production model",

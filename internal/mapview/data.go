@@ -7,9 +7,9 @@ package mapview
 import (
 	"strings"
 
-	"github.com/metergraph/replay/internal/report"
-	"github.com/metergraph/replay/internal/report/term"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/report"
+	"github.com/metergraph/ezswap/internal/report/term"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // Reply is one answer to a case: the recording, a treatment or a rerun.

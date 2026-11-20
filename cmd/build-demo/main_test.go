@@ -8,8 +8,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/metergraph/replay/demo"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/demo"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // The committed demo is what this command builds: the same trace file byte

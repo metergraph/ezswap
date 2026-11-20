@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/metergraph/replay/internal/core"
-	"github.com/metergraph/replay/internal/report/term"
+	"github.com/metergraph/ezswap/internal/core"
+	"github.com/metergraph/ezswap/internal/report/term"
 )
 
 // Screen is how to draw a frame.
@@ -74,7 +74,7 @@ func scrolled(lines []string, at, height int) []string {
 
 func tabBar(s State, c ctx) string {
 	p := c.p
-	logo := p.Brand(c.g("▁▃▅▇", "::")) + " " + p.Bold("replay")
+	logo := p.Brand(c.g("▁▃▅▇", "::")) + " " + p.Bold("ezswap")
 	names := [3][]string{}
 	for i, t := range Tabs {
 		n := strconv.Itoa(i + 1)
@@ -298,7 +298,7 @@ func helpPanel(s State, c ctx, room int) []string {
 	}
 	// Borders, the divider, and the closing line with the blank before it.
 	budget := max(0, room-5-len(lines))
-	more := term.Wrap("More notes: metergraph-replay report "+s.Data.Name+" --explain", inner)
+	more := term.Wrap("More notes: ezswap report "+s.Data.Name+" --explain", inner)
 	var notes []string
 	for i, note := range s.Data.Caveats {
 		paragraph := term.Wrap(term.CleanLine(note), inner)

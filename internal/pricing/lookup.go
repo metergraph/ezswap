@@ -31,7 +31,7 @@ const (
 	lookupBatch      = 100
 	lookupTimeout    = 10 * time.Second
 	gatewayChannel   = "vercel-ai-gateway"
-	lookupCacheShape = "metergraph-replay.pricing-lookup/v1"
+	lookupCacheShape = "ezswap.pricing-lookup/v1"
 )
 
 type LookupOptions struct {
@@ -78,9 +78,9 @@ type lookupCache struct {
 	Answers map[string]cachedAnswer `json:"answers"`
 }
 
-// lookupQuery is what the API is asked for a model as Replay prices it: a
+// lookupQuery is what the API is asked for a model as ezswap prices it: a
 // "creator/model" id on the gateway channel. A bare id is never asked: the
-// API needs the provider that billed it, which Replay does not know.
+// API needs the provider that billed it, which ezswap does not know.
 func lookupQuery(model string) lookupRecord {
 	return lookupRecord{Model: strings.ToLower(jsTrim(model)), Context: map[string]string{"channel": gatewayChannel}}
 }
@@ -166,7 +166,7 @@ func (c *CatalogPricing) LookUp(ctx context.Context, models []string, options Lo
 }
 
 // catalogModelOf is the catalog entry an API answer adds: the price row, and
-// one alias that resolves the name Replay asked for.
+// one alias that resolves the name ezswap asked for.
 func catalogModelOf(name string, answer lookupAnswer) (CatalogModel, bool) {
 	if answer.Status == "unpriced" || answer.Price == nil || answer.ModelID == nil || *answer.ModelID == "" {
 		return CatalogModel{}, false
@@ -179,7 +179,7 @@ func catalogModelOf(name string, answer lookupAnswer) (CatalogModel, bool) {
 	if slash := strings.Index(canonical, "/"); slash > 0 {
 		publisher = canonical[:slash]
 	}
-	// Priced as Replay prices a gateway call: under the creator in the id.
+	// Priced as ezswap prices a gateway call: under the creator in the id.
 	alias := CatalogAlias{Provider: name[:strings.Index(name, "/")], Alias: name, Channel: answer.Price.Channel}
 	if answer.Price.Channel == gatewayChannel {
 		// The gateway's OpenAI-shaped usage counts cache reads inside
@@ -264,7 +264,7 @@ func fetchLookups(ctx context.Context, names []string, options LookupOptions) (m
 			return nil, errors.New("the Pricing API address is not a URL")
 		}
 		request.Header.Set("Content-Type", "application/json")
-		request.Header.Set("User-Agent", "metergraph-replay")
+		request.Header.Set("User-Agent", "ezswap")
 		response, err := client.Do(request)
 		if err != nil {
 			return nil, errors.New("the Pricing API did not answer")

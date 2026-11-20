@@ -13,8 +13,8 @@ import (
 	"html"
 	"strings"
 
-	"github.com/metergraph/replay/internal/report"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/report"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 //go:embed page.css
@@ -167,12 +167,12 @@ func MapPage(run *types.RunFile, m *report.Map) ([]byte, error) {
 		}
 		data.Cases = append(data.Cases, pc)
 	}
-	return assemble("Replay map: "+m.File, data)
+	return assemble("ezswap map: "+m.File, data)
 }
 
 // RunPage is the page for a plain run, from the report's model.
 func RunPage(m *report.Model) ([]byte, error) {
-	return assemble("Replay report: "+m.Headline, runData{Kind: "run", Model: m, Footer: "This compares models on the sampled calls. It does not say a change is better or worse."})
+	return assemble("ezswap report: "+m.Headline, runData{Kind: "run", Model: m, Footer: "This compares models on the sampled calls. It does not say a change is better or worse."})
 }
 
 func assemble(title string, data any) ([]byte, error) {
@@ -188,7 +188,7 @@ func assemble(title string, data any) ([]byte, error) {
 	// No request leaves the page: scripts and styles are inline, images and
 	// connections are refused.
 	b.WriteString("<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:\">\n")
-	b.WriteString("<meta name=\"generator\" content=\"metergraph-replay\">\n")
+	b.WriteString("<meta name=\"generator\" content=\"ezswap\">\n")
 	b.WriteString("<title>" + html.EscapeString(title) + "</title>\n<style>\n" + css + "</style>\n</head>\n<body>\n")
 	b.WriteString("<main id=\"app\"><noscript>This report needs JavaScript to draw. Its data is in the page source.</noscript></main>\n")
 	b.WriteString("<script type=\"application/json\" id=\"replay-data\">")

@@ -12,7 +12,7 @@ requests, discussions or any other project space.
 
 To report behaviour that breaks this code, contact the maintainers privately
 through the repository's
-[private reporting form](https://github.com/metergraph/replay/security/advisories/new),
+[private reporting form](https://github.com/metergraph/ezswap/security/advisories/new),
 starting the title with "Code of conduct". Reports are handled confidentially.
 Maintainers may remove, edit or reject contributions, and may ban
 participants, for behaviour they find in breach of this code.

@@ -1,0 +1,45 @@
+{
+  "name": "ezswap",
+  "version": "0.0.0",
+  "description": "Find which of your LLM calls can move to a cheaper model, from your own production traffic, read against a noise floor",
+  "bin": {
+    "ezswap": "bin/ezswap.js"
+  },
+  "files": [
+    "bin/ezswap.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "optionalDependencies": {
+    "ezswap-darwin-arm64": "0.0.0",
+    "ezswap-darwin-x64": "0.0.0",
+    "ezswap-linux-arm64": "0.0.0",
+    "ezswap-linux-x64": "0.0.0",
+    "ezswap-win32-arm64": "0.0.0",
+    "ezswap-win32-x64": "0.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "Apache-2.0",
+  "author": "Metergraph",
+  "homepage": "https://www.metergraph.dev/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/metergraph/ezswap.git"
+  },
+  "bugs": {
+    "url": "https://github.com/metergraph/ezswap/issues"
+  },
+  "keywords": [
+    "llm",
+    "evaluation",
+    "model-swap",
+    "cost",
+    "openai",
+    "anthropic",
+    "langfuse",
+    "opentelemetry",
+    "metergraph"
+  ]
+}

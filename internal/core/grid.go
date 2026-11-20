@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/metergraph/replay/internal/jsnum"
+	"github.com/metergraph/ezswap/internal/jsnum"
 )
 
 // Seeded is seeded: a small deterministic generator (mulberry32), so a range

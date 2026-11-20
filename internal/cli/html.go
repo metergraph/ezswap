@@ -4,9 +4,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/metergraph/replay/internal/report"
-	"github.com/metergraph/replay/internal/report/page"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/report"
+	"github.com/metergraph/ezswap/internal/report/page"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // htmlPath is the --html path, or "" when the option is not given.

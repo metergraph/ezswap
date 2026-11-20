@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/metergraph/replay/internal/flow"
+	"github.com/metergraph/ezswap/internal/flow"
 )
 
 func TestPlanChoiceBecomesMapOptions(t *testing.T) {

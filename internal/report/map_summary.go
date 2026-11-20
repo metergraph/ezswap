@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/metergraph/replay/internal/report/term"
+	"github.com/metergraph/ezswap/internal/report/term"
 )
 
 const (

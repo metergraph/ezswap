@@ -1,6 +1,6 @@
 # Build output
-/metergraph-replay
-/metergraph-replay.exe
+/ezswap
+/ezswap.exe
 /build-demo
 /build-prices
 dist/
@@ -9,7 +9,7 @@ npm-out/
 *.out
 
 # Local runs
-replay-out/
+ezswap-out/
 out/
 *.tgz
 .env

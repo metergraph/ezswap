@@ -1,4 +1,4 @@
-# Working in metergraph-replay
+# Working in ezswap
 
 ## Public repository rules
 
@@ -29,19 +29,19 @@ Two commands sit beside `run`:
   replays a sample of each part, and prints the sensitivity map: which parts
   change beyond what a rerun of production's own model does.
   `estimate --map` lists the parts and writes the names file
-  (`replay-parts.json`, beside the trace file). `docs/sensitivity-map.md` is
+  (`ezswap-parts.json`, beside the trace file). `docs/sensitivity-map.md` is
   the specification of every rule; keep it in step with the code.
 - `record` is a local reverse proxy on 127.0.0.1 that forwards an app's
   model calls to one upstream and appends each captured call to
   `traces.jsonl`. It must never write or print a header (other than the two
-  cleaned `X-Replay-*` values) or a query string. `docs/record.md` describes
+  cleaned `X-Ezswap-*` values) or a query string. `docs/record.md` describes
   it.
 
 ## Layout
 
 | Path | Owns |
 |---|---|
-| `cmd/metergraph-replay/` | The binary's entry point. |
+| `cmd/ezswap/` | The binary's entry point. |
 | `internal/types/` | Shared contracts (`RunFile`, `Case`, ...). Every package builds against them. |
 | `internal/core/` | Pure statistics over a run: per-arm summary, noise floor, tracked-field comparisons, sentences, spreads, bootstrap. No I/O. |
 | `internal/jsnum/` | JavaScript number formatting and rounding, so figures match the hosted product digit for digit. |

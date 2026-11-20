@@ -4,7 +4,7 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 func TestOtelAnOTLPJSONExportKeepsLLMSpansOnly(t *testing.T) {

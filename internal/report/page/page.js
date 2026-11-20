@@ -197,7 +197,7 @@
     var detail = el("section", { class: "card", id: "detail" });
     app.appendChild(detail);
     app.appendChild(el("div", { class: "foot" }, [DATA.judgedNote ? el("p", { text: DATA.judgedNote }) : null, el("p", { text: DATA.rule }), el("p", { text: DATA.footer }),
-      el("p", { class: "faint", text: "Prices: " + DATA.catalog + ". Made " + DATA.created + " by metergraph-replay." })]));
+      el("p", { class: "faint", text: "Prices: " + DATA.catalog + ". Made " + DATA.created + " by ezswap." })]));
 
     function rerunSentence() {
       var most = 0;
@@ -288,7 +288,7 @@
       if (mt.judged) {
         detail.appendChild(el("p", { class: "muted", text: "This part is free text. " + DATA.judge + " judged each reply against the recorded one, asked in both orders: changed means it found different facts, commitments or next steps." }));
       } else if (!part.paths || !part.paths.length) {
-        detail.appendChild(el("p", { class: "muted", text: "This part is free text, so Replay does not compare it. The replies are side by side to read." }));
+        detail.appendChild(el("p", { class: "muted", text: "This part is free text, so ezswap does not compare it. The replies are side by side to read." }));
       }
       var bar = el("div", { class: "filters", role: "group", "aria-label": "Show cases" });
       var list = el("div");

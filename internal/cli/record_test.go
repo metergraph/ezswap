@@ -74,7 +74,7 @@ func post(t *testing.T, url, part, body string) {
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Authorization", "Bearer "+otherKey)
 	if part != "" {
-		request.Header.Set("X-Replay-Part", part)
+		request.Header.Set("X-Ezswap-Part", part)
 	}
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
@@ -105,13 +105,13 @@ func TestRecordWritesATraceFileAMapCanRead(t *testing.T) {
 		t.Fatalf("exit %d: %s", code, stdout.String())
 	}
 	text := stdout.String()
-	match(t, `Recording model calls to replay-out|Recording model calls to \S*traces\.jsonl`, text)
+	match(t, `Recording model calls to ezswap-out|Recording model calls to \S*traces\.jsonl`, text)
 	match(t, `recorded +classify +/v1/chat/completions`, text)
 	match(t, `recorded +\(unnamed\) +/v1/chat/completions`, text)
 	match(t, `Recorded 11 calls to \S*traces\.jsonl\.`, text)
 	match(t, `classify +10`, text)
 	match(t, `The file now holds 11 cases a replay can reproduce\.`, text)
-	match(t, `metergraph-replay estimate \S*traces\.jsonl --map --models <list>`, text)
+	match(t, `ezswap estimate \S*traces\.jsonl --map --models <list>`, text)
 	file := filepath.Join(out, "traces.jsonl")
 	written, err := os.ReadFile(file)
 	if err != nil {

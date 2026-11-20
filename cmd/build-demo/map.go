@@ -18,12 +18,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/metergraph/replay/internal/adapters"
-	"github.com/metergraph/replay/internal/cases/jsval"
-	"github.com/metergraph/replay/internal/parts"
-	"github.com/metergraph/replay/internal/pricing"
-	"github.com/metergraph/replay/internal/run"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/adapters"
+	"github.com/metergraph/ezswap/internal/cases/jsval"
+	"github.com/metergraph/ezswap/internal/parts"
+	"github.com/metergraph/ezswap/internal/pricing"
+	"github.com/metergraph/ezswap/internal/run"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 const (

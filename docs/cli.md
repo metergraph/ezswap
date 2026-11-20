@@ -1,18 +1,18 @@
 # Command line
 
 ```sh
-metergraph-replay demo
-metergraph-replay demo --map
-metergraph-replay record
-metergraph-replay estimate traces.jsonl --map --models openai/gpt-5-mini
-metergraph-replay map traces.jsonl --models openai/gpt-5-mini
-metergraph-replay estimate traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5
-metergraph-replay run traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5 --budget 2.00
-metergraph-replay report replay-out/run.json
-metergraph-replay judge replay-out/run.json
+ezswap demo
+ezswap demo --map
+ezswap record
+ezswap estimate traces.jsonl --map --models openai/gpt-5-mini
+ezswap map traces.jsonl --models openai/gpt-5-mini
+ezswap estimate traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5
+ezswap run traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5 --budget 2.00
+ezswap report ezswap-out/run.json
+ezswap judge ezswap-out/run.json
 ```
 
-Run with no command on an interactive terminal, `metergraph-replay` walks
+Run with no command on an interactive terminal, `ezswap` walks
 through a map step by step: what to do (record your app, map a trace file,
 open a finished map or try the demo), where your app's calls go, the plan
 (parts, models, cases per part and the judge, with the estimate updating as
@@ -20,7 +20,7 @@ you choose), then the spend confirmation, the progress and the map explorer.
 Every step is also a command of its own, below. Without a terminal it prints
 the help.
 
-Installed from npm, prefix each with `npx` (`npx metergraph-replay demo`).
+Installed from npm, prefix each with `npx` (`npx ezswap demo`).
 The README lists every way to install it.
 
 | Command | What it does |
@@ -35,21 +35,21 @@ The README lists every way to install it.
 | `judge <run.json>` | Judges the free-text parts of a run that `map` made, writes the verdicts into the same `run.json` and prints the map. Pairs already judged are not asked again. See [judged parts](sensitivity-map.md#judged-free-text-parts). |
 | `report <run.json>` | Opens the interactive explorer on an existing run. Without an interactive terminal, or with `--no-interactive`, it prints the report instead. On a run that `map` made it prints the map, never the explorer. |
 
-The report and the map live in the terminal. Replay writes three files and
+The report and the map live in the terminal. ezswap writes three files and
 nothing else:
 
 | File | Written by | Holds |
 |---|---|---|
 | `<out>/run.json` | `run`, `map`, `demo` (not `demo --map`), `judge` (rewrites it) | The sampled prompts and every model's output, and the judge's verdicts. |
 | `<out>/traces.jsonl` | `record` | Each captured call's request and response bodies. Appended to. |
-| `replay-parts.json`, beside the trace file | `estimate --map`, `map` | Part keys and names. |
+| `ezswap-parts.json`, beside the trace file | `estimate --map`, `map` | Part keys and names. |
 
 `map` and `run` write the same `run.json`. Give one of them another `--out`
 to keep both.
 
 ## Settings file
 
-`estimate`, `map` and `run` read `replay.yaml` from the working directory
+`estimate`, `map` and `run` read `ezswap.yaml` from the working directory
 when it exists. Its keys are the option names, without the leading dashes,
 and a flag given on the command line wins over the file:
 
@@ -64,9 +64,9 @@ html: map.html
 budget: 2.50
 ```
 
-With that file, `metergraph-replay map traces.jsonl` is the whole command.
+With that file, `ezswap map traces.jsonl` is the whole command.
 The command says which settings came from the file:
-`Settings from replay.yaml: budget, endpoint, html, judge, models, per-part.`
+`Settings from ezswap.yaml: budget, endpoint, html, judge, models, per-part.`
 
 - Each command takes the keys it accepts and leaves the rest, so one file
   serves all three: `sample` is used by `run`, `per-part` by `map`.
@@ -133,9 +133,9 @@ display options:
 | `--allow-no-search` | off | Replay calls that searched the web, without search. |
 | `--allow-unpriced` | off | Run models the price catalog does not know. |
 | `--no-price-lookup` | off | Do not ask Metergraph's Pricing API for models the bundled catalog cannot price. See [prices](#prices). |
-| `--adapter NAME` | detected | `replay-jsonl`, `raw`, `langfuse` or `otel`. See [trace formats](trace-format.md). |
+| `--adapter NAME` | detected | `ezswap-jsonl`, `raw`, `langfuse` or `otel`. See [trace formats](trace-format.md). |
 | `--html FILE` | none | `run`, `map`, `report` and `demo`: also write the result as one self-contained HTML page. See [the HTML page](#the-html-page). |
-| `--out DIR` | `./replay-out` | Where `run.json` goes (`demo`, `run` and `map`), and `record`'s `traces.jsonl`. Not for `report` or `demo --map`, which write nothing. |
+| `--out DIR` | `./ezswap-out` | Where `run.json` goes (`demo`, `run` and `map`), and `record`'s `traces.jsonl`. Not for `report` or `demo --map`, which write nothing. |
 | `--explore` | off | `demo`: open the explorer instead of printing the report. Not for `demo --map`. |
 | `--no-interactive` | off | Print instead of drawing: `report` prints the report instead of opening the explorer, and `run` shows plain progress. Also the default when `CI` is set. |
 | `--explain` | off | Print the report's notes after it: how to read the `itself` column, how cost is estimated, why calls were not replayed. `report --explain` prints rather than opening the explorer. |
@@ -189,7 +189,7 @@ that call a model. [The sensitivity map](sensitivity-map.md) is the full
 description. In short:
 
 - A part is named by a `part` field in the trace file, by the
-  `X-Replay-Part` header when recording, or by `--part-key`. A call with no
+  `X-Ezswap-Part` header when recording, or by `--part-key`. A call with no
   name is grouped by a fingerprint of its system prompt, forced tool and
   response schema.
 - Each part has a key: `name:<name>`, or `fp1:<hash>` for a fingerprint,
@@ -200,7 +200,7 @@ description. In short:
 
 ### The names file
 
-`estimate --map` and `map` read `replay-parts.json` in the trace file's
+`estimate --map` and `map` read `ezswap-parts.json` in the trace file's
 directory and add any new key with its default name. They never change or
 remove an entry.
 
@@ -351,7 +351,7 @@ reason.
 
 ### Prices
 
-Replay bundles Metergraph's public price catalog (`internal/pricing/prices.json`,
+ezswap bundles Metergraph's public price catalog (`internal/pricing/prices.json`,
 built from metergraph-core's `prices.yaml`), so pricing works offline. When a
 `creator/model` id you name is not in it, `estimate`, `run` and `map` ask
 Metergraph's free [Pricing API](https://metergraph.dev/docs/reference/pricing-api)
@@ -367,12 +367,12 @@ a day in the user cache directory. `run.json` records the catalog as, for
 example, `metergraph-core prices.yaml 2026-11-18 (28e57272a1ab) + Metergraph
 Pricing API (1 model)`. A bare id (no `creator/`) is not looked up, because
 the API needs the provider that billed it. If the API cannot be reached, the
-models stay unpriced and Replay says so.
+models stay unpriced and ezswap says so.
 
 | Setting | Effect |
 |---|---|
 | `--no-price-lookup` | No lookup for this command. |
-| `METERGRAPH_REPLAY_NO_PRICE_LOOKUP=1` | No lookup, ever. |
+| `EZSWAP_NO_PRICE_LOOKUP=1` | No lookup, ever. |
 | `METERGRAPH_PRICING_URL` | Another Pricing API base URL, such as a self-hosted Metergraph. |
 
 ## The HTML page
@@ -414,7 +414,7 @@ when it stops.
 ## Development
 
 ```sh
-go run ./cmd/metergraph-replay demo --out /tmp/replay-demo   # run from source
+go run ./cmd/ezswap demo --out /tmp/replay-demo   # run from source
 go test ./...
 go test ./internal/report -update   # accepts changed report output in internal/report/testdata/golden
 go run ./cmd/build-demo             # regenerates demo/traces.jsonl, demo/run.json, demo/map-traces.jsonl and demo/map-run.json

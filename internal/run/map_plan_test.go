@@ -11,8 +11,8 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/metergraph/replay/internal/parts"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/parts"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 const mapTraces = "../../demo/map-traces.jsonl"

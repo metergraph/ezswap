@@ -1,7 +1,7 @@
 // Package parts groups cases by the place in the app that made the call.
 //
 // A part is named only when the developer named it: a "part" field in the
-// trace file, the recorder's X-Replay-Part header, or the key given with
+// trace file, the recorder's X-Ezswap-Part header, or the key given with
 // --part-key. A replayable case with no name is grouped by a fingerprint of
 // what stays fixed across calls from one place: the system prompt, the forced
 // tool and the response schema.
@@ -19,7 +19,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 const (
@@ -193,8 +193,8 @@ func (e *UsageError) Error() string { return e.Message }
 
 // ErrPartsNotFound is the refusal to map a file whose calls do not fall into
 // parts.
-var ErrPartsNotFound = errors.New("Replay could not tell the parts of this app apart: most calls have a system prompt of their own. " +
-	"Name the parts: add a \"part\" field to each record, send the X-Replay-Part header when recording, or pass --part-key.")
+var ErrPartsNotFound = errors.New("ezswap could not tell the parts of this app apart: most calls have a system prompt of their own. " +
+	"Name the parts: add a \"part\" field to each record, send the X-Ezswap-Part header when recording, or pass --part-key.")
 
 // find is the index of the part with this name, or holding this key.
 func find(parts []Part, value string) int {

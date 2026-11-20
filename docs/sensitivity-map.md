@@ -6,7 +6,7 @@ some of those places change their answers and some do not. The map shows
 which.
 
 ```sh
-metergraph-replay map traces.jsonl --models openai/gpt-5-mini
+ezswap map traces.jsonl --models openai/gpt-5-mini
 ```
 
 For each part of the app, `map` replays a sample of recorded calls on the
@@ -20,7 +20,7 @@ better or worse.
 ## Try it
 
 ```sh
-metergraph-replay demo --map
+ezswap demo --map
 ```
 
 This prints the map of a bundled synthetic support desk with five parts. It
@@ -30,7 +30,7 @@ needs no keys, makes no network request and writes no file. The output, with
 ```text
 A map of a synthetic support desk with five parts, recorded so it needs no keys and no network.
 Make one from your own traces:
-  metergraph-replay map traces.jsonl --models openai/gpt-5-mini
+  ezswap map traces.jsonl --models openai/gpt-5-mini
 
 5 parts | map-traces.jsonl | 2026-10-20 to 2026-10-27 | 20 cases per part
 spent $0.016 of $5.00
@@ -75,12 +75,12 @@ This shows where outputs change. It does not say a change is better or worse.
 
 ## Parts
 
-A **part** is a place in your app that calls a model. Replay names a part
+A **part** is a place in your app that calls a model. ezswap names a part
 only when you named it. There are three ways.
 
 1. **A `part` field in the trace file.** A top-level `part` string in a
-   Replay JSONL record or a raw-pair record.
-2. **The `X-Replay-Part` header when recording.** `metergraph-replay record`
+   ezswap JSONL record or a raw-pair record.
+2. **The `X-Ezswap-Part` header when recording.** `ezswap record`
    writes the header's value as the `part` of each call. See
    [Recording](record.md).
 3. **`--part-key KEY`**, when your records already carry a name under
@@ -88,14 +88,14 @@ only when you named it. There are three ways.
 
    | Format | Where `KEY` is read |
    |---|---|
-   | Replay JSONL | Top-level `KEY`, then `KEY` in `meta`. |
+   | ezswap JSONL | Top-level `KEY`, then `KEY` in `meta`. |
    | Raw pairs | Top-level `KEY`. |
    | Helicone | `KEY` in `request_properties`, then in `properties`. |
    | LiteLLM | `KEY` in `metadata`. |
    | OpenTelemetry | The span or resource attribute `KEY`. With `--part-key span.name`, the span name. |
    | Langfuse | `KEY` in the observation's `metadata`. With `--part-key name`, the observation name. |
 
-   For Replay JSONL and raw pairs, a record without `KEY` falls back to its
+   For ezswap JSONL and raw pairs, a record without `KEY` falls back to its
    `part` field. Helicone, LiteLLM, OpenTelemetry and Langfuse records are
    named only through `--part-key`.
 
@@ -133,7 +133,7 @@ asks you to name the parts in one of the three ways above.
 
 ### The names file
 
-`estimate --map` and `map` keep part names in `replay-parts.json`, in the
+`estimate --map` and `map` keep part names in `ezswap-parts.json`, in the
 same directory as the trace file:
 
 ```json
@@ -174,7 +174,7 @@ Two options change names for one command and save nothing:
 ## List the parts before spending
 
 ```sh
-metergraph-replay estimate traces.jsonl --map --models openai/gpt-5-mini
+ezswap estimate traces.jsonl --map --models openai/gpt-5-mini
 ```
 
 `estimate --map` lists the parts and prices the map. It makes no provider
@@ -182,7 +182,7 @@ call and needs no key. It does write the names file. This is the bundled
 demo trace file, `demo/map-traces.jsonl`:
 
 ```text
-Read 86 calls in 86 traces from map-traces.jsonl (replay-jsonl format).
+Read 86 calls in 86 traces from map-traces.jsonl (ezswap-jsonl format).
 
 5 parts | map-traces.jsonl | 1 treatment | 20 cases per part
 
@@ -195,7 +195,7 @@ part-178780      fingerprint     6  no: under 10 cases        $0.0057
 
 258 calls in all: each case runs on 1 model, plus twice on production's model.
 Expected $0.08, at most $0.14. Budget $5.00.
-Names file: replay-parts.json (updated). Edit a name there to rename a part; give two parts one name to merge them.
+Names file: ezswap-parts.json (updated). Edit a name there to rename a part; give two parts one name to merge them.
 Note: OPENROUTER_API_KEY is not set; map will need it.
 ```
 
@@ -247,7 +247,7 @@ production's recorded outputs alone, so the choice is known before any
 spending and does not depend on what a treatment returns.
 
 1. `--track PATH` fields come first.
-2. Then the fields Replay suggests: labels, numbers, lists, and short text
+2. Then the fields ezswap suggests: labels, numbers, lists, and short text
    of at most 120 characters. A field qualifies when it has a value in at
    least half of the part's recorded outputs.
 3. Then top-level fields that production's answers hold as an explicit
@@ -364,7 +364,7 @@ A treatment's block ends with notes when they apply:
 
 `map --judge` compares free-text parts with a judge model,
 `typesafe-ai/jev`, through the Vercel AI Gateway. It needs
-`AI_GATEWAY_API_KEY`. `metergraph-replay judge replay-out/run.json` does the
+`AI_GATEWAY_API_KEY`. `ezswap judge ezswap-out/run.json` does the
 same for a map already made, and writes the verdicts into that file.
 
 For each case the judge reads the request and two replies, and chooses
@@ -457,13 +457,13 @@ rules are those of `run`, described under "Spend" in
 
 ## Printing a map again
 
-`map` writes `run.json` to `--out` (default `./replay-out`), the same file
+`map` writes `run.json` to `--out` (default `./ezswap-out`), the same file
 `run` writes. Pass `--out` to keep a map and an ordinary run side by side.
 
 ```sh
-metergraph-replay report replay-out/run.json
-metergraph-replay report replay-out/run.json --only extract-order
-metergraph-replay report replay-out/run.json --name part-ecc195=draft-reply
+ezswap report ezswap-out/run.json
+ezswap report ezswap-out/run.json --only extract-order
+ezswap report ezswap-out/run.json --name part-ecc195=draft-reply
 ```
 
 - `report` on a run that `map` made prints the map. It never opens the

@@ -14,9 +14,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/metergraph/replay/internal/pricing"
-	"github.com/metergraph/replay/internal/providers"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/pricing"
+	"github.com/metergraph/ezswap/internal/providers"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 const at = "2026-10-28T12:00:00.000Z"
@@ -133,7 +133,7 @@ func TestPlanRunSamplesTheLatestReplayableCasesOnePerTraceAndKeepsTheUnreplayabl
 	equal(t, p.File.Calls, 10)
 	equal(t, p.File.Traces, 9)
 	equal(t, p.Input.File, "traces.jsonl")
-	equal(t, p.Input.Adapter, "replay-jsonl")
+	equal(t, p.Input.Adapter, "ezswap-jsonl")
 	equal(t, ids(p.Cases), []string{"call-5", "call-6", "call-8", "call-9", "call-10"})
 	equal(t, p.Estimate.Replayable, 3)
 	equal(t, p.Estimate.NotReplayable, map[string]int{"content_truncated": 1, "web_search_not_replayed": 1})
@@ -775,7 +775,7 @@ func TestRunJSONHoldsNoKey(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	keyEnv := "REPLAY_TEST_KEY"
+	keyEnv := "EZSWAP_TEST_KEY"
 	provider, err := providers.CreateProvider(providers.ProviderOptions{
 		BaseURL:   endpoint.BaseURL,
 		APIKeyEnv: &keyEnv,

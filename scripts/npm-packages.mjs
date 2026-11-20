@@ -4,7 +4,7 @@
 //
 //   node scripts/npm-packages.mjs <version> <goreleaser-dist> <out-dir>
 //
-// Publish the platform packages first, then npm/metergraph-replay.
+// Publish the platform packages first, then npm/ezswap.
 import { chmodSync, copyFileSync, cpSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -30,18 +30,18 @@ const TARGETS = [
 ];
 
 const root = fileURLToPath(new URL("..", import.meta.url));
-const launcher = JSON.parse(readFileSync(join(root, "npm/metergraph-replay/package.json"), "utf8"));
-const expected = TARGETS.map((t) => `metergraph-replay-${t.os}-${t.cpu}`).sort().join(" ");
+const launcher = JSON.parse(readFileSync(join(root, "npm/ezswap/package.json"), "utf8"));
+const expected = TARGETS.map((t) => `ezswap-${t.os}-${t.cpu}`).sort().join(" ");
 if (Object.keys(launcher.optionalDependencies).sort().join(" ") !== expected) {
-  throw new Error(`npm/metergraph-replay/package.json optionalDependencies must be exactly: ${expected}`);
+  throw new Error(`npm/ezswap/package.json optionalDependencies must be exactly: ${expected}`);
 }
 const dirs = readdirSync(dist, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
 
 for (const t of TARGETS) {
-  const name = `metergraph-replay-${t.os}-${t.cpu}`;
-  const build = dirs.find((d) => d.startsWith("metergraph-replay_") && d.includes(`_${t.goos}_${t.goarch}`));
+  const name = `ezswap-${t.os}-${t.cpu}`;
+  const build = dirs.find((d) => d.startsWith("ezswap_") && d.includes(`_${t.goos}_${t.goarch}`));
   if (!build) throw new Error(`no GoReleaser build for ${t.goos}/${t.goarch} in ${dist}`);
-  const exe = t.os === "win32" ? "metergraph-replay.exe" : "metergraph-replay";
+  const exe = t.os === "win32" ? "ezswap.exe" : "ezswap";
   const dir = join(out, name);
   mkdirSync(join(dir, "bin"), { recursive: true });
   copyFileSync(join(dist, build, exe), join(dir, "bin", exe));
@@ -50,7 +50,7 @@ for (const t of TARGETS) {
   writeFileSync(join(dir, "package.json"), JSON.stringify({
     name,
     version,
-    description: `The metergraph-replay binary for ${t.os} ${t.cpu}. Install metergraph-replay instead.`,
+    description: `The ezswap binary for ${t.os} ${t.cpu}. Install ezswap instead.`,
     os: [t.os],
     cpu: [t.cpu],
     files: ["bin", "LICENSE"],
@@ -59,8 +59,8 @@ for (const t of TARGETS) {
   }, null, 2) + "\n");
 }
 
-const main = join(out, "metergraph-replay");
-cpSync(join(root, "npm/metergraph-replay"), main, { recursive: true });
+const main = join(out, "ezswap");
+cpSync(join(root, "npm/ezswap"), main, { recursive: true });
 copyFileSync(join(root, "LICENSE"), join(main, "LICENSE"));
 copyFileSync(join(root, "README.md"), join(main, "README.md"));
 launcher.version = version;

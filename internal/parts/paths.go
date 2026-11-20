@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"slices"
 
-	"github.com/metergraph/replay/internal/core"
+	"github.com/metergraph/ezswap/internal/core"
 )
 
 const (
@@ -21,7 +21,7 @@ const (
 // ComparedPaths is the paths one part is compared on, chosen from
 // production's recorded outputs alone, so the choice is known before any
 // spending and does not depend on what a treatment returns. Tracked paths
-// come first; then Replay's suggested fields (labels, numbers, lists, short
+// come first; then ezswap's suggested fields (labels, numbers, lists, short
 // text, each present in at least half the outputs); ignored paths are left
 // out; at most MaxPaths are kept. With no path the reason says why:
 // ReasonFreeText when fewer than half the outputs parse as JSON, else

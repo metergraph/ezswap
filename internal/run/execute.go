@@ -33,9 +33,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/metergraph/replay/internal/jsnum"
-	"github.com/metergraph/replay/internal/pricing"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/jsnum"
+	"github.com/metergraph/ezswap/internal/pricing"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 const DefaultRunConcurrency = 4
@@ -618,7 +618,7 @@ func ExecuteRun(ctx context.Context, plan *RunPlan, options ExecuteOptions) (*ty
 	run := &types.RunFile{
 		Schema:     types.RunSchema,
 		CreatedAt:  createdAt,
-		Tool:       types.Tool{Name: "metergraph-replay", Version: toolVersion},
+		Tool:       types.Tool{Name: "ezswap", Version: toolVersion},
 		Input:      input,
 		Catalog:    types.Catalog{Version: plan.CatalogVersion},
 		Settings:   settings,

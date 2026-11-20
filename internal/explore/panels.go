@@ -9,9 +9,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/metergraph/replay/internal/core"
-	"github.com/metergraph/replay/internal/report"
-	"github.com/metergraph/replay/internal/report/term"
+	"github.com/metergraph/ezswap/internal/core"
+	"github.com/metergraph/ezswap/internal/report"
+	"github.com/metergraph/ezswap/internal/report/term"
 )
 
 // ctx is everything a panel needs to draw.

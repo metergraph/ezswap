@@ -8,7 +8,7 @@ package core
 import (
 	"regexp"
 
-	"github.com/metergraph/replay/internal/jsnum"
+	"github.com/metergraph/ezswap/internal/jsnum"
 )
 
 // CutOffReasons are the finish reasons that mean the reply hit its token limit.

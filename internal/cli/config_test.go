@@ -27,13 +27,13 @@ func TestSettingsFileStandsInForFlags(t *testing.T) {
 		t.Fatalf("%d %s", out.code, out.stderr)
 	}
 	// sample is for run and estimate without --map: left for them, not refused.
-	match(t, `Settings from \S*replay\.yaml: budget, models, per-part\.`, out.stdout)
+	match(t, `Settings from \S*ezswap\.yaml: budget, models, per-part\.`, out.stdout)
 	match(t, `12 cases per part`, out.stdout)
 	match(t, `Budget \$2\.50`, out.stdout)
 
 	// A flag wins over the file.
 	flagged := cli(t, args("estimate", file, "--map", "--per-part", "10"), inDir(dir), nil)
-	match(t, `Settings from \S*replay\.yaml: budget, models\.`, flagged.stdout)
+	match(t, `Settings from \S*ezswap\.yaml: budget, models\.`, flagged.stdout)
 	match(t, `10 cases per part`, flagged.stdout)
 
 	// --no-config ignores it, so --models is needed again.

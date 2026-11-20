@@ -12,10 +12,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/metergraph/replay/internal/judge"
-	"github.com/metergraph/replay/internal/report"
-	"github.com/metergraph/replay/internal/run"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/judge"
+	"github.com/metergraph/ezswap/internal/report"
+	"github.com/metergraph/ezswap/internal/run"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // judgeNote is said before any reply is sent to the judge.
@@ -177,7 +177,7 @@ func (s *session) judgeRun(ctx context.Context, r *types.RunFile, key string) (j
 	r.Judge.CostUSD += result.costUSD
 	line := fmt.Sprintf("Judged %d of %d pairs for %s.", len(pending)-result.failed, len(pending), usd(result.costUSD))
 	if result.failed > 0 {
-		line += fmt.Sprintf(" The judge could not answer for %d (%v); their cases are left out of their parts. Run metergraph-replay judge on the run file to try them again.", result.failed, result.firstErr)
+		line += fmt.Sprintf(" The judge could not answer for %d (%v); their cases are left out of their parts. Run ezswap judge on the run file to try them again.", result.failed, result.firstErr)
 	}
 	s.say(line)
 	return result, nil

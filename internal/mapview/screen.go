@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/metergraph/replay/internal/core"
-	"github.com/metergraph/replay/internal/report"
-	"github.com/metergraph/replay/internal/report/term"
+	"github.com/metergraph/ezswap/internal/core"
+	"github.com/metergraph/ezswap/internal/report"
+	"github.com/metergraph/ezswap/internal/report/term"
 )
 
 // Colours of the labels, as the HTML page draws them in its dark theme.
@@ -91,7 +91,7 @@ func scrolled(lines []string, at, height int) []string {
 
 func header(s State, c ctx) string {
 	m := s.Data.Map
-	logo := c.p.Brand(c.g("▁▃▅▇", "::")) + " " + c.p.Bold("replay map")
+	logo := c.p.Brand(c.g("▁▃▅▇", "::")) + " " + c.p.Bold("ezswap map")
 	facts := []string{
 		fmt.Sprintf("%d %s", len(m.Parts), plural(len(m.Parts), "part", "parts")),
 		term.CleanLine(m.File),

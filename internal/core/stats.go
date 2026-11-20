@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/metergraph/replay/internal/jsnum"
+	"github.com/metergraph/ezswap/internal/jsnum"
 )
 
 // ReplayedControlLabel is REPLAYED_CONTROL_LABEL: a column labelled this is

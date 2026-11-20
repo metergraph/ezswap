@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/metergraph/replay/demo"
-	"github.com/metergraph/replay/internal/report"
+	"github.com/metergraph/ezswap/demo"
+	"github.com/metergraph/ezswap/internal/report"
 )
 
 func payload(t *testing.T, page []byte) map[string]any {

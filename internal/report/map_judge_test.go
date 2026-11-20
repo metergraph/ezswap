@@ -4,9 +4,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/metergraph/replay/demo"
-	"github.com/metergraph/replay/internal/parts"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/demo"
+	"github.com/metergraph/ezswap/internal/parts"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // judgedDemo is the bundled demo run with verdicts on its free-text part:

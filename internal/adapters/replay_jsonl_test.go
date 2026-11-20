@@ -3,14 +3,14 @@ package adapters
 import (
 	"testing"
 
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 func TestReplayJSONLMapsRequestResponseUsageAndMeta(t *testing.T) {
 	calls := read(t, fixture("replay.jsonl"))
 	equal(t, len(calls), 4)
 	first := calls[0]
-	equal(t, first.Source, "replay-jsonl")
+	equal(t, first.Source, "ezswap-jsonl")
 	equal(t, first.ID, "rp-1")
 	equal(t, str(first.TraceID), "tr-1")
 	equal(t, str(first.TS), "2026-03-01T10:00:00.000Z")

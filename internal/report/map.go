@@ -15,9 +15,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/metergraph/replay/internal/core"
-	"github.com/metergraph/replay/internal/parts"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/core"
+	"github.com/metergraph/ezswap/internal/parts"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // Results, the keys the report already uses.
@@ -35,7 +35,7 @@ const (
 )
 
 // ErrNotMapRun is report --map on a run that `map` did not make.
-var ErrNotMapRun = errors.New("This run has no parts. Make one with: metergraph-replay map <traces> --models <list>")
+var ErrNotMapRun = errors.New("This run has no parts. Make one with: ezswap map <traces> --models <list>")
 
 // IsMapRun is whether `map` made this run.
 func IsMapRun(run *types.RunFile) bool {

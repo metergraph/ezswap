@@ -3,7 +3,7 @@ package flow
 import (
 	"strings"
 
-	"github.com/metergraph/replay/internal/report/term"
+	"github.com/metergraph/ezswap/internal/report/term"
 )
 
 // Item is one choice in a menu. An item with a Prompt asks for a value

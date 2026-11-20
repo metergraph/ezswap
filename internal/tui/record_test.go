@@ -7,8 +7,8 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/metergraph/replay/internal/record"
-	"github.com/metergraph/replay/internal/report/term"
+	"github.com/metergraph/ezswap/internal/record"
+	"github.com/metergraph/ezswap/internal/report/term"
 )
 
 func step(m Recording, msgs ...tea.Msg) Recording {
@@ -23,8 +23,8 @@ func TestRecordingCountsCallsByPart(t *testing.T) {
 	stops := 0
 	at := time.Date(2026, 11, 19, 16, 40, 0, 0, time.UTC)
 	m := NewRecording(RecordingOptions{
-		Paint: term.PlainPaint(), Width: 90, File: "replay-out/traces.jsonl", Upstream: "https://gateway.example.com",
-		SetAside: "replay-out/traces-20261119-164000.jsonl", Stop: func() { stops++ }, Now: func() time.Time { return at },
+		Paint: term.PlainPaint(), Width: 90, File: "ezswap-out/traces.jsonl", Upstream: "https://gateway.example.com",
+		SetAside: "ezswap-out/traces-20261119-164000.jsonl", Stop: func() { stops++ }, Now: func() time.Time { return at },
 	})
 	if !strings.Contains(m.Frame(), "Starting...") {
 		t.Fatalf("before ready:\n%s", m.Frame())
@@ -43,7 +43,7 @@ func TestRecordingCountsCallsByPart(t *testing.T) {
 	)
 	frame := m.Frame()
 	for _, want := range []string{
-		"replay record", "Started fresh. The previous recording is now replay-out/traces-20261119-164000.jsonl.",
+		"ezswap record", "Started fresh. The previous recording is now ezswap-out/traces-20261119-164000.jsonl.",
 		"route-ticket", "draft-reply", "5 calls recorded", "not recorded: 1 stream cut", "LATEST", "16:40:00  stream cut",
 		"q or Ctrl-C stops recording",
 	} {

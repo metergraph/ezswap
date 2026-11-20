@@ -13,8 +13,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/metergraph/replay/internal/cases/jsval"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/cases/jsval"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // Attributes are kept as an ordered object: Object.entries walks them in

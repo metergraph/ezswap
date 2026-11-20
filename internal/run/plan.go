@@ -11,13 +11,13 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/metergraph/replay/internal/adapters"
-	"github.com/metergraph/replay/internal/cases"
-	"github.com/metergraph/replay/internal/cases/jsval"
-	"github.com/metergraph/replay/internal/jsnum"
-	"github.com/metergraph/replay/internal/parts"
-	"github.com/metergraph/replay/internal/pricing"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/adapters"
+	"github.com/metergraph/ezswap/internal/cases"
+	"github.com/metergraph/ezswap/internal/cases/jsval"
+	"github.com/metergraph/ezswap/internal/jsnum"
+	"github.com/metergraph/ezswap/internal/parts"
+	"github.com/metergraph/ezswap/internal/pricing"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 const (
@@ -129,7 +129,7 @@ type RunPlan struct {
 	AllParts []parts.Part
 	// What the names passed in did not match.
 	PartNotes []string
-	// Cases the map leaves out before sampling, by reason: Replay's
+	// Cases the map leaves out before sampling, by reason: ezswap's
 	// not-replayable reasons, and "tools_not_offered" for calls whose tools a
 	// replay would strip.
 	LeftOut map[string]int

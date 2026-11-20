@@ -11,8 +11,8 @@ import (
 	"testing"
 
 	"github.com/charmbracelet/colorprofile"
-	"github.com/metergraph/replay/internal/report/term"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/report/term"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 var update = flag.Bool("update", false, "rewrite the golden files under testdata/golden")
@@ -52,7 +52,7 @@ func golden(t *testing.T, name, actual string) {
 }
 
 // A URL or a command alone on its line stays whole so it can be copied; the terminal may wrap it.
-var linkLine = regexp.MustCompile(`^(?:https://\S+|metergraph-replay report \S+)$`)
+var linkLine = regexp.MustCompile(`^(?:https://\S+|ezswap report \S+)$`)
 
 func checkWidth(t *testing.T, label, out string, w int) {
 	t.Helper()
@@ -72,7 +72,7 @@ func TestGoldenDemo(t *testing.T) {
 		for _, ascii := range []bool{false, true} {
 			name := fmt.Sprintf("demo-%d-%s.txt", w, map[bool]string{true: "ascii", false: "unicode"}[ascii])
 			t.Run(name, func(t *testing.T) {
-				out := Render(m, RenderOptions{Width: w, ASCII: ascii, Explore: "replay-out/run.json"})
+				out := Render(m, RenderOptions{Width: w, ASCII: ascii, Explore: "ezswap-out/run.json"})
 				checkWidth(t, name, out, w)
 				golden(t, name, out)
 			})
@@ -215,7 +215,7 @@ func TestNoLineWiderThanTheTerminal(t *testing.T) {
 					if color {
 						p = term.NewPaint(colorprofile.TrueColor)
 					}
-					out := Render(m, RenderOptions{Width: w, ASCII: ascii, Paint: p, Explore: "replay-out/run.json"})
+					out := Render(m, RenderOptions{Width: w, ASCII: ascii, Paint: p, Explore: "ezswap-out/run.json"})
 					checkWidth(t, fmt.Sprintf("%s %d ascii=%v color=%v", name, w, ascii, color), out, w)
 				}
 			}

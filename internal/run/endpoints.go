@@ -11,9 +11,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/metergraph/replay/internal/cases/jsval"
-	"github.com/metergraph/replay/internal/providers"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/cases/jsval"
+	"github.com/metergraph/ezswap/internal/providers"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 const DefaultEndpoint = providers.PresetOpenRouter

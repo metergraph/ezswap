@@ -22,11 +22,11 @@ import (
 	"charm.land/lipgloss/v2"
 	"github.com/charmbracelet/colorprofile"
 
-	"github.com/metergraph/replay/internal/jsnum"
-	"github.com/metergraph/replay/internal/report"
-	"github.com/metergraph/replay/internal/report/term"
-	"github.com/metergraph/replay/internal/run"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/jsnum"
+	"github.com/metergraph/ezswap/internal/report"
+	"github.com/metergraph/ezswap/internal/report/term"
+	"github.com/metergraph/ezswap/internal/run"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // USD is dollars: four places under a cent, two otherwise.

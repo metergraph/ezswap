@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 func TestDetectAdapterPicksEachFixturesFormat(t *testing.T) {
@@ -18,7 +18,7 @@ func TestDetectAdapterPicksEachFixturesFormat(t *testing.T) {
 		line, _, _ := strings.Cut(string(data), "\n")
 		return j(t, line)
 	}
-	equal(t, detected(first("replay.jsonl")), "replay-jsonl")
+	equal(t, detected(first("replay.jsonl")), "ezswap-jsonl")
 	equal(t, detected(first("raw-pairs.jsonl")), "raw")
 	equal(t, detected(first("helicone.jsonl")), "raw")
 	equal(t, detected(first("litellm.jsonl")), "raw")
@@ -40,7 +40,7 @@ func TestAnExplicitAdapterOverridesDetection(t *testing.T) {
 func TestAnUndetectableFileIsAnErrorThatNamesTheFormats(t *testing.T) {
 	path := temp(t, "unknown.jsonl", `{"hello":"world"}`+"\n")
 	_, err := ReadTraces(path, ReadTracesOptions{})
-	if err == nil || !regexp.MustCompile(`replay-jsonl, raw, langfuse, otel|otel, langfuse, replay-jsonl, raw`).MatchString(err.Error()) {
+	if err == nil || !regexp.MustCompile(`ezswap-jsonl, raw, langfuse, otel|otel, langfuse, ezswap-jsonl, raw`).MatchString(err.Error()) {
 		t.Errorf("error %v", err)
 	}
 }

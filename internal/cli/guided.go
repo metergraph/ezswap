@@ -1,6 +1,6 @@
 package cli
 
-// The guided workflow: metergraph-replay with no command on an interactive
+// The guided workflow: ezswap with no command on an interactive
 // terminal. It runs, in order: a start menu; for a recording, the
 // upstream's menu and the record dashboard; the plan of the map, with a
 // live estimate; then map itself (the spend confirmation, the progress
@@ -16,11 +16,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/metergraph/replay/demo"
-	"github.com/metergraph/replay/internal/flow"
-	"github.com/metergraph/replay/internal/judge"
-	"github.com/metergraph/replay/internal/parts"
-	"github.com/metergraph/replay/internal/report"
+	"github.com/metergraph/ezswap/demo"
+	"github.com/metergraph/ezswap/internal/flow"
+	"github.com/metergraph/ezswap/internal/judge"
+	"github.com/metergraph/ezswap/internal/parts"
+	"github.com/metergraph/ezswap/internal/report"
 )
 
 // Models the plan offers, unticked, when the settings file names none.
@@ -64,14 +64,14 @@ func exists(path string) bool {
 func (s *session) guided() (outcome, error) {
 	done := outcome{ExitOK, object{{"command", "guided"}}}
 	o := s.flowOptions()
-	traces := filepath.Join("replay-out", "traces.jsonl")
-	runFile := filepath.Join("replay-out", "run.json")
+	traces := filepath.Join("ezswap-out", "traces.jsonl")
+	runFile := filepath.Join("ezswap-out", "run.json")
 	open := flow.Item{Title: "Open a finished map", Detail: "Explore a run.json that map wrote.", Prompt: "Run file:", Value: runFile}
 	if !exists(filepath.Join(s.io.Cwd, runFile)) {
 		open.Value = ""
 	}
 	start := flow.NewMenu(stepStart, "What would you like to do?", []string{
-		"Replay records the model calls your app makes, replays them on other models and twice on production's own, and maps where answers change beyond that noise.",
+		"ezswap records the model calls your app makes, replays them on other models and twice on production's own, and maps where answers change beyond that noise.",
 	}, []flow.Item{
 		{Title: "Record my app's model calls", Detail: "Run a local proxy your app sends its calls through. Then map them."},
 		{Title: "Map a trace file", Detail: "A file record wrote, or Langfuse, OpenTelemetry or raw provider logs.", Prompt: "Trace file:", Value: traces},
@@ -113,7 +113,7 @@ func (s *session) guided() (outcome, error) {
 // stops it. It returns the trace file, or "" when nothing was recorded.
 func (s *session) guidedRecord(o flow.Options) (string, error) {
 	menu, err := flow.RunMenu(flow.NewMenu(stepRecord, "Where does your app send its model calls?", []string{
-		"Replay forwards each call there unchanged and writes a copy to replay-out/traces.jsonl. Your app's key passes through and is never written. A previous recording is kept beside the new one.",
+		"ezswap forwards each call there unchanged and writes a copy to ezswap-out/traces.jsonl. Your app's key passes through and is never written. A previous recording is kept beside the new one.",
 	}, upstreams), o)
 	if err != nil || menu.Cancel {
 		return "", err
@@ -126,7 +126,7 @@ func (s *session) guidedRecord(o flow.Options) (string, error) {
 	}
 	out, _ := s.v.str("out")
 	if out == "" {
-		out = "replay-out"
+		out = "ezswap-out"
 	}
 	file := filepath.Join(out, "traces.jsonl")
 	if info, err := os.Stat(filepath.Join(s.io.Cwd, file)); err != nil || info.Size() == 0 {

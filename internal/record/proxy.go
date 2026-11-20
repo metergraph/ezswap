@@ -3,7 +3,7 @@
 // file the raw-pair reader (internal/adapters) can read.
 //
 // The recorder never writes or reports a header (other than the two cleaned
-// X-Replay-* values) or a query string: some providers carry the API key
+// X-Ezswap-* values) or a query string: some providers carry the API key
 // there.
 package record
 
@@ -37,8 +37,8 @@ const defaultGrace = 10 * time.Second
 // The headers the app sets to label a call. They are read, cleaned and
 // removed before the request goes upstream.
 const (
-	partHeader  = "X-Replay-Part"
-	traceHeader = "X-Replay-Trace"
+	partHeader  = "X-Ezswap-Part"
+	traceHeader = "X-Ezswap-Trace"
 )
 
 // ErrPortInUse is returned (wrapped) by Run when the port is taken.
@@ -67,7 +67,7 @@ type Options struct {
 type Event struct {
 	// The request path, without its query string.
 	Path string
-	// The cleaned X-Replay-Part value, or "".
+	// The cleaned X-Ezswap-Part value, or "".
 	Part string
 	// "recorded", or the reason the call was not recorded.
 	Outcome string
@@ -402,7 +402,7 @@ func (t *teeBody) Close() error { return t.body.Close() }
 func upstreamFailed(w http.ResponseWriter, _ *http.Request, err error) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusBadGateway)
-	fmt.Fprintf(w, `{"error":{"type":"replay_record_upstream_error","message":"The recorder could not get an answer from the upstream: %s."}}`+"\n", errorKind(err))
+	fmt.Fprintf(w, `{"error":{"type":"ezswap_record_upstream_error","message":"The recorder could not get an answer from the upstream: %s."}}`+"\n", errorKind(err))
 }
 
 // errorKind names a transport failure without any of its detail.

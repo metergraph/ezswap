@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 func str(s string) *string { return &s }

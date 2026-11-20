@@ -11,8 +11,8 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/metergraph/replay/internal/judge"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/judge"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 const gatewayKey = "vck-test-not-a-real-key-5151"

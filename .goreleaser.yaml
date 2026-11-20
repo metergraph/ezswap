@@ -1,7 +1,7 @@
 # Release builds: run by .github/workflows/release.yml on a v* tag.
 version: 2
 
-project_name: metergraph-replay
+project_name: ezswap
 
 before:
   hooks:
@@ -9,9 +9,9 @@ before:
     - go test ./...
 
 builds:
-  - id: metergraph-replay
-    main: ./cmd/metergraph-replay
-    binary: metergraph-replay
+  - id: ezswap
+    main: ./cmd/ezswap
+    binary: ezswap
     env:
       - CGO_ENABLED=0
     goos: [darwin, linux, windows]
@@ -19,7 +19,7 @@ builds:
     flags:
       - -trimpath
     ldflags:
-      - -s -w -X github.com/metergraph/replay/internal/cli.Version={{ .Version }}
+      - -s -w -X github.com/metergraph/ezswap/internal/cli.Version={{ .Version }}
     mod_timestamp: "{{ .CommitTimestamp }}"
 
 archives:
@@ -39,20 +39,20 @@ checksum:
 release:
   github:
     owner: metergraph
-    name: replay
+    name: ezswap
 
 changelog:
   use: github
   sort: asc
 
 homebrew_casks:
-  - name: metergraph-replay
+  - name: ezswap
     repository:
       owner: metergraph
       name: homebrew-tap
       token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
-    homepage: https://github.com/metergraph/replay
-    description: Replay your production LLM calls on other models, read against a noise floor
+    homepage: https://github.com/metergraph/ezswap
+    description: Find which of your LLM calls can move to a cheaper model, read against a noise floor
     license: Apache-2.0
     commit_author:
       name: metergraph-release
@@ -63,5 +63,5 @@ homebrew_casks:
       post:
         install_steps: |
           on_macos do
-            run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{ .StagedPath }}/metergraph-replay"]
+            run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{ .StagedPath }}/ezswap"]
           end

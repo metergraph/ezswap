@@ -7,8 +7,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/metergraph/replay/internal/core"
-	"github.com/metergraph/replay/internal/report/term"
+	"github.com/metergraph/ezswap/internal/core"
+	"github.com/metergraph/ezswap/internal/report/term"
 )
 
 const (

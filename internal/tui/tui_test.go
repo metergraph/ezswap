@@ -9,9 +9,9 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/colorprofile"
 
-	"github.com/metergraph/replay/internal/report/term"
-	"github.com/metergraph/replay/internal/run"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/report/term"
+	"github.com/metergraph/ezswap/internal/run"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 func keyPress(code rune, text string, mod ...tea.KeyMod) tea.KeyPressMsg {

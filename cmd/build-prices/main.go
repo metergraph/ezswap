@@ -31,7 +31,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/metergraph/replay/internal/jsnum"
+	"github.com/metergraph/ezswap/internal/jsnum"
 	"go.yaml.in/yaml/v3"
 )
 

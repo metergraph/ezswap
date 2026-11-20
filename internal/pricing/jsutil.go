@@ -10,7 +10,7 @@ import (
 	"strings"
 	"unicode/utf16"
 
-	"github.com/metergraph/replay/internal/jsnum"
+	"github.com/metergraph/ezswap/internal/jsnum"
 )
 
 // isJSSpace is a WhiteSpace or LineTerminator code point as trim() strips it.

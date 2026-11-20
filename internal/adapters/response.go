@@ -8,8 +8,8 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/metergraph/replay/internal/cases/jsval"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/cases/jsval"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // ParsedResponse is what a response body carries. ToolCalls hold the body's

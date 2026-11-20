@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 type estimateFixture struct {
@@ -158,7 +158,7 @@ func f(v float64) *float64 { return &v }
 func makeCase(edit func(*types.Case)) types.Case {
 	item := types.Case{
 		ID:       "case-1",
-		Source:   "replay-jsonl",
+		Source:   "ezswap-jsonl",
 		Provider: str("openai"),
 		Model:    str("gpt-6-luna"),
 		Messages: []types.Message{{Role: "user", Content: "hello"}},

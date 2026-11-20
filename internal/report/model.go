@@ -14,13 +14,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/metergraph/replay/internal/core"
-	"github.com/metergraph/replay/internal/jsnum"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/core"
+	"github.com/metergraph/ezswap/internal/jsnum"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // NoiseFloorDoc explains the noise floor.
-const NoiseFloorDoc = "https://github.com/metergraph/replay/blob/main/docs/noise-floor.md"
+const NoiseFloorDoc = "https://github.com/metergraph/ezswap/blob/main/docs/noise-floor.md"
 
 // SummaryStats are the built-in statistics the summary shows, in order.
 var SummaryStats = []string{

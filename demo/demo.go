@@ -1,6 +1,6 @@
 // Package demo is the bundled demo: synthetic support-ticket traces and a
 // recorded run over them, made by cmd/build-demo with a deterministic fake
-// provider, so `metergraph-replay demo` needs no keys and no network.
+// provider, so `ezswap demo` needs no keys and no network.
 //
 // Every ticket, name and address is invented; addresses use example.com.
 package demo
@@ -9,7 +9,7 @@ import (
 	_ "embed"
 	"encoding/json"
 
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // RunJSON is demo/run.json as committed.

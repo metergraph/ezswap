@@ -1,4 +1,4 @@
-module github.com/metergraph/replay
+module github.com/metergraph/ezswap
 
 go 1.26.0
 

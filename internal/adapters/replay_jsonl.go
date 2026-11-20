@@ -1,11 +1,11 @@
-// Metergraph Replay JSONL: the documented trace format, one call per line.
+// ezswap JSONL: the documented trace format, one call per line.
 // See docs/trace-format.md.
 
 package adapters
 
 import (
-	"github.com/metergraph/replay/internal/cases/jsval"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/cases/jsval"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 const ReplayTraceSchema = "metergraph.replay-trace/v1"
@@ -104,7 +104,7 @@ func readReplayJSONL(record any, context RecordContext) []types.CapturedCall {
 			ID:       *orDefault(FirstStr(get(record, "id")), ptr(HashID(context.Raw))),
 			TraceID:  FirstStr(get(record, "trace_id"), get(meta, "trace_id")),
 			TS:       IsoTime(nullishOr(get(meta, "ts"), get(record, "ts"))),
-			Source:   "replay-jsonl",
+			Source:   "ezswap-jsonl",
 			Provider: NormalizeProvider(get(record, "provider")),
 			Model:    FirstStr(get(request, "model"), get(raw, "model")),
 			Request:  body,
@@ -119,5 +119,5 @@ func readReplayJSONL(record any, context RecordContext) []types.CapturedCall {
 	}
 }
 
-// ReplayJSONL reads the Metergraph Replay JSONL format.
-var ReplayJSONL Adapter = adapter{name: "replay-jsonl", detect: detectReplayJSONL, read: readReplayJSONL}
+// ReplayJSONL reads the ezswap JSONL format.
+var ReplayJSONL Adapter = adapter{name: "ezswap-jsonl", detect: detectReplayJSONL, read: readReplayJSONL}

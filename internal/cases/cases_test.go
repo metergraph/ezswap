@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/metergraph/replay/internal/cases/jsval"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/cases/jsval"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // j decodes a JSON literal into ordered values, the way a test's object

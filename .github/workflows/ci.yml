@@ -63,7 +63,7 @@ jobs:
         run: go test -race ./...
 
       - name: Build
-        run: go build ./cmd/metergraph-replay
+        run: go build ./cmd/ezswap
 
   release-check:
     name: Release build and npm launcher on ${{ matrix.os }}
@@ -115,17 +115,17 @@ jobs:
       # the launcher.
       - name: Run the launcher
         run: |
-          platform="$(node -p '`metergraph-replay-${process.platform}-${process.arch}`')"
+          platform="$(node -p '`ezswap-${process.platform}-${process.arch}`')"
           smoke="$RUNNER_TEMP/npm-smoke"
           mkdir -p "$smoke/pkgs"
-          npm pack --silent --pack-destination "$smoke/pkgs" "./npm-out/$platform" ./npm-out/metergraph-replay
+          npm pack --silent --pack-destination "$smoke/pkgs" "./npm-out/$platform" ./npm-out/ezswap
           cd "$smoke"
           echo '{"private": true}' > package.json
-          npm install --no-audit --no-fund "./pkgs/$platform-0.0.0-snapshot.tgz" ./pkgs/metergraph-replay-0.0.0-snapshot.tgz
-          version="$(node node_modules/metergraph-replay/bin/metergraph-replay.js --version)"
+          npm install --no-audit --no-fund "./pkgs/$platform-0.0.0-snapshot.tgz" ./pkgs/ezswap-0.0.0-snapshot.tgz
+          version="$(node node_modules/ezswap/bin/ezswap.js --version)"
           echo "launcher ran: $version"
           case "$version" in 0.0.0-SNAPSHOT-*) ;; *) echo "unexpected version"; exit 1 ;; esac
-          npx --no-install metergraph-replay demo --no-color > demo.txt
+          npx --no-install ezswap demo --no-color > demo.txt
           head -n 5 demo.txt
 
   publication:

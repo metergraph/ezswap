@@ -9,10 +9,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/metergraph/replay/internal/report/term"
-	"github.com/metergraph/replay/internal/run"
-	"github.com/metergraph/replay/internal/tui"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/report/term"
+	"github.com/metergraph/ezswap/internal/run"
+	"github.com/metergraph/ezswap/internal/tui"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // reasonOrder is the reasons' declared order, which breaks ties between

@@ -10,10 +10,10 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/metergraph/replay/internal/cases/jsval"
-	"github.com/metergraph/replay/internal/jsnum"
-	"github.com/metergraph/replay/internal/report/term"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/cases/jsval"
+	"github.com/metergraph/ezswap/internal/jsnum"
+	"github.com/metergraph/ezswap/internal/report/term"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // Records reach an adapter as the reader parsed them: objects are

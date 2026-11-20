@@ -13,9 +13,9 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/metergraph/replay/internal/core"
-	"github.com/metergraph/replay/internal/report/term"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/core"
+	"github.com/metergraph/ezswap/internal/report/term"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 const (
@@ -830,7 +830,7 @@ func footer(c ctx, m *Model) []string {
 	}
 	if c.opts.Explore != "" {
 		lead := "Explore every call:"
-		command := "metergraph-replay report " + c.clean(c.opts.Explore)
+		command := "ezswap report " + c.clean(c.opts.Explore)
 		if term.Width(lead)+1+term.Width(command) <= c.w {
 			lines = append(lines, p.Muted(lead)+" "+p.Bold(command))
 		} else {

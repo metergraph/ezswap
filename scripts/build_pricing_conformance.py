@@ -9,7 +9,7 @@ the bundled catalog name the same commit. With --check it changes nothing and
 exits 1 if any expected value differs: use that to confirm the generator
 reproduces the committed fixture before regenerating it.
 
-A query is priced as Replay prices it: a "creator/model" id under its creator,
+A query is priced as ezswap prices it: a "creator/model" id under its creator,
 a bare id under the provider-less aliases. A query that says whether its input
 count includes cache reads is restated in the row's own convention first.
 """
@@ -77,7 +77,7 @@ def _at(value: str) -> datetime:
 def _price(snapshot, core_catalog, query: dict) -> dict:
     model = query["model"].strip().lower()
     at = _at(query["at"])
-    # Replay's order: a gateway id under its creator spelled as written, then
+    # ezswap's order: a gateway id under its creator spelled as written, then
     # under the creator's folded spelling; a bare id under "unknown".
     attempts = [("unknown", False)]
     if "/" in model:

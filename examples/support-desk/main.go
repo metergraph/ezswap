@@ -1,10 +1,10 @@
 // A made-up support desk that calls a model from four places, for trying
-// `metergraph-replay record` and `map` end to end.
+// `ezswap record` and `map` end to end.
 //
-//	metergraph-replay record --upstream http://localhost:11434   # or the default, api.openai.com
+//	ezswap record --upstream http://localhost:11434   # or the default, api.openai.com
 //	go run ./examples/support-desk --base-url http://127.0.0.1:8787/v1 --model qwen2.5:3b
 //
-// Each call names its place in the app with the X-Replay-Part header, which
+// Each call names its place in the app with the X-Ezswap-Part header, which
 // the recorder writes to the trace file and never forwards. Every ticket,
 // order and address is invented.
 package main
@@ -188,8 +188,8 @@ func call(client *http.Client, baseURL, model, key string, p part, i int) (strin
 		return "", err
 	}
 	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("X-Replay-Part", p.name)
-	request.Header.Set("X-Replay-Trace", fmt.Sprintf("%s-%d", p.name, i))
+	request.Header.Set("X-Ezswap-Part", p.name)
+	request.Header.Set("X-Ezswap-Trace", fmt.Sprintf("%s-%d", p.name, i))
 	if key != "" {
 		request.Header.Set("Authorization", "Bearer "+key)
 	}

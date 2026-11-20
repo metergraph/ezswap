@@ -1,5 +1,5 @@
 name: Bug report
-description: Something Replay did that it should not, or did not do that it should.
+description: Something ezswap did that it should not, or did not do that it should.
 labels: [bug]
 body:
   - type: markdown
@@ -7,12 +7,12 @@ body:
       value: |
         Thanks for reporting. Issues are public: do not paste API keys, real prompts or replies, customer data or private trace files. A small synthetic trace that shows the problem is the most useful thing you can attach.
 
-        Report security problems privately instead: https://github.com/metergraph/replay/security/advisories/new
+        Report security problems privately instead: https://github.com/metergraph/ezswap/security/advisories/new
   - type: input
     id: version
     attributes:
       label: Version
-      description: The output of `metergraph-replay --version`.
+      description: The output of `ezswap --version`.
       placeholder: "0.1.0"
     validations:
       required: true
@@ -21,7 +21,7 @@ body:
     attributes:
       label: Command
       description: The command you ran, with keys and private paths removed.
-      placeholder: metergraph-replay map traces.jsonl --models openai/gpt-5-mini
+      placeholder: ezswap map traces.jsonl --models openai/gpt-5-mini
     validations:
       required: true
   - type: textarea
@@ -43,8 +43,8 @@ body:
     attributes:
       label: Trace format
       options:
-        - Recorded with metergraph-replay record
-        - Replay JSONL
+        - Recorded with ezswap record
+        - ezswap JSONL
         - Raw provider logs (OpenAI, Helicone, LiteLLM)
         - Langfuse export
         - OpenTelemetry GenAI spans
@@ -53,5 +53,5 @@ body:
     id: platform
     attributes:
       label: Platform
-      description: Operating system and how you installed Replay (Homebrew, npm, go install, release archive).
+      description: Operating system and how you installed ezswap (Homebrew, npm, go install, release archive).
       placeholder: macOS 26, Homebrew

@@ -1,6 +1,6 @@
 // Build the bundled demo: synthetic support-ticket traces (demo/traces.jsonl)
 // and a recorded run over them (demo/run.json), made with a deterministic
-// fake provider so `metergraph-replay demo` needs no keys and no network.
+// fake provider so `ezswap demo` needs no keys and no network.
 //
 //	go run ./cmd/build-demo
 //
@@ -24,12 +24,12 @@ import (
 	"time"
 	"unicode/utf16"
 
-	"github.com/metergraph/replay/internal/adapters"
-	"github.com/metergraph/replay/internal/cases/jsval"
-	"github.com/metergraph/replay/internal/jsnum"
-	"github.com/metergraph/replay/internal/pricing"
-	"github.com/metergraph/replay/internal/run"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/adapters"
+	"github.com/metergraph/ezswap/internal/cases/jsval"
+	"github.com/metergraph/ezswap/internal/jsnum"
+	"github.com/metergraph/ezswap/internal/pricing"
+	"github.com/metergraph/ezswap/internal/run"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 var now = time.Date(2026, 10, 28, 16, 0, 0, 0, time.UTC)

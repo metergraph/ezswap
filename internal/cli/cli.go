@@ -13,7 +13,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/metergraph/replay/internal/mapview"
+	"github.com/metergraph/ezswap/internal/mapview"
 	"io"
 	"io/fs"
 	"net/http"
@@ -29,16 +29,16 @@ import (
 	"github.com/charmbracelet/colorprofile"
 	xterm "github.com/charmbracelet/x/term"
 
-	"github.com/metergraph/replay/internal/pricing"
-	"github.com/metergraph/replay/internal/providers"
-	"github.com/metergraph/replay/internal/report/term"
-	"github.com/metergraph/replay/internal/run"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/pricing"
+	"github.com/metergraph/ezswap/internal/providers"
+	"github.com/metergraph/ezswap/internal/report/term"
+	"github.com/metergraph/ezswap/internal/run"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // Version is the tool's version: printed by --version and recorded in every
 // run file. GoReleaser sets it with
-// -X github.com/metergraph/replay/internal/cli.Version=...; a
+// -X github.com/metergraph/ezswap/internal/cli.Version=...; a
 // `go install ...@vX.Y.Z` build takes it from the module version instead.
 var Version = "dev"
 
@@ -136,14 +136,14 @@ func DefaultIO() IO {
 		StdinTTY:  xterm.IsTerminal(os.Stdin.Fd()),
 		Env:       env,
 	}
-	if v := env["METERGRAPH_REPLAY_NO_PRICE_LOOKUP"]; v == "" || v == "0" {
+	if v := env["EZSWAP_NO_PRICE_LOOKUP"]; v == "" || v == "0" {
 		o.PricingURL = pricing.DefaultPricingURL
 		if url := env["METERGRAPH_PRICING_URL"]; url != "" {
 			o.PricingURL = url
 		}
 	}
 	if dir, err := os.UserCacheDir(); err == nil {
-		o.CacheDir = filepath.Join(dir, "metergraph-replay")
+		o.CacheDir = filepath.Join(dir, "ezswap")
 	}
 	if o.StdoutTTY {
 		if w, h, err := xterm.GetSize(os.Stdout.Fd()); err == nil {
@@ -378,7 +378,7 @@ func Main(args []string, o IO) int {
 			}
 			return s.judgeCommand(file)
 		}
-		return outcome{}, usagef(`Unknown command "` + command + `". Run metergraph-replay --help.`)
+		return outcome{}, usagef(`Unknown command "` + command + `". Run ezswap --help.`)
 	}()
 	if err == nil {
 		return emit(result.exitCode, result.json)
@@ -407,9 +407,9 @@ func Main(args []string, o IO) int {
 		message = err.Error()
 	}
 	if !s.asJSON {
-		text := "metergraph-replay: " + message + "\n"
+		text := "ezswap: " + message + "\n"
 		if exitCode == ExitUsage {
-			text += "Run metergraph-replay --help for usage.\n"
+			text += "Run ezswap --help for usage.\n"
 		}
 		io.WriteString(o.Stderr, text)
 	}

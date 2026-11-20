@@ -3,9 +3,9 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/metergraph/replay/demo"
-	"github.com/metergraph/replay/internal/mapview"
-	"github.com/metergraph/replay/internal/report"
+	"github.com/metergraph/ezswap/demo"
+	"github.com/metergraph/ezswap/internal/mapview"
+	"github.com/metergraph/ezswap/internal/report"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 type partSpec struct {
@@ -80,7 +80,7 @@ func twoParts(t *testing.T) string {
 
 func namesOf(t *testing.T, traces string) map[string]string {
 	t.Helper()
-	text, err := os.ReadFile(filepath.Join(filepath.Dir(traces), "replay-parts.json"))
+	text, err := os.ReadFile(filepath.Join(filepath.Dir(traces), "ezswap-parts.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -104,12 +104,12 @@ func TestEstimateMapListsPartsWritesNamesAndCallsNothing(t *testing.T) {
 	match(t, `route +name +11 +2 fields +\$`, result.stdout)
 	match(t, `69 calls in all`, result.stdout)
 	match(t, `Budget \$5\.00\.`, result.stdout)
-	match(t, `Names file: \S*replay-parts\.json \(updated\)`, result.stdout)
+	match(t, `Names file: \S*ezswap-parts\.json \(updated\)`, result.stdout)
 	if names := namesOf(t, file); names["name:classify"] != "classify" || names["name:route"] != "route" {
 		t.Fatalf("names file %v", names)
 	}
 	again := cli(t, args("estimate", file, "--map", models), nil, nil)
-	match(t, `replay-parts\.json \(unchanged\)`, again.stdout)
+	match(t, `ezswap-parts\.json \(unchanged\)`, again.stdout)
 }
 
 func TestEstimateMapJSON(t *testing.T) {
@@ -129,7 +129,7 @@ func TestEstimateMapJSON(t *testing.T) {
 
 func TestNamesFileRenamesAndMerges(t *testing.T) {
 	file := twoParts(t)
-	names := filepath.Join(filepath.Dir(file), "replay-parts.json")
+	names := filepath.Join(filepath.Dir(file), "ezswap-parts.json")
 	os.WriteFile(names, []byte(`{"schema":"metergraph.replay-parts/v1","parts":{"name:classify":"triage","name:route":"triage","name:gone":"x"}}`), 0o644)
 	result := cli(t, args("estimate", file, "--map", models), nil, nil)
 	match(t, `1 part \|`, result.stdout)
@@ -145,12 +145,12 @@ func TestNamesFileRenamesAndMerges(t *testing.T) {
 
 func TestNamesFileInvalidIsUsageError(t *testing.T) {
 	file := twoParts(t)
-	os.WriteFile(filepath.Join(filepath.Dir(file), "replay-parts.json"), []byte("{"), 0o644)
+	os.WriteFile(filepath.Join(filepath.Dir(file), "ezswap-parts.json"), []byte("{"), 0o644)
 	result := cli(t, args("estimate", file, "--map", models), nil, nil)
 	if result.code != ExitUsage {
 		t.Fatalf("%d", result.code)
 	}
-	match(t, `replay-parts\.json is not valid JSON`, result.stderr)
+	match(t, `ezswap-parts\.json is not valid JSON`, result.stderr)
 }
 
 func TestUnwritableDirectoryStillRuns(t *testing.T) {
@@ -270,13 +270,13 @@ func TestMapReplaysWritesAndPrintsTheMap(t *testing.T) {
 	match(t, `PART +LABEL +CHANGED +RERUN +COST/CALL +LATENCY`, result.stdout)
 	match(t, `classify +within noise +0 of 12 +0 of 12`, result.stdout)
 	match(t, `route +within noise +0 of 11 +0 of 11`, result.stdout)
-	match(t, `Print it again: metergraph-replay report \S*run\.json`, result.stdout)
+	match(t, `Print it again: ezswap report \S*run\.json`, result.stdout)
 	if names := namesOf(t, file); len(names) != 2 {
 		t.Fatalf("map writes the names file: %v", names)
 	}
 
 	// report prints the same map from run.json, without the names file.
-	os.Remove(filepath.Join(filepath.Dir(file), "replay-parts.json"))
+	os.Remove(filepath.Join(filepath.Dir(file), "ezswap-parts.json"))
 	again := cli(t, args("report", runPath), nil, nil)
 	if again.code != ExitOK || again.fetches != 0 {
 		t.Fatalf("%d %s", again.code, again.stderr)
@@ -348,8 +348,8 @@ func TestDemoMapMakesNoNetworkCallAndWritesNothing(t *testing.T) {
 		t.Fatalf("demo --map wrote %v", entries)
 	}
 	wd, _ := os.Getwd()
-	if _, err := os.Stat(filepath.Join(wd, "replay-out")); err == nil {
-		t.Fatal("demo --map wrote replay-out")
+	if _, err := os.Stat(filepath.Join(wd, "ezswap-out")); err == nil {
+		t.Fatal("demo --map wrote ezswap-out")
 	}
 	if strings.Contains(result.stdout, "—") {
 		t.Fatal("an em dash in the output")
@@ -372,7 +372,7 @@ func TestPartKeyReadsTheDevelopersField(t *testing.T) {
 
 func TestHelpNamesTheNewCommands(t *testing.T) {
 	result := cli(t, args("--help"), nil, nil)
-	for _, word := range []string{"map <traces>", "record [", "--per-part", "--only", "--name", "--part-key", "--ignore", "--upstream", "--port", "demo --map", "replay-parts.json"} {
+	for _, word := range []string{"map <traces>", "record [", "--per-part", "--only", "--name", "--part-key", "--ignore", "--upstream", "--port", "demo --map", "ezswap-parts.json"} {
 		if !strings.Contains(result.stdout, word) {
 			t.Errorf("help does not mention %q", word)
 		}

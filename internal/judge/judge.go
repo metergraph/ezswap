@@ -243,7 +243,7 @@ func askOnce(ctx context.Context, client *http.Client, base, key string, body []
 		return 0, 0, false, errors.New("the judge's address is not a URL")
 	}
 	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("User-Agent", "metergraph-replay")
+	request.Header.Set("User-Agent", "ezswap")
 	if key != "" {
 		request.Header.Set("Authorization", "Bearer "+key)
 	}

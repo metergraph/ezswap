@@ -16,10 +16,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/metergraph/replay/internal/adapters"
-	"github.com/metergraph/replay/internal/cases"
-	"github.com/metergraph/replay/internal/record"
-	"github.com/metergraph/replay/internal/tui"
+	"github.com/metergraph/ezswap/internal/adapters"
+	"github.com/metergraph/ezswap/internal/cases"
+	"github.com/metergraph/ezswap/internal/record"
+	"github.com/metergraph/ezswap/internal/tui"
 )
 
 const (
@@ -57,7 +57,7 @@ func (s *session) record() (outcome, error) {
 	}
 	out, given := s.v.str("out")
 	if !given {
-		out = "replay-out"
+		out = "ezswap-out"
 	}
 	out, err = filepath.Abs(out)
 	if err != nil {
@@ -109,7 +109,7 @@ func (s *session) record() (outcome, error) {
 		tell("Point your app's model base URL here:")
 		tell("  http://" + address + "/v1   (OpenAI SDKs)")
 		tell("  http://" + address + "      (Anthropic and Google SDKs)")
-		tell("Name the place a call comes from with the header X-Replay-Part.")
+		tell("Name the place a call comes from with the header X-Ezswap-Part.")
 		if insideGit(out) {
 			tell("Note: the trace file holds prompts and responses, and " + s.shownPath(out) + " is inside a Git repository. Keep it out of commits.")
 		}
@@ -197,7 +197,7 @@ func (s *session) record() (outcome, error) {
 	if summary.Recorded > 0 {
 		s.say(fmt.Sprintf("The file now holds %s a replay can reproduce.", plural(replayable, "case")))
 		s.say("Next:")
-		s.say("  metergraph-replay estimate " + shown + " --map --models <list>")
+		s.say("  ezswap estimate " + shown + " --map --models <list>")
 	}
 	return outcome{ExitOK, object{
 		{"command", "record"},

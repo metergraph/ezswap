@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/metergraph/replay/internal/adapters"
-	"github.com/metergraph/replay/internal/cases"
+	"github.com/metergraph/ezswap/internal/adapters"
+	"github.com/metergraph/ezswap/internal/cases"
 )
 
 // streamCase is one provider's streaming call.
@@ -45,7 +45,7 @@ func recordStream(t *testing.T, c streamCase, fixtureName string) *recorder {
 	if c == geminiSSE {
 		query = "?alt=sse"
 	}
-	response, body := post(t, rec.url(c.path+query), c.request, map[string]string{"X-Replay-Part": "streamed"})
+	response, body := post(t, rec.url(c.path+query), c.request, map[string]string{"X-Ezswap-Part": "streamed"})
 	if response.StatusCode != http.StatusOK || string(body) != string(stream) {
 		t.Errorf("the app did not get the stream as sent: %d, %d bytes of %d", response.StatusCode, len(body), len(stream))
 	}
@@ -276,7 +276,7 @@ func TestStreamSurvivesAnswerBeforeRequestIsRead(t *testing.T) {
 	// A request large enough that it is still being sent when the answer starts.
 	padding := strings.Repeat("x", 4<<20)
 	request := `{"model":"gpt-4o-mini","stream":true,"messages":[{"role":"user","content":"` + padding + `"}]}`
-	response, body := post(t, rec.url(chatPath), request, map[string]string{"X-Replay-Part": "streamed"})
+	response, body := post(t, rec.url(chatPath), request, map[string]string{"X-Ezswap-Part": "streamed"})
 	if response.StatusCode != http.StatusOK || string(body) != string(stream) {
 		t.Fatalf("the app got %d and %d bytes of %d", response.StatusCode, len(body), len(stream))
 	}

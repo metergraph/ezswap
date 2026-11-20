@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/metergraph/replay/internal/report/term"
+	"github.com/metergraph/ezswap/internal/report/term"
 )
 
 func samplePlan() Plan {
@@ -12,7 +12,7 @@ func samplePlan() Plan {
 		{Name: "route-ticket", Source: "name", Cases: 48, Compared: "2 fields"},
 		{Name: "draft-reply", Source: "name", Cases: 48, Compared: "free text", FreeText: true},
 	}
-	p := NewPlan("replay-out/traces.jsonl", "step 3 of 4", parts, Choice{Models: []string{"anthropic/claude-haiku-5.5", "openai/gpt-5.4-nano"}, Endpoint: "vercel", PerPart: 40})
+	p := NewPlan("ezswap-out/traces.jsonl", "step 3 of 4", parts, Choice{Models: []string{"anthropic/claude-haiku-5.5", "openai/gpt-5.4-nano"}, Endpoint: "vercel", PerPart: 40})
 	p.Width = 90
 	p.Preview = Preview{Calls: 400, ExpectedUSD: 0.44, UpperUSD: 0.92, BudgetUSD: 5}
 	return p
@@ -131,7 +131,7 @@ func TestMenu(t *testing.T) {
 	m := NewMenu("step 1 of 4", "Start", []string{"What would you like to do?"}, []Item{
 		{Title: "Open a finished map", Disabled: "(no run.json here)"},
 		{Title: "Record my app", Detail: "Start a local proxy."},
-		{Title: "Map a trace file", Prompt: "Trace file:", Value: "replay-out/traces.jsonl"},
+		{Title: "Map a trace file", Prompt: "Trace file:", Value: "ezswap-out/traces.jsonl"},
 	})
 	m.Width = 90
 	if m.Cursor != 1 {
@@ -142,14 +142,14 @@ func TestMenu(t *testing.T) {
 	}
 	m = ReduceMenu(m, "down")
 	m = ReduceMenu(m, "enter")
-	if !m.Editing || m.Value != "replay-out/traces.jsonl" || m.Chosen != -1 {
+	if !m.Editing || m.Value != "ezswap-out/traces.jsonl" || m.Chosen != -1 {
 		t.Fatalf("%+v", m)
 	}
 	for _, k := range []string{"backspace", "backspace", "backspace", "backspace", "backspace", "x", "t"} {
 		m = ReduceMenu(m, k)
 	}
 	m = ReduceMenu(m, "enter")
-	if m.Chosen != 2 || m.Value != "replay-out/traces.xt" {
+	if m.Chosen != 2 || m.Value != "ezswap-out/traces.xt" {
 		t.Fatalf("chosen %d value %q", m.Chosen, m.Value)
 	}
 	n := NewMenu("", "Start", nil, m.Items)

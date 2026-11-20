@@ -7,10 +7,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/metergraph/replay/demo"
-	"github.com/metergraph/replay/internal/parts"
-	"github.com/metergraph/replay/internal/report/term"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/demo"
+	"github.com/metergraph/ezswap/internal/parts"
+	"github.com/metergraph/ezswap/internal/report/term"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 func demoMap(t *testing.T, options MapOptions) *Map {

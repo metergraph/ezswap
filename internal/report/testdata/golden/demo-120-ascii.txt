@@ -25,4 +25,4 @@ WHAT CHANGED
 2 calls not replayable, most often: content cut short (1).
 
 itself: gpt-4.1-mini replayed again, the noise floor. Notes: run with --explain.
-Explore every call: metergraph-replay report replay-out/run.json
+Explore every call: ezswap report ezswap-out/run.json

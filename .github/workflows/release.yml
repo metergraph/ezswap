@@ -5,7 +5,7 @@ name: Release
 # built from the same binaries and published.
 #
 # Secrets: HOMEBREW_TAP_TOKEN (contents: write on metergraph/homebrew-tap)
-# and NPM_TOKEN (publish rights on metergraph-replay and its platform
+# and NPM_TOKEN (publish rights on ezswap and its platform
 # packages).
 
 on:
@@ -58,7 +58,7 @@ jobs:
           tag=latest
           case "$version" in *-*) tag=next ;; esac
           node scripts/npm-packages.mjs "$version" dist npm-out
-          for dir in npm-out/metergraph-replay-*; do
+          for dir in npm-out/ezswap-*; do
             npm publish --access public --provenance --tag "$tag" "$dir"
           done
-          npm publish --access public --provenance --tag "$tag" npm-out/metergraph-replay
+          npm publish --access public --provenance --tag "$tag" npm-out/ezswap

@@ -11,7 +11,7 @@ The first public release.
 
 ### The guided workflow
 
-- `metergraph-replay` with no command, on an interactive terminal, walks
+- `ezswap` with no command, on an interactive terminal, walks
   through recording, planning (parts, models, cases per part and the judge,
   with a live estimate) and mapping, and ends in the map explorer.
 - The map explorer: a grid of every model on every part, each cell's
@@ -37,7 +37,7 @@ The first public release.
 
 ### Settings
 
-- `estimate`, `map` and `run` read `replay.yaml` from the working
+- `estimate`, `map` and `run` read `ezswap.yaml` from the working
   directory: the option names as keys, with flags winning. `--config FILE`
   and `--no-config` choose another file or none.
 
@@ -47,7 +47,7 @@ The first public release.
   calls to one provider and writes each call to `traces.jsonl`. Keys pass
   through and are never written. `--fresh` starts an empty file and keeps
   the previous one beside it.
-- Reads Replay JSONL, raw provider request and response logs (including
+- Reads ezswap JSONL, raw provider request and response logs (including
   Helicone and LiteLLM), Langfuse observation exports and OpenTelemetry
   GenAI spans.
 

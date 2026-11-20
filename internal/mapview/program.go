@@ -16,8 +16,8 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/colorprofile"
 
-	"github.com/metergraph/replay/internal/explore"
-	"github.com/metergraph/replay/internal/report/term"
+	"github.com/metergraph/ezswap/internal/explore"
+	"github.com/metergraph/ezswap/internal/report/term"
 )
 
 // Reasons the explorer ended, as the run explorer names them.

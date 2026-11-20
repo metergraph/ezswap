@@ -1,6 +1,6 @@
 # Trace formats
 
-`metergraph-replay` reads a trace file of production LLM calls. It accepts its
+`ezswap` reads a trace file of production LLM calls. It accepts its
 own format, described first, and three others it maps onto it: raw provider
 request and response pairs (including Helicone exports and LiteLLM callback
 logs), Langfuse observation exports, and OpenTelemetry GenAI spans.
@@ -10,12 +10,12 @@ document (an OTLP export, say). The format is detected from the first record;
 pass it explicitly when detection guesses wrong. Blank lines are ignored and a
 line that is not JSON is skipped and reported with its line number.
 
-Replay never replays a guess. A call that cannot be reproduced faithfully is
+ezswap never replays a guess. A call that cannot be reproduced faithfully is
 kept in the report with the reason it was not replayed (see
 [Not replayable](#not-replayable)), and a call whose source did not carry
 everything (tool definitions, say) is graded `partial`.
 
-## Replay JSONL (`replay-jsonl`)
+## ezswap JSONL (`ezswap-jsonl`)
 
 One call per line. Use it when your traces live somewhere the other adapters
 do not read: write a small export script that emits this shape.
@@ -126,7 +126,7 @@ Optional beside them: `id`, `trace_id`, `part`, `ts`, `provider`, `model`,
 shape when not given. `part` names the place in your app that made the call
 (see [Parts](#parts)).
 
-`metergraph-replay record` writes this format, one line for each call it
+`ezswap record` writes this format, one line for each call it
 captures. See [Recording](record.md).
 
 Two logging tools reduce to this shape and are read directly:
@@ -198,13 +198,13 @@ that made the call. An ordinary `run` does not use parts.
 
 A part name comes from one of these, and from nowhere else:
 
-- A top-level `part` string in a Replay JSONL record or a raw-pair record.
-  `record` writes it from the `X-Replay-Part` header.
+- A top-level `part` string in a ezswap JSONL record or a raw-pair record.
+  `record` writes it from the `X-Ezswap-Part` header.
 - The key you name with `--part-key KEY`:
 
   | Format | Where `KEY` is read |
   |---|---|
-  | Replay JSONL | Top-level `KEY`, then `KEY` in `meta`. Without either, `part`. |
+  | ezswap JSONL | Top-level `KEY`, then `KEY` in `meta`. Without either, `part`. |
   | Raw pairs | Top-level `KEY`. Without it, `part`. |
   | Helicone | `KEY` in `request_properties`, then in `properties`. |
   | LiteLLM | `KEY` in `metadata`. |

@@ -9,9 +9,9 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/colorprofile"
 
-	"github.com/metergraph/replay/demo"
-	"github.com/metergraph/replay/internal/report/term"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/demo"
+	"github.com/metergraph/ezswap/internal/report/term"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 func demoRun(t *testing.T) *types.RunFile {
@@ -25,7 +25,7 @@ func demoRun(t *testing.T) *types.RunFile {
 
 func demoData(t *testing.T) *Data {
 	t.Helper()
-	d, err := NewData(demoRun(t), Options{Name: "replay-out/run.json"})
+	d, err := NewData(demoRun(t), Options{Name: "ezswap-out/run.json"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -300,14 +300,14 @@ func TestEveryTabAndTheDetailRender(t *testing.T) {
 			for tab := range Tabs {
 				lines := frame(t, NewState(d, columns, rows, tab), columns, rows, plain, false)
 				text := strings.Join(lines, "\n")
-				if !strings.Contains(lines[0], "replay") {
+				if !strings.Contains(lines[0], "ezswap") {
 					t.Fatalf("tab bar: %q", lines[0])
 				}
 				if !expect[tab].MatchString(text) {
 					t.Fatalf("%s:\n%s", Tabs[tab], text)
 				}
 				last := lines[len(lines)-1]
-				if !strings.Contains(last, "replay-out/run.json") || !strings.Contains(last, Tabs[tab]) {
+				if !strings.Contains(last, "ezswap-out/run.json") || !strings.Contains(last, Tabs[tab]) {
 					t.Fatalf("status bar: %q", last)
 				}
 				if strings.Contains(text, "\x1b") {

@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/metergraph/replay/internal/report/term"
+	"github.com/metergraph/ezswap/internal/report/term"
 )
 
 // Endpoints the plan can send to, in the order the plan cycles through.
@@ -383,7 +383,7 @@ func header(step, name string, paint term.Paint, width int, ascii bool) []string
 	if ascii {
 		logo = "::"
 	}
-	title := paint.Brand(logo) + " " + paint.Bold("replay")
+	title := paint.Brand(logo) + " " + paint.Bold("ezswap")
 	if step != "" {
 		title += "  " + paint.Muted(step)
 	}

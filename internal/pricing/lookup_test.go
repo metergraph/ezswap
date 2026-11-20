@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // A synthetic answer in the API's published shape.

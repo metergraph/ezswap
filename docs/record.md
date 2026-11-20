@@ -1,17 +1,17 @@
 # Recording
 
-`metergraph-replay record` captures your app's model calls into a trace file
+`ezswap record` captures your app's model calls into a trace file
 that `map`, `run` and `estimate` can read. Use it when you have no trace
 export yet.
 
 ```sh
-metergraph-replay record
+ezswap record
 ```
 
 `record` starts a local reverse proxy. You point your app's model base URL
 at it. The proxy forwards each call to the provider, hands the answer back
 unchanged, and appends one line for each captured call to
-`./replay-out/traces.jsonl`.
+`./ezswap-out/traces.jsonl`.
 
 ## Options
 
@@ -19,7 +19,7 @@ unchanged, and appends one line for each captured call to
 |---|---|---|
 | `--upstream URL` | `https://api.openai.com` | The one provider calls are forwarded to. It must be `https`, or `http` to this machine (`localhost`, `127.0.0.1`, `::1`). It may not carry a user name, a query string or a fragment. |
 | `--port N` | 8787 | The port on `127.0.0.1`. `0` picks a free port, which `record` prints. |
-| `--out DIR` | `./replay-out` | The trace file is `DIR/traces.jsonl`. |
+| `--out DIR` | `./ezswap-out` | The trace file is `DIR/traces.jsonl`. |
 
 `record` takes no trace file and none of the replay options (`--models`,
 `--budget` and so on). It replays nothing.
@@ -27,9 +27,9 @@ unchanged, and appends one line for each captured call to
 For another provider, name its base URL:
 
 ```sh
-metergraph-replay record --upstream https://api.anthropic.com
-metergraph-replay record --upstream https://generativelanguage.googleapis.com
-metergraph-replay record --upstream http://localhost:11434    # a local server
+ezswap record --upstream https://api.anthropic.com
+ezswap record --upstream https://generativelanguage.googleapis.com
+ezswap record --upstream http://localhost:11434    # a local server
 ```
 
 ## Point your app at the recorder
@@ -47,8 +47,8 @@ before forwarding.
 
 | Header | Written as | Use |
 |---|---|---|
-| `X-Replay-Part` | `part` | Names the place in your app the call comes from. This is what [the map](sensitivity-map.md) groups by. |
-| `X-Replay-Trace` | `trace_id` | Groups the calls of one request or session. `map` and `run` sample one case per trace. |
+| `X-Ezswap-Part` | `part` | Names the place in your app the call comes from. This is what [the map](sensitivity-map.md) groups by. |
+| `X-Ezswap-Trace` | `trace_id` | Groups the calls of one request or session. `map` and `run` sample one case per trace. |
 
 Both values are cleaned before they are written: control characters are
 made harmless, spaces at either end are trimmed, and anything past 64
@@ -63,7 +63,7 @@ from openai import OpenAI
 
 client = OpenAI(
     base_url="http://127.0.0.1:8787/v1",
-    default_headers={"X-Replay-Part": "classify-ticket"},
+    default_headers={"X-Ezswap-Part": "classify-ticket"},
 )
 ```
 
@@ -74,7 +74,7 @@ import OpenAI from "openai";
 
 const client = new OpenAI({
   baseURL: "http://127.0.0.1:8787/v1",
-  defaultHeaders: { "X-Replay-Part": "classify-ticket" },
+  defaultHeaders: { "X-Ezswap-Part": "classify-ticket" },
 });
 ```
 
@@ -89,7 +89,7 @@ from anthropic import Anthropic
 
 client = Anthropic(
     base_url="http://127.0.0.1:8787",
-    default_headers={"X-Replay-Part": "classify-ticket"},
+    default_headers={"X-Ezswap-Part": "classify-ticket"},
 )
 ```
 
@@ -100,7 +100,7 @@ import Anthropic from "@anthropic-ai/sdk";
 
 const client = new Anthropic({
   baseURL: "http://127.0.0.1:8787",
-  defaultHeaders: { "X-Replay-Part": "classify-ticket" },
+  defaultHeaders: { "X-Ezswap-Part": "classify-ticket" },
 });
 ```
 
@@ -115,10 +115,10 @@ The SDK's own documentation names the settings for your version.
 
 `default_headers` labels every call a client makes. An app with several
 parts needs one client for each part, or the SDK's per-request header
-option. Send `X-Replay-Trace` per request, because its value changes with
+option. Send `X-Ezswap-Trace` per request, because its value changes with
 every request.
 
-A call with no `X-Replay-Part` is still recorded. The map then groups it by
+A call with no `X-Ezswap-Part` is still recorded. The map then groups it by
 a fingerprint of its system prompt, forced tool and response schema.
 
 ## What is recorded
@@ -198,7 +198,7 @@ this way is not recorded. Then it prints:
 - how many calls it recorded, and how many for each part,
 - the calls it forwarded and did not record, by reason,
 - how many cases in the file a replay can reproduce,
-- the next command: `metergraph-replay estimate <file> --map --models <list>`.
+- the next command: `ezswap estimate <file> --map --models <list>`.
 
 The file is appended to, never truncated. Run `record` again with the same
 `--out` to add calls. Lines are written whole, in the order calls finish.
@@ -215,7 +215,7 @@ it prints one object when it stops: `file`, `recorded`, `byPart`, `skipped`,
   `127.0.0.1:<port>` or `localhost:<port>` as its host and carry no `Origin`
   header. Anything else gets a 403. This stops a web page from reaching the
   port.
-- **No header is written or shown**, except the two cleaned `X-Replay-*`
+- **No header is written or shown**, except the two cleaned `X-Ezswap-*`
   values. Your API key is in a header. It goes to the provider and nowhere
   else.
 - **No query string is written or shown.** Some providers carry the key
@@ -227,7 +227,7 @@ it prints one object when it stops: `file`, `recorded`, `byPart`, `skipped`,
   with `0700`, so only your user can read them. An existing file keeps the
   mode it has.
 
-Every header other than the two `X-Replay-*` ones goes to the provider as
+Every header other than the two `X-Ezswap-*` ones goes to the provider as
 the app sent it, with one exception: the recorder sets `Accept-Encoding` to
 `identity` so it can read the answer. If the standard proxy environment
 variables (`HTTPS_PROXY` and friends) are set, forwarded calls go through
@@ -264,7 +264,7 @@ both headers. `draft-reply` streams. Every ticket, order and address in it
 is invented.
 
 ```sh
-metergraph-replay record
+ezswap record
 # in another terminal, from a clone of this repository:
 go run ./examples/support-desk --base-url http://127.0.0.1:8787/v1 --model gpt-4.1-mini
 ```
@@ -273,5 +273,5 @@ It reads `OPENAI_API_KEY` from the environment and makes 12 calls from each
 part (`--calls` changes that). Then stop the recorder and list the parts:
 
 ```sh
-metergraph-replay estimate replay-out/traces.jsonl --map --models openai/gpt-5-mini
+ezswap estimate ezswap-out/traces.jsonl --map --models openai/gpt-5-mini
 ```

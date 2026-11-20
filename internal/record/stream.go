@@ -11,7 +11,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/metergraph/replay/internal/cases/jsval"
+	"github.com/metergraph/ezswap/internal/cases/jsval"
 )
 
 // assembler rebuilds one provider's response body from its stream.

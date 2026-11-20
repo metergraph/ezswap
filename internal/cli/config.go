@@ -1,6 +1,6 @@
 package cli
 
-// The settings file: replay.yaml in the working directory, or --config FILE.
+// The settings file: ezswap.yaml in the working directory, or --config FILE.
 // Its keys are the command line's option names; a flag on the command line
 // always wins. estimate, map and run read it, each taking the keys it
 // accepts, so one file serves all three.
@@ -20,7 +20,7 @@ import (
 )
 
 // ConfigFile is the settings file read from the working directory.
-const ConfigFile = "replay.yaml"
+const ConfigFile = "ezswap.yaml"
 
 const maxConfigBytes = 64 << 10
 

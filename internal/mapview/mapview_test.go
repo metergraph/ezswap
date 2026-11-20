@@ -5,10 +5,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/metergraph/replay/demo"
-	"github.com/metergraph/replay/internal/report"
-	"github.com/metergraph/replay/internal/report/term"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/demo"
+	"github.com/metergraph/ezswap/internal/report"
+	"github.com/metergraph/ezswap/internal/report/term"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 func demoData(t *testing.T) *Data {
@@ -53,7 +53,7 @@ func TestGridOpensOnTheFirstBeyondNoiseCell(t *testing.T) {
 		t.Fatalf("selected %s %s", s.Data.Parts[s.Col].Name, s.Cell().Result)
 	}
 	text := frame(s)
-	for _, want := range []string{"replay map", "Each model on each part", "extract-order", "beyond 9/20", "A openai/gpt-5.4-nano on extract-order: beyond noise, 9 of 20 changed against 1"} {
+	for _, want := range []string{"ezswap map", "Each model on each part", "extract-order", "beyond 9/20", "A openai/gpt-5.4-nano on extract-order: beyond noise, 9 of 20 changed against 1"} {
 		if !strings.Contains(text, want) {
 			t.Errorf("grid lacks %q:\n%s", want, text)
 		}

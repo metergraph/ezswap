@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/metergraph/replay/internal/jsnum"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/jsnum"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 func withoutFloor(run *types.RunFile) *types.RunFile {

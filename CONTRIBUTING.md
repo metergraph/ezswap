@@ -9,8 +9,8 @@ Requires Go (the version in `go.mod`).
 ```sh
 go vet ./...
 go test ./...                           # add -race as CI does
-go run ./cmd/metergraph-replay demo     # run the tool from source
-go build ./cmd/metergraph-replay        # or build the binary
+go run ./cmd/ezswap demo     # run the tool from source
+go build ./cmd/ezswap        # or build the binary
 ```
 
 - `go test ./internal/report -update` rewrites the report's golden files in
@@ -19,12 +19,12 @@ go build ./cmd/metergraph-replay        # or build the binary
   `demo/traces.jsonl` and `demo/run.json` for `demo`, and
   `demo/map-traces.jsonl` and `demo/map-run.json` for `demo --map`. Run it
   after a change to the map's rules, so the bundled map still matches them.
-- `estimate --map` and `map` write `replay-parts.json` beside the trace
+- `estimate --map` and `map` write `ezswap-parts.json` beside the trace
   file. To try them on the demo traces, copy `demo/map-traces.jsonl` to a
-  temporary directory first, and do not commit a `replay-parts.json`.
+  temporary directory first, and do not commit a `ezswap-parts.json`.
 - `go run ./examples/support-desk --base-url http://127.0.0.1:8787/v1 --model MODEL`
   is a sample app for trying `record` and `map` end to end. Start
-  `metergraph-replay record` first.
+  `ezswap record` first.
 - `go run ./cmd/build-prices <clone of metergraph>` regenerates
   `internal/pricing/prices.json` from metergraph-core's `prices.yaml` at the
   clone's last commit to that file.
@@ -54,7 +54,7 @@ needs one to move, open an issue first, and a maintainer will regenerate it.
   paired test in `internal/report/paired.go`. A change to any rule must also
   change [docs/sensitivity-map.md](docs/sensitivity-map.md).
 - `internal/record/` is the recording proxy. It must never write or print a
-  request header (other than the two cleaned `X-Replay-*` values) or a query
+  request header (other than the two cleaned `X-Ezswap-*` values) or a query
   string: providers carry API keys in both. Tests there use a local fake
   upstream and synthetic bodies.
 
@@ -74,13 +74,13 @@ Maintainers release by pushing a tag such as `v0.2.0`. The release workflow
 runs GoReleaser, which publishes the GitHub release with archives for macOS,
 Linux and Windows (amd64 and arm64) and updates the Homebrew cask in
 `metergraph/homebrew-tap`. It then builds one npm package per platform from
-the same binaries plus the `metergraph-replay` launcher package, and
+the same binaries plus the `ezswap` launcher package, and
 publishes them. A tag with a prerelease suffix (`v0.2.0-rc.1`) publishes to
 npm's `next` tag.
 
 The workflow needs two repository secrets: `HOMEBREW_TAP_TOKEN` (contents
 write access to `metergraph/homebrew-tap`) and `NPM_TOKEN` (publish rights
-on `metergraph-replay` and the `metergraph-replay-<os>-<cpu>` packages).
+on `ezswap` and the `ezswap-<os>-<cpu>` packages).
 To try a release locally:
 
 ```sh

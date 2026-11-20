@@ -14,7 +14,7 @@ you have pulled will do.
 Start the recorder in one terminal, forwarding to Ollama:
 
 ```sh
-metergraph-replay record --upstream http://localhost:11434
+ezswap record --upstream http://localhost:11434
 ```
 
 Run the app through it in another:
@@ -27,8 +27,8 @@ Stop the recorder with Ctrl-C. Then list the parts and make the map, with
 another model as the treatment:
 
 ```sh
-metergraph-replay estimate replay-out/traces.jsonl --map --models qwen2.5-coder:7b --endpoint ollama
-metergraph-replay map replay-out/traces.jsonl --models qwen2.5-coder:7b --endpoint ollama
+ezswap estimate ezswap-out/traces.jsonl --map --models qwen2.5-coder:7b --endpoint ollama
+ezswap map ezswap-out/traces.jsonl --models qwen2.5-coder:7b --endpoint ollama
 ```
 
 ## With a hosted provider
@@ -38,9 +38,9 @@ sends `OPENAI_API_KEY` if it is set. The key passes through to the provider.
 It is never written to the trace file or shown.
 
 ```sh
-metergraph-replay record
+ezswap record
 go run ./examples/support-desk --model gpt-4.1-mini
-metergraph-replay map replay-out/traces.jsonl --models openai/gpt-5-mini --endpoint openai
+ezswap map ezswap-out/traces.jsonl --models openai/gpt-5-mini --endpoint openai
 ```
 
 To go through [Vercel AI Gateway](https://vercel.com/docs/ai-gateway)
@@ -49,9 +49,9 @@ records the app on an expensive model and asks which places could move to
 cheaper ones, with `--judge` comparing the free-text replies:
 
 ```sh
-metergraph-replay record --upstream https://ai-gateway.vercel.sh
+ezswap record --upstream https://ai-gateway.vercel.sh
 OPENAI_API_KEY="$AI_GATEWAY_API_KEY" go run ./examples/support-desk --model anthropic/claude-sonnet-5.5
-metergraph-replay map replay-out/traces.jsonl --endpoint vercel --judge \
+ezswap map ezswap-out/traces.jsonl --endpoint vercel --judge \
   --models anthropic/claude-haiku-5.5,openai/gpt-5.4-nano,openai/gpt-5.4-mini
 ```
 
@@ -72,5 +72,5 @@ removes before forwarding:
 
 | Header | Value |
 |---|---|
-| `X-Replay-Part` | The place in the app: `classify-ticket`, `extract-order`, `refund-decision` or `draft-reply`. |
-| `X-Replay-Trace` | An id for the request, so the map samples one call per request. |
+| `X-Ezswap-Part` | The place in the app: `classify-ticket`, `extract-order`, `refund-decision` or `draft-reply`. |
+| `X-Ezswap-Trace` | An id for the request, so the map samples one call per request. |

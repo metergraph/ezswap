@@ -5,7 +5,7 @@ import (
 	"math"
 	"time"
 
-	"github.com/metergraph/replay/internal/cases/jsval"
+	"github.com/metergraph/ezswap/internal/cases/jsval"
 )
 
 // JavaScript's Date, as far as the adapters use it: `new Date(string)` and

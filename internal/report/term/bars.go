@@ -9,7 +9,7 @@ import (
 	"math"
 	"strings"
 
-	"github.com/metergraph/replay/internal/jsnum"
+	"github.com/metergraph/ezswap/internal/jsnum"
 )
 
 var eighths = [8]string{"", "▏", "▎", "▍", "▌", "▋", "▊", "▉"}

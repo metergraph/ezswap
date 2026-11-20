@@ -16,7 +16,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 const (
@@ -257,8 +257,8 @@ func TestHelpVersionAndUsageErrors(t *testing.T) {
 	if bad.code != ExitUsage {
 		t.Fatalf("a bad option: %d", bad.code)
 	}
-	match(t, `^metergraph-replay: Unknown option '--frobnicate'`, bad.stderr)
-	match(t, `Run metergraph-replay --help for usage.\n$`, bad.stderr)
+	match(t, `^ezswap: Unknown option '--frobnicate'`, bad.stderr)
+	match(t, `Run ezswap --help for usage.\n$`, bad.stderr)
 	if none := cli(t, nil, nil, nil); none.code != ExitUsage || none.stdout != Help {
 		t.Fatal("no command prints the help and exits 2")
 	}
@@ -481,7 +481,7 @@ func TestRunReplaysWritesAndPrintsTheReport(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(out, "report.html")); err == nil {
 		t.Fatal("no HTML report")
 	}
-	match(t, `Explore every call:\s+metergraph-replay report \S*run\.json`, result.stdout)
+	match(t, `Explore every call:\s+ezswap report \S*run\.json`, result.stdout)
 	match(t, `Notes: add --explain to the report command\s+below\.`, result.stdout)
 	match(t, `^[\x20-\x7e\n]*$`, result.stdout)
 	var body map[string]any
@@ -590,7 +590,7 @@ func TestDemoAndReport(t *testing.T) {
 
 	plain := cli(t, args("demo", "--out", out), noEnv, nil)
 	match(t, `gpt-4\.1-mini calls replayed`, plain.stdout)
-	match(t, `Explore every call:\s+metergraph-replay report \S*run\.json`, plain.stdout)
+	match(t, `Explore every call:\s+ezswap report \S*run\.json`, plain.stdout)
 	match(t, `Notes: run with --explain\.`, plain.stdout)
 	noMatch(t, "\x1b", plain.stdout)
 
@@ -615,7 +615,7 @@ func TestDemoAndReport(t *testing.T) {
 		t.Fatal(bad.stderr)
 	}
 	os.WriteFile(notJSON, []byte("[]"), 0o666)
-	if bad := cli(t, args("report", notJSON), nil, nil); !strings.Contains(bad.stderr, "is not a metergraph-replay run file.") {
+	if bad := cli(t, args("report", notJSON), nil, nil); !strings.Contains(bad.stderr, "is not a ezswap run file.") {
 		t.Fatal(bad.stderr)
 	}
 }

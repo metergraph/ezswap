@@ -25,9 +25,9 @@ import (
 	"strings"
 	"unicode/utf16"
 
-	"github.com/metergraph/replay/internal/jsnum"
-	"github.com/metergraph/replay/internal/providers"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/jsnum"
+	"github.com/metergraph/ezswap/internal/providers"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 const (

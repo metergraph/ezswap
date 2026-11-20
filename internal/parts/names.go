@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	NamesFile   = "replay-parts.json"
+	NamesFile   = "ezswap-parts.json"
 	NamesSchema = "metergraph.replay-parts/v1"
 )
 

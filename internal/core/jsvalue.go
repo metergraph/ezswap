@@ -26,7 +26,7 @@ import (
 	"unicode/utf16"
 	"unicode/utf8"
 
-	"github.com/metergraph/replay/internal/jsnum"
+	"github.com/metergraph/ezswap/internal/jsnum"
 	"golang.org/x/text/collate"
 	"golang.org/x/text/language"
 )

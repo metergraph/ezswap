@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/metergraph/replay/internal/jsnum"
+	"github.com/metergraph/ezswap/internal/jsnum"
 )
 
 // MissingValue marks a missing figure.

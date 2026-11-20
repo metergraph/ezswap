@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/metergraph/replay/internal/cases/jsval"
+	"github.com/metergraph/ezswap/internal/cases/jsval"
 )
 
 // encode is encoding/json output without HTML escaping, as run.json is written.

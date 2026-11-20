@@ -24,8 +24,8 @@ import (
 	"time"
 	"unicode/utf8"
 
-	"github.com/metergraph/replay/internal/adapters"
-	"github.com/metergraph/replay/internal/cases"
+	"github.com/metergraph/ezswap/internal/adapters"
+	"github.com/metergraph/ezswap/internal/cases"
 )
 
 func TestForwardsBodyByteForByte(t *testing.T) {
@@ -89,7 +89,7 @@ func TestRedirectIsReturnedNotFollowed(t *testing.T) {
 func TestRecordedFileIsReadByRawReaderAndReplayable(t *testing.T) {
 	upstream := fakeUpstream(t, answer(chatResponse))
 	rec := startRecorder(t, upstream.URL)
-	post(t, rec.url(chatPath), chatRequest, map[string]string{"X-Replay-Part": "greeter", "X-Replay-Trace": "trace-1"})
+	post(t, rec.url(chatPath), chatRequest, map[string]string{"X-Ezswap-Part": "greeter", "X-Ezswap-Trace": "trace-1"})
 	summary := rec.stop()
 	if summary.Recorded != 1 || summary.ByPart["greeter"] != 1 || summary.File != rec.file() {
 		t.Fatalf("summary: %+v", summary)
@@ -235,19 +235,19 @@ func TestReplayHeadersRemovedAndKept(t *testing.T) {
 	})
 	rec := startRecorder(t, upstream.URL)
 	post(t, rec.url(chatPath), chatRequest, map[string]string{
-		"X-Replay-Part":    "summarize",
-		"X-Replay-Trace":   "session-42",
+		"X-Ezswap-Part":    "summarize",
+		"X-Ezswap-Trace":   "session-42",
 		"Authorization":    "Bearer synthetic",
 		"OpenAI-Beta":      "assistants=v2",
 		"X-Forwarded-For":  "203.0.113.7",
 		"X-Custom-Example": "kept",
 	})
 	rec.stop()
-	if _, ok := seen["X-Replay-Part"]; ok {
-		t.Error("X-Replay-Part went upstream")
+	if _, ok := seen["X-Ezswap-Part"]; ok {
+		t.Error("X-Ezswap-Part went upstream")
 	}
-	if _, ok := seen["X-Replay-Trace"]; ok {
-		t.Error("X-Replay-Trace went upstream")
+	if _, ok := seen["X-Ezswap-Trace"]; ok {
+		t.Error("X-Ezswap-Trace went upstream")
 	}
 	for name, want := range map[string]string{
 		"Authorization": "Bearer synthetic", "Openai-Beta": "assistants=v2", "X-Custom-Example": "kept",
@@ -281,8 +281,8 @@ func TestPartValueCleanedAndCut(t *testing.T) {
 	upstream := fakeUpstream(t, answer(chatResponse))
 	rec := startRecorder(t, upstream.URL)
 	post(t, rec.url(chatPath), chatRequest, map[string]string{
-		"X-Replay-Part":  "  checkout\tsummary   " + strings.Repeat("x", 100),
-		"X-Replay-Trace": strings.Repeat("é", 100),
+		"X-Ezswap-Part":  "  checkout\tsummary   " + strings.Repeat("x", 100),
+		"X-Ezswap-Trace": strings.Repeat("é", 100),
 	})
 	summary := rec.stop()
 	want := "checkout summary " + strings.Repeat("x", 47)
@@ -530,7 +530,7 @@ func TestErrorStatusNotRecorded(t *testing.T) {
 	rec := startRecorder(t, upstream.URL)
 	statuses := []int{400, 401, 404, 429, 500, 503, 304}
 	for _, status := range statuses {
-		response, _ := post(t, rec.url(chatPath), chatRequest, map[string]string{"X-Replay-Part": "p", "X-Answer-Status": strconv.Itoa(status)})
+		response, _ := post(t, rec.url(chatPath), chatRequest, map[string]string{"X-Ezswap-Part": "p", "X-Answer-Status": strconv.Itoa(status)})
 		if response.StatusCode != status {
 			t.Errorf("got %d, want %d", response.StatusCode, status)
 		}
@@ -749,7 +749,7 @@ func TestConcurrentCallsWriteWholeLines(t *testing.T) {
 			content := strconv.Itoa(i) + ":" + strings.Repeat(string(rune('a'+i%26)), 1000+i*4000)
 			body := fmt.Sprintf(`{"model":"gpt-4o-mini","messages":[{"role":"user","content":%q}]}`, content)
 			request, _ := http.NewRequest(http.MethodPost, rec.url(chatPath), strings.NewReader(body))
-			request.Header.Set("X-Replay-Part", "part-"+strconv.Itoa(i%3))
+			request.Header.Set("X-Ezswap-Part", "part-"+strconv.Itoa(i%3))
 			response, err := client.Do(request)
 			if err != nil {
 				t.Error(err)
@@ -965,7 +965,7 @@ func TestWholeReplyReadEarlyIsRecorded(t *testing.T) {
 	})
 	rec := startRecorder(t, upstream.URL)
 	request, _ := http.NewRequest(http.MethodPost, rec.url(chatPath), strings.NewReader(chatRequest))
-	request.Header.Set("X-Replay-Part", "early")
+	request.Header.Set("X-Ezswap-Part", "early")
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
 		t.Fatal(err)

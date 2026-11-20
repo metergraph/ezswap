@@ -4,8 +4,8 @@ package mapview
 // the next state and never touches the terminal.
 
 import (
-	"github.com/metergraph/replay/internal/report"
-	"github.com/metergraph/replay/internal/report/term"
+	"github.com/metergraph/ezswap/internal/report"
+	"github.com/metergraph/ezswap/internal/report/term"
 )
 
 // Views, from the outside in.

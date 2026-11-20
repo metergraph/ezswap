@@ -9,7 +9,7 @@ package core
 import (
 	"slices"
 
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // FloorArms is FLOOR_ARMS: the noise floor's two replays.

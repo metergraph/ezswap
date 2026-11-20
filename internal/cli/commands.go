@@ -17,17 +17,17 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/metergraph/replay/demo"
-	"github.com/metergraph/replay/internal/core"
-	"github.com/metergraph/replay/internal/explore"
-	"github.com/metergraph/replay/internal/parts"
-	"github.com/metergraph/replay/internal/pricing"
-	"github.com/metergraph/replay/internal/providers"
-	"github.com/metergraph/replay/internal/report"
-	"github.com/metergraph/replay/internal/report/term"
-	"github.com/metergraph/replay/internal/run"
-	"github.com/metergraph/replay/internal/tui"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/demo"
+	"github.com/metergraph/ezswap/internal/core"
+	"github.com/metergraph/ezswap/internal/explore"
+	"github.com/metergraph/ezswap/internal/parts"
+	"github.com/metergraph/ezswap/internal/pricing"
+	"github.com/metergraph/ezswap/internal/providers"
+	"github.com/metergraph/ezswap/internal/report"
+	"github.com/metergraph/ezswap/internal/report/term"
+	"github.com/metergraph/ezswap/internal/run"
+	"github.com/metergraph/ezswap/internal/tui"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // ---------------------------------------------------------------------------
@@ -598,7 +598,7 @@ func (s *session) run(file string, mapMode bool) (outcome, error) {
 	}
 	var judgeFields object
 	if err == nil && judgeKey != "" && result.Stopped != nil {
-		s.say("The run stopped early, so nothing was judged. Judge what finished with: metergraph-replay judge <run.json>")
+		s.say("The run stopped early, so nothing was judged. Judge what finished with: ezswap judge <run.json>")
 	}
 	if err == nil && judgeKey != "" && result.Stopped == nil {
 		s.say("")
@@ -624,7 +624,7 @@ func (s *session) run(file string, mapMode bool) (outcome, error) {
 	}
 	out, given := s.v.str("out")
 	if !given {
-		out = "replay-out"
+		out = "ezswap-out"
 	}
 	written, err := run.WriteRun(out, result)
 	if err != nil {
@@ -643,7 +643,7 @@ func (s *session) run(file string, mapMode bool) (outcome, error) {
 		}
 		s.printMap(m)
 		s.say("")
-		s.say("Print it again: metergraph-replay report " + shown)
+		s.say("Print it again: ezswap report " + shown)
 		mapFields = object{{"parts", m.Parts}}
 		pageField, err := s.writePage(result, m, nil)
 		if err != nil {
@@ -730,7 +730,7 @@ func readRunFile(path string) (*types.RunFile, error) {
 	var head struct {
 		Schema any `json:"schema"`
 	}
-	notRun := usagef(path + " is not a metergraph-replay run file.")
+	notRun := usagef(path + " is not a ezswap run file.")
 	if json.Unmarshal(text, &head) != nil || head.Schema != types.RunSchema {
 		return nil, notRun
 	}
@@ -885,7 +885,7 @@ func (s *session) demo() (outcome, error) {
 	}
 	out, given := s.v.str("out")
 	if !given {
-		out = "replay-out"
+		out = "ezswap-out"
 	}
 	out, err = filepath.Abs(out)
 	if err != nil {
@@ -908,7 +908,7 @@ func (s *session) demo() (outcome, error) {
 	}
 	s.say("A replay of synthetic support-ticket traces, recorded so it needs no keys and no network.")
 	s.say("Try it on your own traces:")
-	s.say("  metergraph-replay estimate traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5")
+	s.say("  ezswap estimate traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5")
 	s.say("")
 	if err := s.printReport(r, tracked, s.shownPath(runPath), ""); err != nil {
 		return outcome{}, err

@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/metergraph/replay/demo"
-	"github.com/metergraph/replay/internal/core"
-	"github.com/metergraph/replay/internal/types"
+	"github.com/metergraph/ezswap/demo"
+	"github.com/metergraph/ezswap/internal/core"
+	"github.com/metergraph/ezswap/internal/types"
 )
 
 // The fixtures: the demo's recorded run (synthetic support tickets) and

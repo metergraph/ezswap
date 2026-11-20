@@ -29,7 +29,7 @@ type CapturedCall struct {
 	TraceID *string `json:"traceId"`
 	// ISO 8601 start time, when the source has one.
 	TS *string `json:"ts"`
-	// Adapter that read it: "replay-jsonl" | "raw" | "langfuse" | "otel".
+	// Adapter that read it: "ezswap-jsonl" | "raw" | "langfuse" | "otel".
 	Source string `json:"source"`
 	// "openai" | "anthropic" | "google" | ... as captured, lower case.
 	Provider *string `json:"provider"`
@@ -327,7 +327,7 @@ type RunSettings struct {
 }
 
 type Tool struct {
-	Name    string `json:"name"` // always "metergraph-replay"
+	Name    string `json:"name"` // always "ezswap"
 	Version string `json:"version"`
 }
 

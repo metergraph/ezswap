@@ -1,27 +1,27 @@
-# Metergraph Replay
+# ezswap
 
-[![CI](https://github.com/metergraph/replay/actions/workflows/ci.yml/badge.svg)](https://github.com/metergraph/replay/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/metergraph/replay?sort=semver)](https://github.com/metergraph/replay/releases)
-[![Go](https://img.shields.io/github/go-mod/go-version/metergraph/replay)](https://github.com/metergraph/replay/blob/main/go.mod)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/metergraph/replay/blob/main/LICENSE)
+[![CI](https://github.com/metergraph/ezswap/actions/workflows/ci.yml/badge.svg)](https://github.com/metergraph/ezswap/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/metergraph/ezswap?sort=semver)](https://github.com/metergraph/ezswap/releases)
+[![Go](https://img.shields.io/github/go-mod/go-version/metergraph/ezswap)](https://github.com/metergraph/ezswap/blob/main/go.mod)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](https://github.com/metergraph/ezswap/blob/main/LICENSE)
 
 **Find out which of your app's LLM calls can move to a cheaper model, from
 your own production traffic.**
 
-Replay takes the model calls your app already makes, replays them on the
+ezswap takes the model calls your app already makes, replays them on the
 models you are considering, and shows for each place in your app how many
 answers change. It sets that against how many change when production's own
 model is simply run again, so a part is flagged only when a new model
 changes more than chance does.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/metergraph/replay/main/docs/images/map-dark.png">
-  <img alt="The sensitivity map of a support desk recorded on Claude Sonnet 5.5: Claude Haiku 5.5 stays within noise on all four parts for 93% less per call, while GPT-5.4 nano changes 15 of 20 ticket classifications." src="https://raw.githubusercontent.com/metergraph/replay/main/docs/images/map-light.png">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/metergraph/ezswap/main/docs/images/map-dark.png">
+  <img alt="The sensitivity map of a support desk recorded on Claude Sonnet 5.5: Claude Haiku 5.5 stays within noise on all four parts for 93% less per call, while GPT-5.4 nano changes 15 of 20 ticket classifications." src="https://raw.githubusercontent.com/metergraph/ezswap/main/docs/images/map-light.png">
 </picture>
 
 <sub>A support desk recorded on Claude Sonnet 5.5, mapped against three
 cheaper models with the
-[example app](https://github.com/metergraph/replay/tree/main/examples/support-desk).
+[example app](https://github.com/metergraph/ezswap/tree/main/examples/support-desk).
 Haiku 5.5 stays within noise everywhere for 93% less per call. GPT-5.4 nano
 changes 15 of 20 ticket classifications, against none when Sonnet runs
 again.</sub>
@@ -39,7 +39,7 @@ again.</sub>
   (`--judge`), asked in both orders.
 - **Priced before it spends.** Every run is estimated first, asks before
   spending, reserves each call's maximum cost and stops at your budget.
-- **Bring your traces, or record them.** Reads Replay JSONL, raw provider
+- **Bring your traces, or record them.** Reads ezswap JSONL, raw provider
   logs (including Helicone and LiteLLM), Langfuse exports and OpenTelemetry
   GenAI spans. `record` captures new ones through a local proxy.
 - **Any OpenAI-compatible endpoint.** OpenRouter, OpenAI, Vercel AI Gateway,
@@ -51,42 +51,42 @@ again.</sub>
 ## Install
 
 ```sh
-brew install metergraph/tap/metergraph-replay
+brew install metergraph/tap/ezswap
 ```
 
 or with Go 1.26 or later:
 
 ```sh
-go install github.com/metergraph/replay/cmd/metergraph-replay@latest
+go install github.com/metergraph/ezswap/cmd/ezswap@latest
 ```
 
 or from npm, which installs the same native binary for your platform:
 
 ```sh
-npx metergraph-replay demo
-npm install -g metergraph-replay
+npx ezswap demo
+npm install -g ezswap
 ```
 
 Prebuilt archives for macOS, Linux and Windows (amd64 and arm64) are on the
-[releases page](https://github.com/metergraph/replay/releases).
+[releases page](https://github.com/metergraph/ezswap/releases).
 
 ## Quick start
 
-On a terminal, `metergraph-replay` with no command walks you through it:
+On a terminal, `ezswap` with no command walks you through it:
 record your app, choose the models, check the price, and explore the map.
 The same steps as commands:
 
 ```sh
-metergraph-replay demo --map    # a bundled map: no keys, no network
-metergraph-replay record        # capture your app's calls, see "Map your own app"
-metergraph-replay estimate replay-out/traces.jsonl --map --models openai/gpt-5-mini
-metergraph-replay map replay-out/traces.jsonl --models openai/gpt-5-mini --html map.html
+ezswap demo --map    # a bundled map: no keys, no network
+ezswap record        # capture your app's calls, see "Map your own app"
+ezswap estimate ezswap-out/traces.jsonl --map --models openai/gpt-5-mini
+ezswap map ezswap-out/traces.jsonl --models openai/gpt-5-mini --html map.html
 ```
 
 ## Reading the map
 
 ```sh
-metergraph-replay demo --map
+ezswap demo --map
 ```
 
 `demo --map` prints the map of a bundled synthetic support desk with five
@@ -97,7 +97,7 @@ terminal (so plain ASCII):
 ```text
 A map of a synthetic support desk with five parts, recorded so it needs no keys and no network.
 Make one from your own traces:
-  metergraph-replay map traces.jsonl --models openai/gpt-5-mini
+  ezswap map traces.jsonl --models openai/gpt-5-mini
 
 5 parts | map-traces.jsonl | 2026-10-20 to 2026-10-27 | 20 cases per part
 spent $0.016 of $5.00
@@ -152,21 +152,21 @@ How to read it:
   production's.
 
 The map shows where outputs change. It does not say a change is better or
-worse. [The sensitivity map](https://github.com/metergraph/replay/blob/main/docs/sensitivity-map.md)
+worse. [The sensitivity map](https://github.com/metergraph/ezswap/blob/main/docs/sensitivity-map.md)
 explains every rule and the limits of the label.
 
-`metergraph-replay demo` (without `--map`) prints the whole-file report
+`ezswap demo` (without `--map`) prints the whole-file report
 described [below](#the-report), and `--explore` opens the interactive
 explorer.
 
 ## Map your own app
 
-A **part** is a place in your app that calls a model. You name it. Replay
+A **part** is a place in your app that calls a model. You name it. ezswap
 never guesses a name from your prompts.
 
 ### 1. Get a trace file
 
-If you already export traces, use them: Replay reads its own JSONL format,
+If you already export traces, use them: ezswap reads its own JSONL format,
 raw provider request and response pairs (including Helicone and LiteLLM
 logs), Langfuse observation exports and OpenTelemetry GenAI spans. Name the
 parts with a `part` field, or point `--part-key` at a key your records
@@ -175,47 +175,47 @@ already carry.
 If you do not, record one:
 
 ```sh
-metergraph-replay record
+ezswap record
 ```
 
 `record` runs a local proxy on `127.0.0.1:8787`. Point your app's model base
 URL at it (`http://127.0.0.1:8787/v1` for OpenAI SDKs) and send the header
-`X-Replay-Part` with each call to name the part. The proxy forwards every
+`X-Ezswap-Part` with each call to name the part. The proxy forwards every
 call to one provider (`--upstream`, default `https://api.openai.com`) and
-appends each captured call to `replay-out/traces.jsonl`. Your API key passes
+appends each captured call to `ezswap-out/traces.jsonl`. Your API key passes
 through and is never written or shown. The trace file holds prompts and
 responses, so keep it out of Git. See
-[Recording](https://github.com/metergraph/replay/blob/main/docs/record.md)
+[Recording](https://github.com/metergraph/ezswap/blob/main/docs/record.md)
 for SDK settings and limits.
 
 ### 2. List the parts and the price
 
 ```sh
-metergraph-replay estimate replay-out/traces.jsonl --map --models openai/gpt-5-mini
+ezswap estimate ezswap-out/traces.jsonl --map --models openai/gpt-5-mini
 ```
 
 `estimate --map` lists each part, how it was named, how many cases it has,
 which fields it will be compared on and what the map will cost. It makes no
-provider call. It writes `replay-parts.json` beside the trace file: edit a
+provider call. It writes `ezswap-parts.json` beside the trace file: edit a
 name there to rename a part, or give two parts one name to merge them.
 
 ### 3. Make the map
 
 ```sh
-metergraph-replay map replay-out/traces.jsonl --models openai/gpt-5-mini
+ezswap map ezswap-out/traces.jsonl --models openai/gpt-5-mini
 ```
 
 `map` asks before spending, replays the latest 20 cases of each part
 (`--per-part`) on each model and twice on production's own model, stops at
 `--budget` (default $5.00), writes `run.json` and prints the map. Print it
-again with `metergraph-replay report replay-out/run.json`.
+again with `ezswap report ezswap-out/run.json`.
 
 Calls with no part name are grouped by a fingerprint of their system prompt,
 forced tool and response schema. Parts whose outputs are free text are
 priced and timed but not compared: the map compares JSON fields. Add
 `--judge` to have a judge model (`typesafe-ai/jev` through the Vercel AI
 Gateway) compare them by meaning; the replies are then sent to it. See
-[judged free-text parts](https://github.com/metergraph/replay/blob/main/docs/sensitivity-map.md#judged-free-text-parts).
+[judged free-text parts](https://github.com/metergraph/ezswap/blob/main/docs/sensitivity-map.md#judged-free-text-parts).
 
 ## Compare models over a whole trace file
 
@@ -223,9 +223,9 @@ Gateway) compare them by meaning; the replies are then sent to it. See
 whatever part they came from, how do cost, latency and outputs differ?
 
 ```sh
-metergraph-replay estimate traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5
-metergraph-replay run traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5 --budget 2.00
-metergraph-replay report replay-out/run.json
+ezswap estimate traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5
+ezswap run traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5 --budget 2.00
+ezswap report ezswap-out/run.json
 ```
 
 - `estimate` says how many calls can be replayed and prices the run. It makes
@@ -247,7 +247,7 @@ URL. Keys are read from environment variables and never written anywhere.
 quality and speed for production, production replayed against itself
 (`itself`, the noise floor) and each model you tried, then the calls whose
 answers changed. This is
-`metergraph-replay demo` at 80 columns, without colour:
+`ezswap demo` at 80 columns, without colour:
 
 ```text
 20 of 22 gpt-4.1-mini calls replayed · traces.jsonl · 28 Oct 2026 · spent $0.013
@@ -277,7 +277,7 @@ WHAT CHANGED
 2 calls not replayable, most often: content cut short (1).
 
 itself: gpt-4.1-mini replayed again, the noise floor. Notes: run with --explain.
-Explore every call: metergraph-replay report replay-out/run.json
+Explore every call: ezswap report ezswap-out/run.json
 ```
 
 A `*` marks a figure further from production than production is from
@@ -289,8 +289,8 @@ floor and every call side by side.
 The `*` here and the map's `beyond noise` follow different rules. The report
 marks one figure at a time when its gap from production is larger than
 production's gap from itself. The map labels a whole part with a paired
-test. [The noise floor](https://github.com/metergraph/replay/blob/main/docs/noise-floor.md)
-and [the sensitivity map](https://github.com/metergraph/replay/blob/main/docs/sensitivity-map.md)
+test. [The noise floor](https://github.com/metergraph/ezswap/blob/main/docs/noise-floor.md)
+and [the sensitivity map](https://github.com/metergraph/ezswap/blob/main/docs/sensitivity-map.md)
 describe each.
 
 Statistics are presentation, never a verdict. Nothing in the report or the
@@ -300,46 +300,46 @@ Metergraph runs this comparison continuously on live traffic: https://www.meterg
 
 ## Privacy and network
 
-Local, no account, your own keys. Replay sends no telemetry. Its network
+Local, no account, your own keys. ezswap sends no telemetry. Its network
 traffic is:
 
 - the provider calls you ask for: the calls a `run` or `map` sends, and the
   calls `record` forwards for your app;
 - one request to Metergraph's free
   [Pricing API](https://metergraph.dev/docs/reference/pricing-api) when a
-  model you name is not in Replay's bundled price catalog. It carries model
+  model you name is not in ezswap's bundled price catalog. It carries model
   names only, never a trace, prompt or key, and the answer is cached for a
   day. Turn it off with `--no-price-lookup` or
-  `METERGRAPH_REPLAY_NO_PRICE_LOOKUP=1`;
+  `EZSWAP_NO_PRICE_LOOKUP=1`;
 - with `--judge` only, the judged requests and free-text replies, sent to
   the judge model through the Vercel AI Gateway.
 
-Replay writes three files, all on your machine: `run.json` (a finished run
-or map), `traces.jsonl` (what `record` captured) and `replay-parts.json`
+ezswap writes three files, all on your machine: `run.json` (a finished run
+or map), `traces.jsonl` (what `record` captured) and `ezswap-parts.json`
 (part names, beside the trace file). Trace files and `run.json` hold your
 prompts and replies, so keep them out of Git.
-[SECURITY.md](https://github.com/metergraph/replay/blob/main/SECURITY.md)
-lists every boundary Replay keeps.
+[SECURITY.md](https://github.com/metergraph/ezswap/blob/main/SECURITY.md)
+lists every boundary ezswap keeps.
 
 ## Documentation
 
-- [The sensitivity map](https://github.com/metergraph/replay/blob/main/docs/sensitivity-map.md): parts, what is compared, the label's rule and its limits.
-- [Recording](https://github.com/metergraph/replay/blob/main/docs/record.md): the local proxy, SDK settings, what is written and its limits.
-- [Command line](https://github.com/metergraph/replay/blob/main/docs/cli.md): commands, options, endpoints, spend and exit codes.
-- [Trace formats](https://github.com/metergraph/replay/blob/main/docs/trace-format.md): what each input format must carry, and how parts are named.
-- [The noise floor](https://github.com/metergraph/replay/blob/main/docs/noise-floor.md): what it measures in the whole-file report and how to read it.
+- [The sensitivity map](https://github.com/metergraph/ezswap/blob/main/docs/sensitivity-map.md): parts, what is compared, the label's rule and its limits.
+- [Recording](https://github.com/metergraph/ezswap/blob/main/docs/record.md): the local proxy, SDK settings, what is written and its limits.
+- [Command line](https://github.com/metergraph/ezswap/blob/main/docs/cli.md): commands, options, endpoints, spend and exit codes.
+- [Trace formats](https://github.com/metergraph/ezswap/blob/main/docs/trace-format.md): what each input format must carry, and how parts are named.
+- [The noise floor](https://github.com/metergraph/ezswap/blob/main/docs/noise-floor.md): what it measures in the whole-file report and how to read it.
 
 ## Contributing
 
 Issues and pull requests are welcome. See
-[CONTRIBUTING.md](https://github.com/metergraph/replay/blob/main/CONTRIBUTING.md)
+[CONTRIBUTING.md](https://github.com/metergraph/ezswap/blob/main/CONTRIBUTING.md)
 for setup and conventions, and the
-[changelog](https://github.com/metergraph/replay/blob/main/CHANGELOG.md) for
+[changelog](https://github.com/metergraph/ezswap/blob/main/CHANGELOG.md) for
 what changed in each release. Report vulnerabilities privately as described
-in [SECURITY.md](https://github.com/metergraph/replay/blob/main/SECURITY.md).
+in [SECURITY.md](https://github.com/metergraph/ezswap/blob/main/SECURITY.md).
 Everyone taking part follows the
-[code of conduct](https://github.com/metergraph/replay/blob/main/CODE_OF_CONDUCT.md).
+[code of conduct](https://github.com/metergraph/ezswap/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
-[Apache-2.0](https://github.com/metergraph/replay/blob/main/LICENSE).
+[Apache-2.0](https://github.com/metergraph/ezswap/blob/main/LICENSE).
