@@ -58,7 +58,4 @@ jobs:
           tag=latest
           case "$version" in *-*) tag=next ;; esac
           node scripts/npm-packages.mjs "$version" dist npm-out
-          for dir in npm-out/ezswap-*; do
-            npm publish --access public --provenance --tag "$tag" "$dir"
-          done
-          npm publish --access public --provenance --tag "$tag" npm-out/ezswap
+          scripts/npm-publish.sh "$tag"

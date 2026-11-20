@@ -110,6 +110,10 @@ jobs:
       - name: Build the npm packages
         run: node scripts/npm-packages.mjs 0.0.0-snapshot dist npm-out
 
+      # The release's own publish commands, uploading nothing.
+      - name: Dry-run the npm publish
+        run: scripts/npm-publish.sh next --dry-run
+
       # Install the launcher and this runner's platform package from packed
       # tarballs, as npm would from the registry, and run the binary through
       # the launcher.
