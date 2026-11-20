@@ -167,3 +167,91 @@ func TestMenu(t *testing.T) {
 		}
 	}
 }
+
+func objectivePlan(pinned []string, tick bool) Plan {
+	parts := []PartRow{{Name: "route-ticket", Cases: 48, Compared: "2 fields"}, {Name: "draft-reply", Cases: 48, Compared: "judged: free text", FreeText: true}}
+	objectives := []Objective{
+		{Key: "cost", Label: "Reduce cost", Detail: "models that cost less than prod/own", Models: []string{"a/small", "b/small"}},
+		{Key: "quality", Label: "Improve quality", Detail: "models that cost more than prod/own", Models: []string{"a/large"}, Judge: true},
+		{Key: "latest", Label: "Try the latest models", Detail: "the newest model from each provider", Models: []string{"b/new", "a/small"}},
+	}
+	p := NewPlan("ezswap-out/traces.jsonl", "step 2 of 3", parts, Choice{Models: pinned, Endpoint: "vercel", PerPart: 40}).
+		WithObjectives(objectives, pinned, tick, "")
+	p.Width = 100
+	return p
+}
+
+func TestObjectiveChoosesTheModels(t *testing.T) {
+	// No model of the person's own: each objective's suggestions are ticked.
+	p := objectivePlan(nil, true)
+	if p.Choice.Objective != "cost" || strings.Join(p.Choice.Models, " ") != "a/small b/small" || p.Choice.Judge {
+		t.Fatalf("start: %+v", p.Choice)
+	}
+	if p.rows()[p.Cursor].kind != rowObjective {
+		t.Errorf("the cursor does not start on the objective")
+	}
+	frame := strings.Join(PlanFrame(p, term.PlainPaint(), true), "\n")
+	for _, want := range []string{"OBJECTIVE", "> < Reduce cost >  models that cost less than prod/own", "[x] a/small"} {
+		if !strings.Contains(frame, want) {
+			t.Errorf("plan lacks %q:\n%s", want, frame)
+		}
+	}
+	p, changed := ReducePlan(p, "right")
+	if !changed || p.Choice.Objective != "quality" || strings.Join(p.Choice.Models, " ") != "a/large" || !p.Choice.Judge {
+		t.Fatalf("quality: changed %v %+v", changed, p.Choice)
+	}
+	// Leaving the objective that turned the judge on turns it off again.
+	p, _ = ReducePlan(p, "right")
+	if p.Choice.Objective != "latest" || strings.Join(p.Choice.Models, " ") != "b/new a/small" || p.Choice.Judge {
+		t.Fatalf("latest: %+v", p.Choice)
+	}
+	p, _ = ReducePlan(p, "right")
+	if p.Choice.Objective != "cost" {
+		t.Errorf("right from the last objective went to %q", p.Choice.Objective)
+	}
+	if p, _ = ReducePlan(p, "left"); p.Choice.Objective != "latest" {
+		t.Errorf("left from the first objective went to %q", p.Choice.Objective)
+	}
+}
+
+func TestObjectiveKeepsThePersonsModels(t *testing.T) {
+	// Models from the settings file stay ticked; suggestions are offered
+	// unticked, and one already pinned is not listed twice.
+	p := objectivePlan([]string{"a/small", "own/model"}, false)
+	if strings.Join(p.AllModels, " ") != "a/small own/model b/small" || strings.Join(p.Choice.Models, " ") != "a/small own/model" {
+		t.Fatalf("start: all %v chosen %v", p.AllModels, p.Choice.Models)
+	}
+	// Untick one, type one in, then change the objective: both are kept
+	// as the person left them.
+	p.Cursor = p.firstRow(rowModel)
+	p, _ = ReducePlan(p, " ")
+	p.Cursor = p.firstRow(rowAddModel)
+	p, _ = ReducePlan(p, "enter")
+	for _, k := range []string{"z", "/", "m", "enter"} {
+		p, _ = ReducePlan(p, k)
+	}
+	p.Cursor = p.firstRow(rowObjective)
+	p, _ = ReducePlan(p, "right")
+	if strings.Join(p.AllModels, " ") != "a/small own/model z/m a/large" || strings.Join(p.Choice.Models, " ") != "own/model z/m" {
+		t.Fatalf("after quality: all %v chosen %v", p.AllModels, p.Choice.Models)
+	}
+	// A judge the person turned on stays on when the objective changes.
+	p.Cursor = p.firstRow(rowJudge)
+	p, _ = ReducePlan(p, " ")
+	p, _ = ReducePlan(p, " ")
+	p.Cursor = p.firstRow(rowObjective)
+	p, _ = ReducePlan(p, "right")
+	if !p.Choice.Judge {
+		t.Errorf("the judge the person turned on was turned off")
+	}
+}
+
+func TestPlanWithoutObjectivesHasNoObjectiveRow(t *testing.T) {
+	p := NewPlan("t.jsonl", "", []PartRow{{Name: "p", Cases: 20}}, Choice{Models: []string{"a/one"}}).WithObjectives(nil, nil, false, "")
+	if p.firstRow(rowObjective) != 0 || p.rows()[0].kind == rowObjective {
+		t.Errorf("an objective row without objectives")
+	}
+	if strings.Contains(strings.Join(PlanFrame(p, term.PlainPaint(), true), "\n"), "OBJECTIVE") {
+		t.Errorf("OBJECTIVE shown without objectives")
+	}
+}

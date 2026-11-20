@@ -7,6 +7,10 @@ may change the command line or the `run.json` format.
 
 ## Unreleased
 
+- Analyze, the guided workflow's second step, opens on an objective: reduce
+  cost, improve quality or try the latest models. It suggests the models to
+  try from a list built into `ezswap`, compared by price with the model in
+  your traces.
 - The guided workflow is three named steps: Record, Analyze and Map. The
   start menu asks which to begin at and no longer offers the demo, which
   stays as `ezswap demo`.

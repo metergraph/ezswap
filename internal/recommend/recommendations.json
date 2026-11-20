@@ -1,0 +1,18 @@
+{
+  "schema": "metergraph.ezswap-recommendations/v1",
+  "updated": "2026-11-20",
+  "note": "The models ezswap suggests for an objective. first_priced is the date the price catalog first carried the model, which stands in for its release date. Prices are not kept here: they come from the price catalog.",
+  "models": [
+    { "id": "openai/gpt-6.2-sol", "publisher": "openai", "first_priced": "2026-11-17" },
+    { "id": "openai/gpt-6.2-astra", "publisher": "openai", "first_priced": "2026-11-17" },
+    { "id": "openai/gpt-6-luna", "publisher": "openai", "first_priced": "2026-09-22" },
+    { "id": "google/gemini-4-hydrogen", "publisher": "google", "first_priced": "2026-11-12" },
+    { "id": "google/gemini-4-carbon", "publisher": "google", "first_priced": "2026-11-10" },
+    { "id": "google/gemini-4-argon", "publisher": "google", "first_priced": "2026-10-13" },
+    { "id": "google/gemini-3.8-flash", "publisher": "google", "first_priced": "2026-09-01" },
+    { "id": "anthropic/claude-fable-5.2", "publisher": "anthropic", "first_priced": "2026-11-09" },
+    { "id": "anthropic/claude-haiku-5.5", "publisher": "anthropic", "first_priced": "2026-10-07" },
+    { "id": "anthropic/claude-sonnet-5.5", "publisher": "anthropic", "first_priced": "2026-09-28" },
+    { "id": "anthropic/claude-opus-5.5", "publisher": "anthropic", "first_priced": "2026-09-22" }
+  ]
+}

@@ -16,13 +16,36 @@ Run with no command on an interactive terminal, `ezswap` walks
 through three steps, and first asks which to start at:
 
 1. **Record.** Where your app's calls go, then the record dashboard.
-2. **Analyze.** The parts found in the traces, the models to try, cases
-   per part and the judge, with the estimate updating as you choose.
+2. **Analyze.** Your objective, the parts found in the traces, the models
+   to try, cases per part and the judge, with the estimate updating as you
+   choose.
 3. **Map.** The spend confirmation, the progress and the map explorer.
 
 Start at Analyze with a trace file you already have, or at Map to open a
 finished `run.json`. Every step is also a command of its own, below.
 Without a terminal it prints the help.
+
+### The objective
+
+Analyze opens on an objective, which chooses the models it suggests. Left
+and right change it:
+
+| Objective | Suggests |
+|---|---|
+| Reduce cost | Up to three models that cost less than the model in your traces, the cheapest first. |
+| Improve quality | Up to three models that cost more, the nearest in price first. It also turns the judge on when a part has free text. Price stands in for strength here: `ezswap` does not rank models by quality. |
+| Try the latest models | The newest model from each provider. |
+
+The suggestions come from a short list built into `ezswap`
+(`internal/recommend/recommendations.json`), priced by the price catalog. A
+model the catalog cannot price is never suggested. "Newest" goes by the
+date the catalog first carried a model's price.
+
+Models named in `ezswap.yaml`, and any you type in, stay whatever the
+objective, ticked as you left them; the suggestions are then listed
+unticked beneath them. With no models of your own, the suggestions start
+ticked. Nothing is spent until you confirm the estimate. The objective only
+chooses models: it does not change how the map is measured or read.
 
 Installed from npm, prefix each with `npx` (`npx ezswap demo`).
 The README lists every way to install it.
