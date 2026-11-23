@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"runtime"
 	"slices"
 	"testing"
 	"time"
@@ -56,7 +57,8 @@ func TestAnswerKeepsTheIDWhileOnAndDropsItWhenOff(t *testing.T) {
 		t.Error("the id survived turning telemetry off")
 	}
 	info, err := os.Stat(filepath.Join(dir, File))
-	if err != nil || info.Mode().Perm() != 0o600 {
+	// Windows has no owner-only permission bits to check.
+	if err != nil || (runtime.GOOS != "windows" && info.Mode().Perm() != 0o600) {
 		t.Errorf("%v %v", info, err)
 	}
 }

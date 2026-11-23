@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
 
 	"github.com/metergraph/ezswap/internal/telemetry"
@@ -180,5 +181,28 @@ func TestTelemetryCommandTurnsItOnAndOff(t *testing.T) {
 	}
 	if strings.Contains(strings.Join(c.sent(), ""), "telemetry") {
 		t.Error("the telemetry command reported itself")
+	}
+}
+
+// A pricing service can price a private name. That makes it runnable, not
+// public: the event still calls it other.
+func TestAModelOnlyAPricingServicePricesIsNotNamed(t *testing.T) {
+	c := newCollector(t)
+	dir := t.TempDir()
+	if _, err := telemetry.Answer(dir, true, now()); err != nil {
+		t.Fatal(err)
+	}
+	var asked atomic.Int32
+	api := pricingAPI(t, &asked)
+	file := writeTraces(t, 3, nil)
+	out := cli(t, args("estimate", file, "--models=examplelab/model-9"), c.reporting(dir, func(o *IO) {
+		o.PricingURL, o.CacheDir = api.URL, t.TempDir()
+	}), nil)
+	got := c.sent()
+	if out.code != ExitOK || asked.Load() != 1 || len(got) != 1 {
+		t.Fatalf("exit %d, %d lookups, %d events: %s", out.code, asked.Load(), len(got), out.stderr)
+	}
+	if strings.Contains(got[0], "examplelab") || !strings.Contains(got[0], `"models":["other"]`) {
+		t.Errorf("the event names a model the bundled catalog does not know: %s", got[0])
 	}
 }

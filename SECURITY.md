@@ -25,7 +25,7 @@ calls model endpoints with your keys. It is designed to keep these boundaries:
 - **Opt-in telemetry sends no trace content.** If you answer yes to the
   guided workflow's question or run `ezswap telemetry on`, each command sends
   one event to PostHog: the command, how it ended, counts, and the names of
-  models the public price catalog knows. A prompt, reply, key, path, base
+  models the bundled price catalog knows. A prompt, reply, key, path, base
   URL, part name, private model name or error message is never in it. The
   fields are a fixed list in `docs/telemetry.md`, and a test fails if an
   event carries any other. `DO_NOT_TRACK=1`, `EZSWAP_TELEMETRY=0` or `CI`

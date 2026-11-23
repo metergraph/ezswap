@@ -52,8 +52,10 @@ With telemetry on, each of `demo`, `estimate`, `map`, `run`, `record`,
 | `cases` | `80` | How many recorded calls the plan replays. |
 | `judge` | `true` | Whether the judge was on. |
 
-A model is named only if ezswap's price catalog can price it. Anything
-else, such as a private deployment or a fine-tune, is reported as `other`.
+A model is named only if the price catalog shipped inside ezswap can price
+it. Anything else is reported as `other`: a private deployment, a fine-tune,
+or a model whose price came from the Pricing API or from a pricing service
+you pointed ezswap at.
 
 The event also carries a random install id, made when you turn telemetry
 on. It is derived from nothing on your machine, and turning telemetry off

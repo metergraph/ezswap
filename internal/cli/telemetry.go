@@ -92,9 +92,12 @@ func (s *session) telemetryCommand(rest []string) (outcome, error) {
 	return outcome{ExitOK, object{{"command", "telemetry"}, {"enabled", settings.Enabled}, {"sending", sending}}}, nil
 }
 
-// publicModel is a model's name if the price catalog knows it, else Other.
-func publicModel(model string, prices *pricing.CatalogPricing) string {
-	if model != "" && prices != nil && prices.Knows(model) {
+// publicModel is a model's name if the catalog shipped inside ezswap can
+// price it, else Other. The run's own catalog is not asked: the Pricing API,
+// or a pricing service the person pointed ezswap at, may have taught it a
+// private deployment's name.
+func publicModel(model string) string {
+	if model != "" && pricing.Bundled(model) {
 		return model
 	}
 	return telemetry.Other
@@ -104,12 +107,12 @@ func publicModel(model string, prices *pricing.CatalogPricing) string {
 func (s *session) notePlan(plan *run.RunPlan, prices *pricing.CatalogPricing) {
 	s.event.Models = nil
 	for _, t := range plan.Treatments {
-		if name := publicModel(t.Model, prices); !slices.Contains(s.event.Models, name) {
+		if name := publicModel(t.Model); !slices.Contains(s.event.Models, name) {
 			s.event.Models = append(s.event.Models, name)
 		}
 	}
 	if production := productionModel(plan.Cases, prices); production != "" {
-		s.event.Production = publicModel(production, prices)
+		s.event.Production = publicModel(production)
 	}
 	s.event.Parts = len(plan.Parts)
 	s.event.Cases = plan.Estimate.Replayable
