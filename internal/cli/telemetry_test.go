@@ -5,6 +5,9 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -204,5 +207,26 @@ func TestAModelOnlyAPricingServicePricesIsNotNamed(t *testing.T) {
 	}
 	if strings.Contains(got[0], "examplelab") || !strings.Contains(got[0], `"models":["other"]`) {
 		t.Errorf("the event names a model the bundled catalog does not know: %s", got[0])
+	}
+}
+
+// An opt-out that cannot be saved must not say telemetry is off.
+func TestAFailedOptOutSaysTelemetryIsStillOn(t *testing.T) {
+	if runtime.GOOS == "windows" || os.Getuid() == 0 {
+		t.Skip("needs a file the test cannot write")
+	}
+	c := newCollector(t)
+	dir := t.TempDir()
+	if _, err := telemetry.Answer(dir, true, now()); err != nil {
+		t.Fatal(err)
+	}
+	file := filepath.Join(dir, telemetry.File)
+	if err := os.Chmod(file, 0o400); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chmod(file, 0o600) })
+	out := cli(t, args("telemetry", "off"), c.reporting(dir, nil), nil)
+	if out.code == ExitOK || !strings.Contains(out.stderr, "still on") || !strings.Contains(out.stderr, "EZSWAP_TELEMETRY=0") {
+		t.Errorf("%d %s", out.code, out.stderr)
 	}
 }

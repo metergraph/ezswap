@@ -72,7 +72,12 @@ func (s *session) telemetryCommand(rest []string) (outcome, error) {
 			return outcome{}, &cliError{ExitError, "no_settings_directory", "This machine has no settings directory to keep the answer in, so telemetry stays off."}
 		}
 		if _, err := telemetry.Answer(s.io.ConfigDir, rest[0] == "on", s.now()); err != nil {
-			return outcome{}, &cliError{ExitError, "settings_not_written", "The answer could not be saved, so telemetry stays off."}
+			// The file on disk still holds the old answer, which may be yes.
+			message := "The answer could not be saved, so telemetry is as it was before."
+			if previous, _ := telemetry.Load(s.io.ConfigDir); rest[0] == "off" && previous.Enabled {
+				message = "The answer could not be saved, so telemetry is still on. Set EZSWAP_TELEMETRY=0 to stop it until the settings file can be written."
+			}
+			return outcome{}, &cliError{ExitError, "settings_not_written", message}
 		}
 	}
 	settings, _ := telemetry.Load(s.io.ConfigDir)
