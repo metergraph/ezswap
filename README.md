@@ -44,8 +44,8 @@ again.</sub>
   GenAI spans. `record` captures new ones through a local proxy.
 - **Any OpenAI-compatible endpoint.** OpenRouter, OpenAI, Vercel AI Gateway,
   LiteLLM, Ollama, or your own base URL, with your own keys.
-- **Local and private.** One binary, no account, no telemetry. Results stay
-  on your machine, as a terminal report, an interactive explorer, or one
+- **Local and private.** One binary, no account, and no telemetry unless you
+  turn it on. Results stay on your machine, as a terminal report, an interactive explorer, or one
   self-contained HTML page.
 
 ## Install
@@ -301,8 +301,7 @@ Metergraph runs this comparison continuously on live traffic: https://www.meterg
 
 ## Privacy and network
 
-Local, no account, your own keys. ezswap sends no telemetry. Its network
-traffic is:
+Local, no account, your own keys. Its network traffic is:
 
 - the provider calls you ask for: the calls a `run` or `map` sends, and the
   calls `record` forwards for your app;
@@ -313,7 +312,13 @@ traffic is:
   day. Turn it off with `--no-price-lookup` or
   `EZSWAP_NO_PRICE_LOOKUP=1`;
 - with `--judge` only, the judged requests and free-text replies, sent to
-  the judge model through the Vercel AI Gateway.
+  the judge model through the Vercel AI Gateway;
+- only if you turn telemetry on, one anonymous event per command: the
+  command, how it ended, counts and public model names. It is off by
+  default and never carries a prompt, reply, key, path or private name.
+  [Telemetry](https://github.com/metergraph/ezswap/blob/main/docs/telemetry.md)
+  lists every field. `ezswap telemetry off`, `DO_NOT_TRACK=1` or
+  `EZSWAP_TELEMETRY=0` keeps it off.
 
 ezswap writes three files, all on your machine: `run.json` (a finished run
 or map), `traces.jsonl` (what `record` captured) and `ezswap-parts.json`

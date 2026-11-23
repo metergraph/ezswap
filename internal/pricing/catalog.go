@@ -26,6 +26,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/metergraph/ezswap/internal/types"
@@ -774,6 +775,21 @@ func LoadPricing(options LoadPricingOptions) (*CatalogPricing, error) {
 		now = time.Now
 	}
 	return &CatalogPricing{Source: document.Source, version: CatalogVersion(document), snapshot: s, now: now, document: document, region: region}, nil
+}
+
+var bundled = sync.OnceValue(func() *CatalogPricing {
+	c, err := LoadPricing(LoadPricingOptions{})
+	if err != nil {
+		panic("pricing: the bundled prices.json does not load: " + err.Error())
+	}
+	return c
+})
+
+// Bundled says the catalog shipped inside ezswap can price the model. It
+// never changes at run time: a model the Pricing API or a custom pricing
+// service added is not bundled, so a private name stays out of it.
+func Bundled(model string) bool {
+	return bundled().Knows(model)
 }
 
 func (c *CatalogPricing) instant(at string) int64 {

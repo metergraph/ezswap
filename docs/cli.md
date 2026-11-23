@@ -10,6 +10,7 @@ ezswap estimate traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4
 ezswap run traces.jsonl --models openai/gpt-5-mini,anthropic/claude-haiku-4.5 --budget 2.00
 ezswap report ezswap-out/run.json
 ezswap judge ezswap-out/run.json
+ezswap telemetry
 ```
 
 Run with no command on an interactive terminal, `ezswap` walks
@@ -24,6 +25,10 @@ through three steps, and first asks which to start at:
 Start at Analyze with a trace file you already have, or at Map to open a
 finished `run.json`. Every step is also a command of its own, below.
 Without a terminal it prints the help.
+
+The first time, the workflow asks whether to share anonymous usage. It is
+off unless you say yes. `ezswap telemetry` says whether it is on, and
+`ezswap telemetry on` or `off` changes it: see [Telemetry](telemetry.md).
 
 ### The objective
 

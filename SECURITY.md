@@ -17,11 +17,19 @@ in a report.
 ezswap reads trace files that can hold production prompts and outputs, and it
 calls model endpoints with your keys. It is designed to keep these boundaries:
 
-- **No telemetry.** ezswap makes no network request except the model calls a
-  `run` or `map` sends to the endpoints you name, the calls `record`
-  forwards for your app to the one upstream you name, one price lookup, and
-  with `map --judge` or `judge` the judge's calls. `demo` and `report` make
-  none.
+- **No telemetry unless you turn it on.** By default ezswap makes no network
+  request except the model calls a `run` or `map` sends to the endpoints you
+  name, the calls `record` forwards for your app to the one upstream you
+  name, one price lookup, and with `map --judge` or `judge` the judge's
+  calls. `demo` and `report` make none.
+- **Opt-in telemetry sends no trace content.** If you answer yes to the
+  guided workflow's question or run `ezswap telemetry on`, each command sends
+  one event to PostHog: the command, how it ended, counts, and the names of
+  models the bundled price catalog knows. A prompt, reply, key, path, base
+  URL, part name, private model name or error message is never in it. The
+  fields are a fixed list in `docs/telemetry.md`, and a test fails if an
+  event carries any other. `DO_NOT_TRACK=1`, `EZSWAP_TELEMETRY=0` or `CI`
+  keeps it off.
 - **The price lookup sends model names only.** When `estimate`, `run` or
   `map` is given a `creator/model` id that the bundled price catalog cannot
   price, ezswap asks Metergraph's Pricing API

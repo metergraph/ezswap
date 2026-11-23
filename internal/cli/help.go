@@ -22,6 +22,7 @@ Usage
   ezswap run <traces> --models LIST [options]
   ezswap report <run.json> [--no-interactive] [--explain]
   ezswap judge <run.json>
+  ezswap telemetry [on|off]
 
 With no command on an interactive terminal, ezswap walks through recording,
 planning and mapping step by step, and opens the result in the map explorer.
@@ -41,6 +42,8 @@ Commands
              Prints the map for a run that map made.
   judge      Judge the free-text parts of a map run (see --judge), write the
              verdicts into run.json and print the map.
+  telemetry  Say whether anonymous usage reporting is on, or turn it on or
+             off. It is off until you turn it on.
 
 The map (map, estimate --map)
   A part is a place in your app that calls a model. It is named by a "part"
@@ -152,6 +155,11 @@ Nothing leaves this machine except the provider calls a run makes, the
 calls record forwards for your app, model names sent for prices, and with
 --judge the free-text replies sent to the judge. record listens on
 127.0.0.1 only.
+
+Anonymous usage reporting is off unless you turn it on (ezswap telemetry
+on). It reports the command, how it ended, counts and public model names,
+never a prompt, reply, key, path or private name. DO_NOT_TRACK=1 or
+EZSWAP_TELEMETRY=0 keeps it off.
 
 Metergraph runs this comparison continuously on live traffic: https://www.metergraph.dev
 `

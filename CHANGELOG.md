@@ -7,6 +7,12 @@ may change the command line or the `run.json` format.
 
 ## Unreleased
 
+- Opt-in anonymous telemetry. It is off by default: the guided workflow
+  asks once, and `ezswap telemetry on` or `off` changes the answer. An
+  opted-in command reports that it ran, how it ended, counts and public
+  model names, never a prompt, reply, key, path or private name. See
+  `docs/telemetry.md`. This build ships with no project key, so it does not
+  ask or send yet.
 - Analyze, the guided workflow's second step, opens on an objective: reduce
   cost, improve quality or try the latest models. It suggests the models to
   try from a list built into `ezswap`, compared by price with the model in
