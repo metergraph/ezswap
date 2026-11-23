@@ -143,10 +143,14 @@ func (s *session) guided() (outcome, error) {
 		{Title: "Analyze a trace file", Detail: "Step 2. A file record wrote, or Langfuse, OpenTelemetry or raw provider logs.", Prompt: "Trace file:", Value: traces},
 		open,
 	})
+	if quit, err := s.askTelemetry(o); err != nil || quit {
+		return done, err
+	}
 	chosen, err := flow.RunMenu(start, o)
 	if err != nil || chosen.Cancel {
 		return done, err
 	}
+	s.event.Start = []string{"record", "analyze", "open"}[min(chosen.Chosen, 2)]
 	file := ""
 	switch chosen.Chosen {
 	case 0:
@@ -324,6 +328,7 @@ func (s *session) guidedPlan(file string, o flow.Options) (outcome, error) {
 		return outcome{ExitOK, object{{"command", "guided"}}}, err
 	}
 	s.v = withChoice(s.v, final.Choice, all)
+	s.event.Objective = final.Choice.Objective
 	s.step = stepMap
 	return s.run(file, true)
 }

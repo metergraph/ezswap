@@ -33,6 +33,7 @@ import (
 	"github.com/metergraph/ezswap/internal/providers"
 	"github.com/metergraph/ezswap/internal/report/term"
 	"github.com/metergraph/ezswap/internal/run"
+	"github.com/metergraph/ezswap/internal/telemetry"
 	"github.com/metergraph/ezswap/internal/types"
 )
 
@@ -102,6 +103,13 @@ type IO struct {
 	CacheDir string
 	// Where --judge asks its judge. "" is the AI Gateway.
 	JudgeURL string
+	// Where ezswap keeps a person's own settings: the telemetry answer.
+	// "" keeps none, so telemetry is never asked about and never sent.
+	ConfigDir string
+	// Where an opted-in command's event is sent, and the project key it is
+	// sent with. Either "" sends nothing.
+	TelemetryURL string
+	TelemetryKey string
 }
 
 // ExploreOptions are what the explorer is opened with.
@@ -145,6 +153,10 @@ func DefaultIO() IO {
 	if dir, err := os.UserCacheDir(); err == nil {
 		o.CacheDir = filepath.Join(dir, "ezswap")
 	}
+	if dir, err := os.UserConfigDir(); err == nil {
+		o.ConfigDir = filepath.Join(dir, "ezswap")
+	}
+	o.TelemetryURL, o.TelemetryKey = telemetry.DefaultURL, telemetry.Key
 	if o.StdoutTTY {
 		if w, h, err := xterm.GetSize(os.Stdout.Fd()); err == nil {
 			o.Columns, o.Rows = w, h
@@ -239,6 +251,8 @@ type session struct {
 	configPath string
 	// The guided workflow's step, shown in a screen's title, or "".
 	step string
+	// What the command did, for the event sent if telemetry is on.
+	event telemetry.Event
 }
 
 // configured is whether the settings file, not a flag, set this option.
@@ -283,6 +297,8 @@ func Main(args []string, o IO) int {
 		o.Env = map[string]string{}
 	}
 	s := &session{io: o, asJSON: slices.Contains(args, "--json")}
+	started := s.now()
+	ran := ""
 	command := ""
 	hasCommand := false
 	emit := func(exitCode int, fields object) int {
@@ -311,6 +327,7 @@ func Main(args []string, o IO) int {
 		}
 		// No command on an interactive terminal: the guided workflow.
 		if !hasCommand && !v.bool("help") && !s.asJSON && s.interactive() {
+			ran = "guided"
 			return s.guided()
 		}
 		if v.bool("help") || !hasCommand || command == "help" {
@@ -324,6 +341,10 @@ func Main(args []string, o IO) int {
 			return outcome{code, object{{"command", "help"}}}, nil
 		}
 		rest := positionals[1:]
+		if command == "telemetry" {
+			return s.telemetryCommand(rest)
+		}
+		ran = command
 		taken, configPath, err := s.applyConfig(command)
 		if err != nil {
 			return outcome{}, err
@@ -383,6 +404,7 @@ func Main(args []string, o IO) int {
 		return outcome{}, usagef(`Unknown command "` + command + `". Run ezswap --help.`)
 	}()
 	if err == nil {
+		s.reportUsage(ran, result.exitCode, "", started)
 		return emit(result.exitCode, result.json)
 	}
 
@@ -408,6 +430,7 @@ func Main(args []string, o IO) int {
 	case err.Error() != "":
 		message = err.Error()
 	}
+	s.reportUsage(ran, exitCode, code, started)
 	if !s.asJSON {
 		text := "ezswap: " + message + "\n"
 		if exitCode == ExitUsage {

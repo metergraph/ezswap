@@ -383,6 +383,7 @@ func (s *session) estimate(file string) (outcome, error) {
 		return outcome{}, err
 	}
 	plan := setup.plan
+	s.notePlan(plan, setup.pricing)
 	if mapMode {
 		return s.estimateMap(setup)
 	}
@@ -512,6 +513,7 @@ func (s *session) run(file string, mapMode bool) (outcome, error) {
 		return outcome{}, err
 	}
 	plan := setup.plan
+	s.notePlan(plan, setup.pricing)
 	help := pricingHelpURL(setup.pricing)
 	if mapMode {
 		s.say(s.explainMapEstimate(setup))
